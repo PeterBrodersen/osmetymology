@@ -22,12 +22,14 @@ Resources for getting information about the origin of Danish street names.
 | København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
 | København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book (1999) | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
 | København        | [Urbane navne - storbyens sproglige dimension](https://vbn.aau.dk/ws/files/549463328/Ph.d._2016_Sandst_Appendiks.pdf) | Online, PDF | Line Sandst | Thesis (2016) |
+| København        | [Om københavnske Gadenavne](https://bibliotek.dk/materiale/om-koebenhavnske-gadenavne_otto-mackeprang/work-of:870970-basis:44021099?workId=work-of%3A870970-basis%3A44021099&type=bog) | Book (1948) | Otto Mackeprang | Lots of streets mentioned, not in list form though |
 | Liseleje         | [Liselejes Historie](https://liselejeqr.dk/) | Online | | Only a few locations |
 | Lyngby           | [Vejnavne i Lyngby-Taarbæk Kommune](https://slaegtsbibliotek.dk/923295.pdf) | Online book (1992), PDF | Peter Wahl | Very detailed |
 | Middelfart       | [Middelfarts veje](https://bibliotek.dk/materiale/middelfarts-veje_karen-lisbeth-vognsen/work-of%3A870970-basis%3A24738078?type=bog) | Book (2019) | Karen-Lisbeth Vognsen | Good overview |
 | Nakskov          | [Gade og vejnavne i Nakskov](https://arkiv.dk/vis/740167) | Book | Nakskov lokalhistoriske Arkiv | Not sure where the resource is available... |
-| Nakskov          | [Læs om Nakskovs jøder](https://nakskovlokalarkiv.dk/nakskovs-joeder) | Article | Nakskov lokalhistoriske Arkiv | Jødevej, Nakskov |
+| Nakskov          | [Læs om Nakskovs jøder](https://nakskovlokalarkiv.dk/nakskovs-joeder) | Article | Nakskov lokalhistoriske Arkiv | Article mentioning Jødevej, Nakskov |
 | Nakskov          | [Egeskov og ørneklo : en bog om Nakskov](https://bibliotek.dk/materiale/egeskov-og-oerneklo_carl-emil-hansen-f-1913-/work-of%3A870970-basis%3A06963927?type=bog) | Book (1989) | Carl Emil Hansen |
+| Nakskov          | [Hvorfor hedder de det?](https://bibliotek.dk/materiale/hvorfor-hedder-de-det-/work-of%3A800010-katalog%3A99122170238405763?type=bog) | Book (2000) | Det Gamle Trykkeri | Reference, describes many roads |
 | Nysted           | [Tema: Stednavne](https://www.nysted-lokalhistorie.dk/tema-stednavne/) | Online | Nysted lokalhistoriske Arkiv |
 | Næstved          | [Byens gader fortæller en historie](https://www.sn.dk/naestved-kommune/byens-gader-fortaeller-en-historie/) | Online, article | Sjællandske Nyheder | Article about new signs in the municipality |
 | Odense           | [Adresser - vejnavne og husnumre](https://www.odense.dk/borger/trafik-og-veje/veje/adresser-vejnavne-og-husnumre) | Online | Odense Kommune | Overview |
