@@ -1,14 +1,19 @@
 # OSM Etymology
 Etymology map based on OpenStreetMap and Wikidata. This is geared for Danish content.
 
-OpenStreetMap has references to Wikidata for a bunch of Danish streets.
+OpenStreetMap has references to Wikidata for a bunch of Danish streets. This project aims to make the information searchable.
 
 ## Overview
 OpenStreetMap is a freely available map resource. Wikidata is a freely available structured data resource.
 
 OpenStreetMap uses tags such as [`name:etymology:wikidata`](https://wiki.openstreetmap.org/wiki/Key:name:etymology:wikidata`) to link to Wikidata items. Using these items it is possible to show maps based on different topics such as country, gender, profession and so on. Check out [an example from Open Etymology Map](https://etymology.dsantini.it/#10.3907,55.3966,14.8,occupation,pmtiles_all,stamen_toner,etymology) showing a map of Odense grouped by occupation.
 
-## Import process
+## Code
+(TODO: Code all of it :-) )
+
+The web project will (probably) be based on [Leaflet](https://leafletjs.com/) with a FlatGeobuf map file as well as [PostgreSQL](https://www.postgresql.org/) as DB backend. No editing is planned.
+
+### Import process
 Suggested automated process for using content:
 
 1. Download [copy of Denmark](https://download.geofabrik.de/europe/denmark.html) from GeoFabrik
@@ -67,7 +72,7 @@ A couple of examples:
     * Furthermore every animal and plant order, family, and species are simply listed as [taxon](https://www.wikidata.org/wiki/Q16521). Further checks, usually at the [Wikidata subclass level](https://www.wikidata.org/wiki/Property:P279 "subclass of"), should be checked to determine basic information such as whether the item is an animal, plant or whatnot if possible (even if there is [no such thing as a fish](https://en.wikipedia.org/wiki/No_Such_Thing_as_a_Fish#Title "Wikipedia: No such thing as a Fish; Title)).
 
 ### Resources
-Check the source list for different cities in Denmark (todo).
+Check the [source list](Resources.md) for different locations in Denmark.
 
 ## Other resources
 Similar projects exists, such as [Open Etymology Map](https://etymology.dsantini.it/) <sup>[GitHub](https://gitlab.com/openetymologymap/open-etymology-map/)</sup>.
