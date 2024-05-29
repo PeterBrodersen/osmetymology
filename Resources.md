@@ -24,52 +24,22 @@ Resources for getting information about the origin of Danish street names.
 | Roskilde         | [Gader og stræder - i Roskilde Kommune](https://bibliotek.dk/materiale/gader-og-straeder-i-roskilde-kommune_lotte-fang/work-of%3A870970-basis%3A22349600?type=bog) | Book (2015) | Lotte Fang | Extremely detailed |
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Ribe             | [Vores gade](https://web.archive.org/web/20230603211303/http://rba.esbjergkommune.dk/ribes-historie/vores-gade.aspx)| Online (Internet Archive) | Ribe Byhistoriske Arkiv | Only a few roads |
-
+| Randers          | Amtsavisen [1](https://amtsavisen.dk/randers/fra-kong-abels-gade-til-klostres-jomfruloekken), [2](https://amtsavisen.dk/randers/kvinder-paa-gaderne-i-randers), [3](https://amtsavisen.dk/randers/svend-troests-kaereste-lagde-navn-til-agnetesvej), [4](https://amtsavisen.dk/randers/sennels-postkontrolloeren-der-aldrig-kom-et-minut-for-sent), [5](https://amtsavisen.dk/randers/kvinder-paa-gaderne-i-randers), [6](https://amtsavisen.dk/randers/pontoppidan-er-ikke-kun-den-pontoppidan) | Online | Randers Amtsavis | Invidiual articles |
+| Randers          | [Gader og veje](https://www.dronningborghistorier.dk/gader-og-veje) | Online | Dronningborg Historier |
+| Randers          | [Vejnavne i Randers Kommune](https://bibliotek.dk/materiale/vejnavne-i-randers-kommune_peter-bondesen-f-1946-/work-of%3A870970-basis%3A06271022?type=bog) | Book (1985) | Peter Bondesen | Very detailed |
+| Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | Brugerdrevet |
+| Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
+| Liseleje         | [Liselejes Historie](https://liselejeqr.dk/) | Online | | Only a few locations |
+| Ringsted         | [RingstedWiki, Kategori: Gader og veje](http://wiki.ringstedhistorie.dk/index.php/Kategori:Gader_%26_Veje) | Online, Wiki | Ringsted Museum og Arkiv |
+| Slagelse         | [Hvorfor hedder det ... ? Gadenavne i Slagelse](https://arkiv.dk/pdfviewer/viewpdf?originalId=8a68906e412c4c4e870cfc9d3d518a4b) | Online book (2007), PDF | Hardy Sørensen | [Paper edition](https://bibliotek.dk/materiale/hvorfor-hedder-det-_hardy-soerensen/work-of%3A870970-basis%3A44266741?type=bog)
+| Næstved          | [Byens gader fortæller en historie](https://www.sn.dk/naestved-kommune/byens-gader-fortaeller-en-historie/) | Online, article | Sjællandske Nyheder | Article about new signs in the municipality |
+| Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
+| Nakskov          | [Gade og vejnavne i Nakskov](https://arkiv.dk/vis/740167) | Book | Nakskov lokalhistoriske Arkiv | Not sure where the resource is available... |
+| Nakskov          | [Læs om Nakskovs jøder](https://nakskovlokalarkiv.dk/nakskovs-joeder) | Article | Nakskov lokalhistoriske Arkiv | Jødevej, Nakskov |
+| Nakskov          | [Egeskov og ørneklo : en bog om Nakskov](https://bibliotek.dk/materiale/egeskov-og-oerneklo_carl-emil-hansen-f-1913-/work-of%3A870970-basis%3A06963927?type=bog) | Book (1989) | Carl Emil Hansen |
 
 # Edit Todo
 The following links needs to be tablefied:
-
-Randers:
-Amtsavisen:
-https://amtsavisen.dk/randers/fra-kong-abels-gade-til-klostres-jomfruloekken
-https://amtsavisen.dk/randers/kvinder-paa-gaderne-i-randers
-https://amtsavisen.dk/randers/svend-troests-kaereste-lagde-navn-til-agnetesvej
-https://amtsavisen.dk/randers/sennels-postkontrolloeren-der-aldrig-kom-et-minut-for-sent
-https://amtsavisen.dk/randers/kvinder-paa-gaderne-i-randers
-https://amtsavisen.dk/randers/pontoppidan-er-ikke-kun-den-pontoppidan
-https://www.dronningborghistorier.dk/gader-og-veje
-Bog:
-Vejnavne i Randers Kommune, Peter Bondesen
-
-Vendsyssel:
-https://vendsysselwiki.dk/index.php?title=Forside
-
-Bornholm:
-Bornholms Historiske Samfund:
-https://bornholmske-samlinger.dk/stednavne-paa-bornholm/
-https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf
-
-Liselejes historie
-https://liselejeqr.dk/
-
-Ringsted:
-http://wiki.ringstedhistorie.dk/index.php/Kategori:Gader_%26_Veje
-
-Slagelse:
-https://arkiv.dk/vis/6116680
-"Hvorfor hedder det?"
-https://arkiv.dk/pdfviewer/viewpdf?originalId=8a68906e412c4c4e870cfc9d3d518a4b
-
-Næstved:
-https://www.sn.dk/naestved-kommune/byens-gader-fortaeller-en-historie/
-
-Faxe:
-https://arkiv.dk/vis/333412
-
-Nakskov:
-https://arkiv.dk/vis/740167
-https://nakskovlokalarkiv.dk/nakskovs-joeder
-(+bog: Egeskov og Ørneklo - en bog om Nakskov)
 
 Sæby/Frederikshavn:
 https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne
