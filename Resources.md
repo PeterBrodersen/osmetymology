@@ -48,7 +48,7 @@ Resources for getting information about the origin of Danish street names.
 | Skagen           | [Skagens Vejnavne](http://www.skagenlokal.dk/skagens_vejnavne.html) ([alternative view](http://www.skagenlokal.dk/Sider/Vej.html)) | Online | Hans Nielsen og Skagen Lokalhistoriske Forening | Many roads |
 | Sorø             | [Veje og gader i Sorø og omegn](https://www.soroehistorie.dk/arkiv/Veje_og_gader.html) | Online | Lokalhistorisk Arkiv for Sorø og Omegn |
 | Svendborg        | [Svendborg Historie](https://www.svendborghistorie.dk/sofart/andet/130-gader-og-veje/gader-og-veje-sp-131) | Online | | Only a few roads |
-| Sæby, Frederikshavn | (Sæby vejnavne)[https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne] | Online | Thorkild Walsted, Ingrid Mørk |
+| Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
 | Vanløse          | [Forsvundne vejnavne og veje i Vanløse](http://vanloese.dk/om-vanloese/vejenes-historie/forsvundne-vejnavne/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
 | Vanløse          | [Vanløsebasen](http://www.vanløse.dk/) | Online |
