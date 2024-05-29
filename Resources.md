@@ -1,60 +1,33 @@
 # Resources
 Resources for getting information about the origin of Danish street names.
 
-| City             | Resource | Type | Owner | Note |
+| Location         | Resource | Type | Owner | Note |
 | ---------------- | -------- | ---- | ----- | ---- |
-| København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online resource | | Contains detailed information for many roads in Copenhagen |
-| København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
+| København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
+| København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book (1999) | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
 | Vanløse          | [Forsvundne vejnavne og veje i Vanløse](http://vanloese.dk/om-vanloese/vejenes-historie/forsvundne-vejnavne/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
 | Vanløse          | [Vanløsebasen](http://www.vanløse.dk/) | Online |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/) | Online | Uwe Brodersen |
 | Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
 | Gladsaxe         | [Vejnavn](https://web.archive.org/web/20210418150809/https://gladsaxe.dk/Files//Files/SKOHR-DIA-BYS/Byarkiv/Tekstfiler/Vejnavn-uden-Helms-alle.pdf)| Online (Internet Archive), PDF | Gladsaxe Kommune
+| Dragør           | [Dragoerhistorie.dk](http://www.dragoerhistorie.dk/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
+| Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
+| Odense           | [Adresser - vejnavne og husnumre](https://www.odense.dk/borger/trafik-og-veje/veje/adresser-vejnavne-og-husnumre) | Online | Odense Kommune | Overview |
+| Odense           | [Historiske vejnavne](https://www.odense.dk/-/media/images/borger/trafik-og-veje/veje/adresser/historiskevejnavne-apr23.pdf) | Online, PDF | Odense Kommune | Detailed information for many roads |
+| Aarhus           | [AarhusWiki](https://aarhuswiki.dk/wiki/Forside)| Online, Wiki | Aarhus Stadsarkiv | Some roads do not have Wiki entries yet |
+| Svendborg        | [Svendborg Historie](https://www.svendborghistorie.dk/sofart/andet/130-gader-og-veje/gader-og-veje-sp-131) | Online | | Only a few roads |
+| Skagen           | [Skagens Vejnavne](http://www.skagenlokal.dk/skagens_vejnavne.html) ([alternative view](http://www.skagenlokal.dk/Sider/Vej.html)) | Online | Hans Nielsen og Skagen Lokalhistoriske Forening | Many roads |
+| Rudersdal        | [Vejnavne](https://museer.rudersdal.dk/rum/sektioner/vejnavne) | Online | Rudersdal Museer | Only some roads |
+| Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
+| Roskilde         | [Roskildes gader](https://roskildesudvikling.dk/FORSIDE/Gader%20og%20str%C3%A6der/) | Online | | Only a few roads |
+| Roskilde         | [Gader og stræder - i Roskilde Kommune](https://bibliotek.dk/materiale/gader-og-straeder-i-roskilde-kommune_lotte-fang/work-of%3A870970-basis%3A22349600?type=bog) | Book (2015) | Lotte Fang | Extremely detailed |
+| Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
+| Ribe             | [Vores gade](https://web.archive.org/web/20230603211303/http://rba.esbjergkommune.dk/ribes-historie/vores-gade.aspx)| Online (Internet Archive) | Ribe Byhistoriske Arkiv | Only a few roads |
+
 
 # Edit Todo
 The following links needs to be tablefied:
-
-Dragør:
-http://www.dragoerhistorie.dk/
-
-Glostrup:
-https://byhistoriskhus.dk/veje
-
-Odense:
-Historiske vejnavne, Odense Kommune
-https://www.odense.dk/borger/trafik-og-veje/veje/adresser-vejnavne-og-husnumre
-https://www.odense.dk/-/media/images/borger/trafik-og-veje/veje/adresser/historiskevejnavne-apr23.pdf
-
-Aarhus:
-AarhusWiki, Aarhus Stadsarkiv
-https://aarhuswiki.dk/wiki/Forside
-
-Svendborg:
-Svendborg Historie
-https://www.svendborghistorie.dk/sofart/andet/130-gader-og-veje/gader-og-veje-sp-131
-
-Skagen:
-Skagens vejnavne, Skagen Lokalhistoriske Forening
-http://www.skagenlokal.dk/Sider/Vej.html
-http://www.skagenlokal.dk/skagens_vejnavne.html
-
-Rudersdal Kommune:
-https://museer.rudersdal.dk/rum/sektioner/vejnavne
-
-Hvidovre:
-https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/
-
-Roskilde:
-https://roskildesudvikling.dk/FORSIDE/Gader%20og%20str%C3%A6der/
-
-Haderslev:
-Historie Haderslev:
-http://haderslevwiki.dk/index.php/Forside
-
-Ribe:
-Ribe Byhistoriske Arkiv:
-http://rba.esbjergkommune.dk/ribes-historie/vores-gade.aspx
 
 Randers:
 Amtsavisen:
