@@ -62,6 +62,7 @@ A couple of examples:
   * [Amerikavej, Copenhagen](https://www.openstreetmap.org/way/1881227) is not named after The Americas or US but after a local mansion that an American consul named _America_.
   * [Stockholmsgade, Copenhagen](https://www.openstreetmap.org/way/788241681) is not named after the Swedish captial Stockholm, but after an old beer garden called _Stokholm_. However other roads in the area are named after Nordic cities and persons.
   * [Englandsvej, Copenhagen](https://www.openstreetmap.org/way/161862400) is not quite clear. There are several roads in the area definitely named after other countries, but Englandsvej could be the road that leads to the countryside with the meadows (enge). (It [probably is named after England](http://www.hovedstadshistorie.dk/sundbyvester/englandsvej/) though).
+  * [Vejlegade, Nakskov](https://www.openstreetmap.org/way/105868044) is not named after the Danish town Vejle but after "vejle", an old name for a ford (vadested). This is also the origin of Vejle's name.
 * Some names are just deceptive.
   * [Ananasvænget, Odense](https://www.openstreetmap.org/way/55451768) ("Pineapple field") is not named after Ananas/Pineapple but after a specific apple cultivar called [Rød Ananas/Red Pineapple](https://www.wikidata.org/wiki/Q44275015).
 * Some roads have names based on historic data but due to changes they could be misinterpreted.
