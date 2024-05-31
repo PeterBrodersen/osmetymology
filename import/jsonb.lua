@@ -120,9 +120,9 @@ function osm2pgsql.process_node(object)
 
     tables.points:add_row({
         name = object.tags.name,
-        name:etymology = object.tags.name:etymology,
-        name:etymology:wikipedia = object.tags.name:etymology:wikipedia,
-        name:etymology:wikidata = object.tags.name:etymology:wikidata,
+        name_etymology = object.tags.name:etymology,
+        name_etymology_wikipedia = object.tags.name:etymology:wikipedia,
+        name_etymology_wikidata = object.tags.name:etymology:wikidata,
         highway = object.tags.highway,
         tags = object.tags
 })
@@ -144,9 +144,9 @@ function osm2pgsql.process_way(object)
     if object.is_closed then
         tables.polygons:add_row({
             name = object.tags.name,
-            name:etymology = object.tags.name:etymology,
-            name:etymology:wikipedia = object.tags.name:etymology:wikipedia,
-            name:etymology:wikidata = object.tags.name:etymology:wikidata,
+            name_etymology = object.tags.name:etymology,
+            name_etymology_wikipedia = object.tags.name:etymology:wikipedia,
+            name_etymology_wikidata = object.tags.name:etymology:wikidata,
             highway = object.tags.highway,
             tags = object.tags,
             geom = { create = 'area' }
@@ -154,9 +154,9 @@ function osm2pgsql.process_way(object)
     else
         tables.ways:add_row({
             name = object.tags.name,
-            name:etymology = object.tags.name:etymology,
-            name:etymology:wikipedia = object.tags.name:etymology:wikipedia,
-            name:etymology:wikidata = object.tags.name:etymology:wikidata,
+            name_etymology = object.tags.name:etymology,
+            name_etymology_wikipedia = object.tags.nameetymology_wikipedia,
+            name_etymology_wikidata = object.tags.name:etymology:wikidata,
             highway = object.tags.highway,
             tags = object.tags
         })
