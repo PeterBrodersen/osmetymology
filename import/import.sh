@@ -12,4 +12,4 @@ if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"
 fi
 
-ogr2ogr ../www/data/aggregate.fgb PG:dbname=penguin -oo TABLES=osmetymology.ways_agg -select "name, name:etymology, name:etymology:wikipedia, name:etymology:wikidata, geom"
+ogr2ogr "$FGBFILE" PG:dbname=penguin -oo TABLES=osmetymology.ways_agg -select "name, name:etymology, name:etymology:wikipedia, name:etymology:wikidata, geom"
