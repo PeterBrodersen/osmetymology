@@ -46,8 +46,6 @@ tables.points = osm2pgsql.define_node_table('osm_points', {
 -- automatically update this table using the way ids.
 tables.ways = osm2pgsql.define_way_table('osm_ways', {
     { column = 'name', type = 'text' },
-    { column = 'name_ca', type = 'text' },
-    { column = 'name:ca', type = 'text' },
     { column = 'name:etymology', type = 'text' },
     { column = 'name:etymology:wikipedia', type = 'text' },
     { column = 'name:etymology:wikidata', type = 'text' },
