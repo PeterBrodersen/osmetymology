@@ -13,6 +13,7 @@ CREATE TABLE osmetymology.ways_agg (
 INSERT INTO osmetymology.ways_agg (name, way_ids, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", geom)
 SELECT name, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_COLLECT(geom)
 FROM osmetymology.osm_ways ow 
+WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" IS NOT NULL)
 GROUP by name, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata";
 
 CREATE INDEX ways_agg_geom_idx ON osmetymology.ways_agg USING gist (geom);
