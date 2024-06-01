@@ -23,11 +23,11 @@ local tables = {}
 -- contain a "node_id" column (SQL type INT8) as first column. When running in
 -- "append" mode, osm2pgsql will automatically update this table using the node
 -- ids.
-tables.points = osm2pgsql.define_node_table('jsonb_points', {
+tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name', type = 'text' },
-    { column = 'name:etymlogy', type = 'text' },
-    { column = 'name:etymlogy:wikipedia', type = 'text' },
-    { column = 'name:etymlogy:wikidata', type = 'text' },
+    { column = 'name:etymology', type = 'text' },
+    { column = 'name:etymology:wikipedia', type = 'text' },
+    { column = 'name:etymology:wikidata', type = 'text' },
     { column = 'highway', type = 'text' },
     { column = 'tags', type = 'jsonb' },
     { column = 'geom', type = 'point' }, -- will be something like `GEOMETRY(Point, 4326)` in SQL
@@ -44,11 +44,13 @@ tables.points = osm2pgsql.define_node_table('jsonb_points', {
 -- This is a "way table", it can only contain data derived from ways and will
 -- contain a "way_id" column. When running in "append" mode, osm2pgsql will
 -- automatically update this table using the way ids.
-tables.ways = osm2pgsql.define_way_table('jsonb_ways', {
+tables.ways = osm2pgsql.define_way_table('osm_ways', {
     { column = 'name', type = 'text' },
-    { column = 'name:etymlogy', type = 'text' },
-    { column = 'name:etymlogy:wikipedia', type = 'text' },
-    { column = 'name:etymlogy:wikidata', type = 'text' },
+    { column = 'name_ca', type = 'text' },
+    { column = 'name:ca', type = 'text' },
+    { column = 'name:etymology', type = 'text' },
+    { column = 'name:etymology:wikipedia', type = 'text' },
+    { column = 'name:etymology:wikidata', type = 'text' },
     { column = 'highway', type = 'text' },
     { column = 'tags', type = 'jsonb' },
     { column = 'geom', type = 'linestring' },
@@ -59,11 +61,11 @@ tables.ways = osm2pgsql.define_way_table('jsonb_ways', {
 -- "area_id" column, for relations the negative id will be stored. When
 -- running in "append" mode, osm2pgsql will automatically update this table
 -- using the way/relation ids.
-tables.polygons = osm2pgsql.define_area_table('jsonb_polygons', {
+tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
     { column = 'name', type = 'text' },
-    { column = 'name:etymlogy', type = 'text' },
-    { column = 'name:etymlogy:wikipedia', type = 'text' },
-    { column = 'name:etymlogy:wikidata', type = 'text' },
+    { column = 'name:etymology', type = 'text' },
+    { column = 'name:etymology:wikipedia', type = 'text' },
+    { column = 'name:etymology:wikidata', type = 'text' },
     { column = 'highway', type = 'text' },
     { column = 'tags', type = 'jsonb' },
     -- The type of the `geom` column is `geometry`, because we need to store
@@ -72,11 +74,11 @@ tables.polygons = osm2pgsql.define_area_table('jsonb_polygons', {
 }, { schema = 'osmetymology' } )
 
 -- Specific routes table
-tables.routes = osm2pgsql.define_relation_table('jsonb_routes', {
+tables.routes = osm2pgsql.define_relation_table('osm_routes', {
     { column = 'name', type = 'text' },
-    { column = 'name:etymlogy', type = 'text' },
-    { column = 'name:etymlogy:wikipedia', type = 'text' },
-    { column = 'name:etymlogy:wikidata', type = 'text' },
+    { column = 'name:etymology', type = 'text' },
+    { column = 'name:etymology:wikipedia', type = 'text' },
+    { column = 'name:etymology:wikidata', type = 'text' },
     { column = 'highway', type = 'text' },
     { column = 'route', type = 'text' },
     { column = 'routetype', type = 'text' },
@@ -120,9 +122,9 @@ function osm2pgsql.process_node(object)
 
     tables.points:add_row({
         name = object.tags.name,
-        name_etymology = object.tags.name:etymology,
-        name_etymology_wikipedia = object.tags.name:etymology:wikipedia,
-        name_etymology_wikidata = object.tags.name:etymology:wikidata,
+        ["name:etymology"] = object.tags["name:etymology"],
+        ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+        ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
         highway = object.tags.highway,
         tags = object.tags
 })
@@ -132,21 +134,20 @@ end
 -- information as with nodes and additionally a boolean `is_closed` flag and
 -- the list of node IDs referenced by the way (`object.nodes`).
 function osm2pgsql.process_way(object)
-    --  Uncomment next line to look at the object data:
-    --  print(inspect(object))
-
+    -- print(dump(object.tags))
+    
     if clean_tags(object.tags) then
         return
     end
-
+    
     -- Very simple check to decide whether a way is a polygon or not, in a
     -- real stylesheet we'd have to also look at the tags...
     if object.is_closed then
         tables.polygons:add_row({
             name = object.tags.name,
-            name_etymology = object.tags.name:etymology,
-            name_etymology_wikipedia = object.tags.name:etymology:wikipedia,
-            name_etymology_wikidata = object.tags.name:etymology:wikidata,
+            ["name:etymology"] = object.tags["name:etymology"],
+            ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+            ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             highway = object.tags.highway,
             tags = object.tags,
             geom = { create = 'area' }
@@ -154,23 +155,17 @@ function osm2pgsql.process_way(object)
     else
         tables.ways:add_row({
             name = object.tags.name,
-            name_etymology = object.tags.name:etymology,
-            name_etymology_wikipedia = object.tags.nameetymology_wikipedia,
-            name_etymology_wikidata = object.tags.name:etymology:wikidata,
+            ["name:etymology"] = object.tags["name:etymology"],
+            ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+            ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             highway = object.tags.highway,
             tags = object.tags
         })
     end
 end
 
--- Called for every relation in the input. The `object` argument contains the
--- same information as with nodes and additionally an array of members
--- (`object.members`).
 
 function osm2pgsql.process_relation(object)
-    --  Uncomment next line to look at the object data:
-    --  print(inspect(object))
-
     if clean_tags(object.tags) then
         return
     end
@@ -180,9 +175,25 @@ function osm2pgsql.process_relation(object)
        object.tags.type == 'boundary' then
          tables.polygons:add_row({
             name = object.tags.name,
+            ["name:etymology"] = object.tags["name:etymology"],
+            ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+            ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             tags = object.tags,
             geom = { create = 'area' }
         })
     end
 
 end
+
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
