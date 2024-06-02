@@ -25,3 +25,5 @@ CREATE INDEX ways_agg_name_idx ON osmetymology.ways_agg ("name");
 CREATE INDEX ways_agg_searchname_idx ON osmetymology.ways_agg ("searchname");
 CREATE INDEX ways_agg_municipality_idx ON osmetymology.ways_agg ("municipality_code");
 CREATE INDEX ways_agg_name_etymology_wikidata_idx ON osmetymology.ways_agg ("name:etymology:wikidata");
+
+CREATE INDEX municipalities_kode_idx ON osmetymology.municipalities ("kode");

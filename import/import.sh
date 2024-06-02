@@ -1,4 +1,9 @@
 #!/bin/sh
+if [ -z "${PGDATABASE:-}" ]; then
+    echo "Error: Set variable PGDATABASE in environment" 1>&2
+    exit 1
+fi
+
 wget https://download.geofabrik.de/europe/denmark-latest.osm.pbf -O denmark-latest.osm.pbf
 #ogr2ogr denmark.fgb denmark-latest.osm.pbf lines
 # Remember to create schema osmetymology
