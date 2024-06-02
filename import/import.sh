@@ -6,7 +6,7 @@ wget https://download.geofabrik.de/europe/denmark-latest.osm.pbf -O denmark-late
 osm2pgsql -d "$PGDATABASE" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
 # Import municipalities
-ogr2ogr PG:dbname=penguin kommuner.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+ogr2ogr PG:dbname="$PGDATABASE" kommuner.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
 # Aggregate, split by municipality boundaries
 psql -f aggregate.sql
@@ -16,4 +16,4 @@ FGBFILE="../www/data/aggregate.fgb"
 if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"
 fi
-ogr2ogr "$FGBFILE" PG:dbname=penguin -oo TABLES=osmetymology.ways_agg -select "name, name:etymology, name:etymology:wikipedia, name:etymology:wikidata, geom"
+ogr2ogr "$FGBFILE" PG:dbname="$PGDATABASE" -oo TABLES=osmetymology.ways_agg -select "name, name:etymology, name:etymology:wikipedia, name:etymology:wikidata, geom"
