@@ -10,13 +10,14 @@ $(function () {
     if (inputname == lastinputname) { // don't request for random key presses such as shift
       return;
     }
+    lastinputname = inputname;
 
     // if (inputname.length < 3) {
     if(! /^(Q\d+|.{3,})$/.test(inputname) ) {
       return;
     }
     $("#copylink a").show().attr('href', '#' + inputname);
-    lastinputname = inputname;
+    $(".resulttable").fadeTo("slow",0.5);
     $.getJSON( "lookup.php", { search: inputname} )
       .done(function (data)  {
         if (data && data.length > 0) {

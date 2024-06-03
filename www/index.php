@@ -59,6 +59,10 @@
         padding-bottom: 0px;
     }
 
+    sup a {
+        text-decoration-style: dashed;
+    }
+
 </style>
 </head>
 <body>
