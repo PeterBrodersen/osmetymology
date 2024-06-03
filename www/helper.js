@@ -10,12 +10,14 @@ $(function () {
     if (inputname == lastinputname) { // don't request for random key presses such as shift
       return;
     }
-    if (inputname.length < 3) {
+
+    // if (inputname.length < 3) {
+    if(! /^(Q\d+|.{3,})$/.test(inputname) ) {
       return;
     }
     $("#copylink a").show().attr('href', '#' + inputname);
     lastinputname = inputname;
-    $.getJSON( "lookup.php", { streetname: inputname} )
+    $.getJSON( "lookup.php", { search: inputname} )
       .done(function (data)  {
         if (data && data.length > 0) {
           let newtable = $("#tabletemplate").contents().clone();
@@ -31,7 +33,7 @@ $(function () {
             var wikidatalinkhtml = '';
             var wikidatadescriptionhtml = '';
             if ( row['name:etymology:wikidata'] ) {
-              var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['name:etymology:wikidata']}</a>`;
+              var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['name:etymology:wikidata']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
               wikidataitems.push(row['name:etymology:wikidata']);
               var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}"></span>`;
             } else if (row['name:etymology']) {
@@ -62,9 +64,13 @@ $(function () {
   // Start if hash fragment is present
   if (window.location.hash.length > 1) {
     var starttext = decodeURIComponent(window.location.hash.substring(1))
-    $("#namefind").val(starttext).trigger('keyup');
+    doSearch(starttext);
   }
 });
+
+function doSearch(searchword) {
+  $("#namefind").val(searchword).trigger('keyup');
+}
 
 function updateWikidataLabels(itemList) {
   itemList = [...new Set(itemList)];
