@@ -1,19 +1,22 @@
 #!/bin/sh
+# Remember to set $PGDATABASE to database name
+# Remember to create schema osmetymology - should be done automatically?
+
 if [ -z "${PGDATABASE:-}" ]; then
     echo "Error: Set variable PGDATABASE in environment" 1>&2
     exit 1
 fi
 
 wget https://download.geofabrik.de/europe/denmark-latest.osm.pbf -O denmark-latest.osm.pbf
-#ogr2ogr denmark.fgb denmark-latest.osm.pbf lines
-# Remember to create schema osmetymology
-# set $PGDATABASE to database name
+
+# Main import. Takes about 10-30 minutes
 osm2pgsql -d "$PGDATABASE" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
-# Import municipalities
+# Import municipalities. Takes a couple of seconds. 
+# TODO: Create the "kommuner.fgb" for distribution - or even better, import municipalities with geometry from authoritative source!
 ogr2ogr PG:dbname="$PGDATABASE" kommuner.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
-# Aggregate, split by municipality boundaries
+# Aggregate, split by municipality boundaries. Takes about 5-10 minutes. Perhaps the geometry should be simplified.
 psql -f aggregate.sql
 
 # Create aggregated FlatGeobuf file for web usage

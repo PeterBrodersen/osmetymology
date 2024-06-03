@@ -1,23 +1,26 @@
 <?php
 require("connect.inc.php");
 header("Content-Type: application/json");
-$name = (string) ($_GET['term'] ?? '');
-$searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($name));
+$streetname = (string) ($_GET['streetname'] ?? '');
+$searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
 $result = [];
-if (strlen($name) < 2) {
+if (strlen($streetname) < 2) {
 	print json_encode($result);
 	exit;
 }
 
 $q = $dbh->prepare('
-	SELECT ow.id, ow.name, ow."name:etymology:wikidata", m.navn 
+	SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname
 	FROM osmetymology.ways_agg ow
 	inner join osmetymology.municipalities m on ow.municipality_code = m.kode
-	WHERE searchname LIKE ? LIMIT 10');
+	WHERE searchname LIKE ?
+	ORDER BY ow.name, m.navn
+	LIMIT 200
+');
+$q->setFetchMode(PDO::FETCH_ASSOC);
+
 $q->execute([$searchname . '%']);
-foreach($q AS $row) {
-	$result[] = $row;
-}
+$result = $q->fetchAll();
 print json_encode($result);
 
 ?>

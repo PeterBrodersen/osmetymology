@@ -9,9 +9,9 @@ OpenStreetMap is a freely available map resource. Wikidata is a freely available
 OpenStreetMap uses tags such as [`name:etymology:wikidata`](https://wiki.openstreetmap.org/wiki/Key:name:etymology:wikidata`) to link to Wikidata items. Using these items it is possible to show maps based on different topics such as country, gender, profession and so on. Check out [an example from Open Etymology Map](https://etymology.dsantini.it/#10.3907,55.3966,14.8,occupation,pmtiles_all,stamen_toner,etymology) showing a map of Odense grouped by occupation.
 
 ## Code
-(TODO: Code all of it :-) )
+The web project will (probably) be based on [Leaflet](https://leafletjs.com/) with a FlatGeobuf map file as well as [PostgreSQL](https://www.postgresql.org/) as DB backend. No OpenStreetMap editing feature is planned.
 
-The web project will (probably) be based on [Leaflet](https://leafletjs.com/) with a FlatGeobuf map file as well as [PostgreSQL](https://www.postgresql.org/) as DB backend. No editing is planned.
+Currently the web frontend only consists of a street name lookup feature which does match the Wikidata item with the resource using the Wikidata API.
 
 ### Import process
 Suggested automated process for using content:
@@ -24,6 +24,8 @@ Suggested automated process for using content:
 6. Fetch set of every Wikidata entry
 7. Create web interface for secondary table to look up names, municipalities and subjects
 8. Profit!
+
+Currently the [import script](import/import.sh) takes care of most of it (even though the municipality file is not online yet). Wikidata entries are currently fetched directly from the API at Wikidata.org on demand. The map is not yet working.
 
 The munitipality split is based on the idea that any named conceptual road should only exist once in a municipality. Every road segment for a street with a specific name should be considered the conceptually same road. OpenStreetMap does not group roads with the same name in the same area or split roads on municipality boundaries and roads do not have the official Danish muncipality+street codes (3+4 digits).
 

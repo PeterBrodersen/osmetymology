@@ -4,25 +4,53 @@
         <title>
             Hvad er danske vejnavne opkaldt efter?
         </title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
      crossorigin=""/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/flatgeobuf/dist/flatgeobuf-geojson.min.js"></script>
 <script src="https://unpkg.com/json-formatter-js"></script>
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' /> -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/helper.js"></script>
-    </head>
-    <body>
-        <h1>Hvad er danske vejnavne opkaldt efter?</h1>
+<style>
+    h1 {
+        font-family: sans-serif;
+    }
+    table.resulttable, table.resulttable tr, table.resulttable th, table.resulttable td {
+        font-family: sans-serif;
+        border: solid 1px black;
+        padding: 5px;
+    }
+    table.resulttable {
+        font-family: sans-serif;
+        border: solid 1px black;
+        border-collapse: collapse;
+    }
 
-	<div><input required autofocus id="namefind"></div>
+    table.resulttable tr#tableheader {
+        background-color: #ddd;
+    }
+    div#userinput {
+        margin-bottom: 2em;
+    }
+
+</style>
+</head>
+<body>
+    <h1>Hvad er danske vejnavne opkaldt efter?</h1>
+
+	<div id="userinput"><input required autofocus id="namefind"></div>
 	
+    <div id="result">
+    </div>
 
-
+    <template id="tabletemplate">
+        <table class="resulttable">
+                <tr class="tableheader"><th>Vejnavn</th><th>Kommune</th><th>Wikidata-emne</th><th>Beskrivelse</th></tr>
+        </table>
+    </template>
 
 </body>
 </html>
