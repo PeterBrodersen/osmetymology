@@ -38,7 +38,7 @@ Performing the grouping and split makes it easier to answer conceptual questions
 In these cases it makes no sense to tally up every road segment with the same name or Wikidata item. This would result in an arbitrary count as even a straight road might consist of several individual segments with different speed limits, lane count, surface material, oneway rules, and so on.
 
 ## Editors and data sources
-OpenStreetMap and Wikidata can be edited by anyone. One of the most used editors for adding etymology data to streets and other objeccts is the [MapComplete Etymology Map](https://mapcomplete.org/etymology?z=16.5&lat=56.148988551988964&lon=10.203088105223515&fs-welcome-message=false). Of course, other editors such as JOSM can be used as well for advanced users.
+OpenStreetMap and Wikidata can be edited by anyone. One of the most used editors for adding etymology data to streets and other objects is the [MapComplete Etymology Map](https://mapcomplete.org/etymology?z=16.5&lat=56.148988551988964&lon=10.203088105223515&fs-welcome-message=false). Of course, other editors such as JOSM can be used as well for advanced users.
 
 Some of the more active users for adding etymological data in Denmark are [Søren Johannessen](https://hdyc.neis-one.org/?AE35) and [Peter Brodersen](https://hdyc.neis-one.org/?Peter%20Brodersen).
 

@@ -15,7 +15,7 @@ $q = $dbh->prepare('
 	inner join osmetymology.municipalities m on ow.municipality_code = m.kode
 	WHERE searchname LIKE ?
 	ORDER BY ow.name, m.navn
-	LIMIT 200
+	LIMIT 1000
 ');
 $q->setFetchMode(PDO::FETCH_ASSOC);
 

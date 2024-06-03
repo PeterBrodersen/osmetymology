@@ -13,6 +13,7 @@ $(function () {
     if (inputname.length < 3) {
       return;
     }
+    $("#copylink a").show().attr('href', '#' + inputname);
     lastinputname = inputname;
     $.getJSON( "lookup.php", { streetname: inputname} )
       .done(function (data)  {
@@ -37,9 +38,9 @@ $(function () {
               var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
             }
             // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
+            //        E.g. create as jquery DOM and add text with .text()
             newtable.append("<tr><td>" + streetnamehtml + "</td><td>" + municipalityname + "</td><td>" + wikidatalinkhtml + "</td><td>" + wikidatadescriptionhtml + "</td></tr>");
           }
-          console.log(data);
           $("#result").html(newtable);
           updateWikidataLabels(wikidataitems);
         } else {
@@ -47,6 +48,22 @@ $(function () {
         }
       });
   } );
+
+  // copy function
+  $( "#copylink a" ).on( "click", function() {
+    let url = $( "#copylink a" ).prop('href');
+    window.location.hash = url;
+    navigator.clipboard.writeText(url);
+    $(this).css('background-color', 'yellow');
+
+    $( "#copylink a").animate({ backgroundColor: 'yellow'}, 300).animate({ backgroundColor: 'white'}, 300);
+  });
+
+  // Start if hash fragment is present
+  if (window.location.hash.length > 1) {
+    var starttext = decodeURIComponent(window.location.hash.substring(1))
+    $("#namefind").val(starttext).trigger('keyup');
+  }
 });
 
 function updateWikidataLabels(itemList) {
@@ -69,7 +86,7 @@ function updateWikidataLabels(itemList) {
   return true;
 }
 
-function getWikidataItems(itemIds) { // Read single Wikidata Item; should probably fetch everyone at once by using | as separator
+function getWikidataItems(itemIds) { // There is a max limit for items. We should handle this here or from called function.
   // Perform AJAX request to fetch Wikidata item
   $.ajax({
       url: 'https://www.wikidata.org/w/api.php',

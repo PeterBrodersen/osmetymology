@@ -13,27 +13,48 @@
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' /> -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
 <script src="/helper.js"></script>
+<meta property="og:image" content="/lærkevej.png" />
 <style>
-    h1 {
+    h1, p, table  {
         font-family: sans-serif;
     }
     table.resulttable, table.resulttable tr, table.resulttable th, table.resulttable td {
-        font-family: sans-serif;
         border: solid 1px black;
         padding: 5px;
     }
     table.resulttable {
-        font-family: sans-serif;
-        border: solid 1px black;
         border-collapse: collapse;
     }
 
-    table.resulttable tr#tableheader {
+    table.resulttable tr.tableheader {
         background-color: #ddd;
     }
+
     div#userinput {
         margin-bottom: 2em;
+    }
+
+    input#namefind {
+        font-size: 1.5em;
+        margin-right: 1em;
+    }
+
+    span#copylink a {
+        font-size: 1.6em;
+        text-decoration: none;
+        display: none;
+    }
+
+    div#betaboilerplate {
+        border: 3px dashed black;
+        background-color: #ee5;
+        border-radius: 30px;
+        padding: 20px;
+        margin-top: 20px;
+        padding-top: 0px;
+        padding-bottom: 0px;
     }
 
 </style>
@@ -41,7 +62,7 @@
 <body>
     <h1>Hvad er danske vejnavne opkaldt efter?</h1>
 
-	<div id="userinput"><input required autofocus id="namefind"></div>
+	<div id="userinput"><input required autofocus id="namefind" placeholder="Indtast vejnavn"> <span id="copylink"><a href="#">[kopiér link]</a></span></div>
 	
     <div id="result">
     </div>
@@ -52,6 +73,32 @@
         </table>
     </template>
 
+    <div id="betaboilerplate">
+        <p>
+            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, statistik, m.m. Forvent fejl og ændringer.
+        </p>
+
+        <p>
+            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. I løbet af 
+            <a href="https://taginfo.geofabrik.de/europe:denmark/keys/name%3Aetymology%3Awikidata#chronology">det seneste år</a> har frivillige
+            bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
+            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter.
+        </p>
+
+        <p>
+            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om over 20.000 veje i Danmark, som er opkaldt efter over 6.500 forskellige emner.
+        </p>
+
+        <p>
+            Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
+            er opkaldt efter æblesorten Rød Ananas. Og for det mest udbredte vejnavn i Danmark, Lærkevej, er 70 % opkaldt efter lærkefuglen, mens 30 % er opkaldt efter
+            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
+        </p>
+
+        <p>
+            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
+        </p>
+    </div>
 </body>
 </html>
 <?php
