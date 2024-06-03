@@ -16,6 +16,8 @@
 <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
 <script src="/helper.js"></script>
 <meta property="og:image" content="/lærkevej.png" />
+<meta property="og:image:width" content="1000" />
+<meta property="og:image:height" content="800" />
 <style>
     h1, p, table  {
         font-family: sans-serif;
