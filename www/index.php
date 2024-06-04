@@ -63,6 +63,10 @@
         text-decoration-style: dashed;
     }
 
+    .copyright {
+        font-size: 0.7em;
+    }
+
 </style>
 </head>
 <body>
@@ -104,6 +108,10 @@
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
             Har du spørgsmålet om <b>projektet</b> (men <i>ikke</i> spørgsmål om manglende vejnavne), er du mere end velkommen <a href="mailto:peter@ter.dk">sende en mail</a>.
+        </p>
+
+        <p class="copyright">
+            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Data er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>.
         </p>
     </div>
 </body>
