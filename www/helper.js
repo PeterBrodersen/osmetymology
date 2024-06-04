@@ -6,6 +6,7 @@ let languages = ['da','en','sv','nb','de','es','fr','fi','is'];
 $(function () {
   $( "#namefind" ).on( "keyup", function() {
     requestCount++;
+    let currentCount = requestCount;
     let inputname = $( "#namefind" ).val();
     if (inputname == lastinputname) { // don't request for random key presses such as shift
       return;
@@ -44,8 +45,10 @@ $(function () {
             //        E.g. create as jquery DOM and add text with .text()
             newtable.append("<tr><td>" + streetnamehtml + "</td><td>" + municipalityname + "</td><td>" + wikidatalinkhtml + "</td><td>" + wikidatadescriptionhtml + "</td></tr>");
           }
-          $("#result").html(newtable);
-          updateWikidataLabels(wikidataitems);
+          if (currentCount == requestCount) { // Don't update if new request is active
+            $("#result").html(newtable);
+            updateWikidataLabels(wikidataitems);
+          }
         } else {
           $("#result").html('Intet resultat!');
         }
@@ -93,29 +96,39 @@ function updateWikidataLabels(itemList) {
   return true;
 }
 
-function getWikidataItems(itemIds) { // There is a max limit for items. We should handle this here or from called function.
-  // Perform AJAX request to fetch Wikidata item
-  $.ajax({
-      url: 'https://www.wikidata.org/w/api.php',
-      data: {
-          action: 'wbgetentities',
-          // ids: itemId,
-          ids: itemIds.join('|'), // Join IDs with pipe (|) separator
-          format: 'json',
-          origin: '*' // This is required for CORS
-      },
-      dataType: 'json',
-      success: function(data) {
-          // Process the response
-          $.each(itemIds, function(index, itemId) {
-            wikidata[itemId] = data.entities[itemId];
-        });
-        updateWikidataHTML();
-      },
-      error: function(xhr, status, error) {
-          console.error('Error fetching data: ', error);
-      }
-  });
+function getWikidataItems(itemIdsAll) { // There is a max limit for items. We should handle this here or from called function.
+  let maxLimit = 50; // max limit for wbgetentities in Wikidata API call
+  itemArr = [];
+  // save in chucks
+  for (let i = 0; i < itemIdsAll.length; i += maxLimit) {
+    const chunk = itemIdsAll.slice(i, i + maxLimit);
+    itemArr.push(chunk);
+  }
+  itemArr = [itemArr[0]];
+  for (itemIds of itemArr) {
+		// Perform AJAX request to fetch Wikidata item
+		$.ajax({
+				url: 'https://www.wikidata.org/w/api.php',
+				data: {
+						action: 'wbgetentities',
+						// ids: itemId,
+						ids: itemIds.join('|'), // Join IDs with pipe (|) separator
+						format: 'json',
+						origin: '*' // This is required for CORS
+				},
+				dataType: 'json',
+				success: function(data) {
+					// Process the response
+					$.each(itemIds, function(index, itemId) {
+						wikidata[itemId] = data.entities[itemId];
+					});
+					updateWikidataHTML();
+				},
+				error: function(xhr, status, error) {
+						console.error('Error fetching data: ', error);
+				}
+		});
+  }
   return true;
 }
 
