@@ -6,7 +6,7 @@ OpenStreetMap has references to Wikidata for a bunch of Danish streets. This pro
 ## Overview
 OpenStreetMap is a freely available map resource. Wikidata is a freely available structured data resource.
 
-OpenStreetMap uses tags such as [`name:etymology:wikidata`](https://wiki.openstreetmap.org/wiki/Key:name:etymology:wikidata`) to link to Wikidata items. Using these items it is possible to show maps based on different topics such as country, gender, profession and so on. Check out [an example from Open Etymology Map](https://etymology.dsantini.it/#10.3907,55.3966,14.8,occupation,pmtiles_all,stamen_toner,etymology) showing a map of Odense grouped by occupation.
+OpenStreetMap uses tags such as [`name:etymology:wikidata`](https://wiki.openstreetmap.org/wiki/Key:name:etymology:wikidata) to link to Wikidata items. Using these items it is possible to show maps based on different topics such as country, gender, profession and so on. Check out [an example from Open Etymology Map](https://etymology.dsantini.it/#10.3907,55.3966,14.8,occupation,pmtiles_all,stamen_toner,etymology) showing a map of Odense grouped by occupation.
 
 ## Code
 The web project will (probably) be based on [Leaflet](https://leafletjs.com/) with a FlatGeobuf map file as well as [PostgreSQL](https://www.postgresql.org/) as DB backend. No OpenStreetMap editing feature is planned.
