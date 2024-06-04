@@ -21,8 +21,8 @@ WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wiki
 GROUP by name, m.navn, m.kode, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", m.wkb_geometry;
 
 CREATE INDEX ways_agg_geom_idx ON osmetymology.ways_agg USING gist (geom);
-CREATE INDEX ways_agg_name_idx ON osmetymology.ways_agg ("name");
-CREATE INDEX ways_agg_searchname_idx ON osmetymology.ways_agg ("searchname");
+CREATE INDEX ways_agg_name_idx ON osmetymology.ways_agg ("name" text_pattern_ops);
+CREATE INDEX ways_agg_searchname_idx ON osmetymology.ways_agg ("searchname" text_pattern_ops);
 CREATE INDEX ways_agg_municipality_idx ON osmetymology.ways_agg ("municipality_code");
 CREATE INDEX ways_agg_name_etymology_wikidata_idx ON osmetymology.ways_agg ("name:etymology:wikidata");
 
