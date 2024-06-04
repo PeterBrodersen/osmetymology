@@ -166,3 +166,8 @@ function updateWikidataHTML() {
   });
   return true;
 }
+
+addEventListener("hashchange", (event) => {
+  var starttext = decodeURIComponent(window.location.hash.substring(1))
+  doSearch(starttext);
+});
