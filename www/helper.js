@@ -95,7 +95,7 @@ function updateWikidataLabels(itemList) {
   return true;
 }
 
-function getWikidataItems(itemIdsAll) { // There is a max limit for items. We should handle this here or from called function.
+async function getWikidataItems(itemIdsAll) { // There is a max limit for items. We should handle this here or from called function.
   let maxLimit = 50; // max limit for wbgetentities in Wikidata API call
   itemArr = [];
   // save in chucks
@@ -103,10 +103,10 @@ function getWikidataItems(itemIdsAll) { // There is a max limit for items. We sh
     const chunk = itemIdsAll.slice(i, i + maxLimit);
     itemArr.push(chunk);
   }
-  itemArr = [itemArr[0]];
+//  itemArr = [itemArr[0]];
   for (itemIds of itemArr) {
 		// Perform AJAX request to fetch Wikidata item
-		$.ajax({
+		await $.ajax({
 				url: 'https://www.wikidata.org/w/api.php',
 				data: {
 						action: 'wbgetentities',
