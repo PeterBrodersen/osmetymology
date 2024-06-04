@@ -45,10 +45,9 @@ $(function () {
             //        E.g. create as jquery DOM and add text with .text()
             newtable.append("<tr><td>" + streetnamehtml + "</td><td>" + municipalityname + "</td><td>" + wikidatalinkhtml + "</td><td>" + wikidatadescriptionhtml + "</td></tr>");
           }
-          if (currentCount == requestCount) { // Don't update if new request is active
-            $("#result").html(newtable);
-            updateWikidataLabels(wikidataitems);
-          }
+          console.log('Current: ' + currentCount + ', request: ' + requestCount);
+          $("#result").html(newtable);
+          updateWikidataLabels(wikidataitems);
         } else {
           $("#result").html('Intet resultat!');
         }
