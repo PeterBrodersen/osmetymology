@@ -26,14 +26,12 @@ $(function () {
           let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
           let wikidataitems = [];
           for (row of data) {
-
-            // Highlight!
-            var mapTohtml = `<span onclick="map.panTo([${row['centroid_latitude']}, ${row['centroid_longitude']}]);">🌍</span>`;
+            var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">🌍</span>`;
             var streetname = row['streetname'] ?? '';
             var streetnamehtml = streetname;
-            if (row['sampleway_id']) {
-              streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
-            }
+            // if (row['sampleway_id']) {
+            //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
+            // }
             var municipalityname = row['municipalityname'] ?? '';
             var wikidatalinkhtml = '';
             var wikidatadescriptionhtml = '';

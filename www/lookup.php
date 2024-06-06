@@ -41,7 +41,7 @@ function findStreetsFromItem($itemid)
 		return false;
 	}
 	$q = $dbh->prepare('
-		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname
+		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude
 		FROM osmetymology.ways_agg ow
 		inner join osmetymology.municipalities m on ow.municipality_code = m.kode
 		WHERE "name:etymology:wikidata" = ?

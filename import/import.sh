@@ -19,9 +19,9 @@ ogr2ogr PG:dbname="$PGDATABASE" kommuner.fgb -lco SCHEMA=osmetymology -nln 'osme
 # Aggregate, split by municipality boundaries. Takes about 5-10 minutes. Perhaps the geometry should be simplified.
 psql -f aggregate.sql
 
-# Create aggregated FlatGeobuf file for web usage
+# Create aggregated FlatGeobuf file for web usage. Takes about 5 seconds.
 FGBFILE="../www/data/aggregate.fgb"
 if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"
 fi
-ogr2ogr "$FGBFILE" PG:dbname="$PGDATABASE" -oo TABLES=osmetymology.ways_agg -select "name, name:etymology, name:etymology:wikipedia, name:etymology:wikidata, geom"
+ogr2ogr "${FGBFILE:?}" PG:dbname="$PGDATABASE" -sql 'SELECT w.id, w.name, w."name:etymology", w."name:etymology:wikipedia", w."name:etymology:wikidata", w.municipality_code, w.geom, m.navn AS municipality_name FROM osmetymology.ways_agg w LEFT JOIN osmetymology.municipalities m ON w.municipality_code = m.kode'

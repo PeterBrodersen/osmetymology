@@ -1,4 +1,5 @@
 let map;
+let highlightWayId;
 document.addEventListener("DOMContentLoaded", async () => {
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom: 14,
@@ -66,13 +67,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         // only fetch the relevant bbox subset of data
         let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox());
         for await (let feature of iter) {
+
+            const popupText = getPopupText(feature);
+            let lineColor = '#0000ff66';
+            if (feature.properties["id"] == highlightWayId) {
+                lineColor = '#cc0000cc';
+            }
+
             const defaultStyle = {
-                color: '#0000ff66',
+                color: lineColor,
                 weight: 3,
                 fillOpacity: 0.1,
             };
-
-            const popupText = getPopupText(feature);
 
             L.geoJSON(feature, {
                 style: defaultStyle,
@@ -80,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 'mouseover': function (e) {
                     const layer = e.target;
                     layer.setStyle({
-                        color: '#0000ff66',
+                        color: lineColor,
                         weight: 4,
                         fillOpacity: 0.7,
                     });
@@ -103,3 +109,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateResults();
     });
 });
+
+function panToWayId(latitude, longitude, wayId) {
+    highlightWayId = wayId;
+    map.panTo([latitude, longitude]);
+
+}
