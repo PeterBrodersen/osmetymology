@@ -55,7 +55,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         if (feature.properties["name:etymology:wikidata"]) {
             let wikidataId = feature.properties["name:etymology:wikidata"];
-            popupText += `<div><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidataId}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
+            let wikidatalabel = feature.properties["wikidata_label"];
+            let wikidatadescription = feature.properties["wikidata_description"];
+            popupText += `<div><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
+            popupText += `<div>${wikidatadescription}</div>`;
         }
         if (feature.properties["name:etymology"]) {
             let etymologyText = feature.properties["name:etymology"];

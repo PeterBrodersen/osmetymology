@@ -36,9 +36,9 @@ $(function () {
             var wikidatalinkhtml = '';
             var wikidatadescriptionhtml = '';
             if (row['name:etymology:wikidata']) {
-              var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['name:etymology:wikidata']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
+              var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
               wikidataitems.push(row['name:etymology:wikidata']);
-              var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}"></span>`;
+              var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}">${row['wikidescription']}</span>`;
             } else if (row['name:etymology']) {
               var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
             }
@@ -48,7 +48,7 @@ $(function () {
           }
           console.log('Current: ' + currentCount + ', request: ' + requestCount);
           $("#result").html(newtable);
-          updateWikidataLabels(wikidataitems);
+          // updateWikidataLabels(wikidataitems);
         } else {
           $("#result").html('Intet resultat!');
         }
