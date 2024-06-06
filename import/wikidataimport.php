@@ -56,5 +56,5 @@ foreach ($chunks as $chunkid => $chunk) {
 }
 
 // Should be unique, but a duplicate might occur? Probably because  Q122811105 redirects to Q12319189.
-// We should check the original itemId (and live with duplicates)
+// We should instead use the original itemId (and live with duplicates)
 $dbh->query('CREATE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
