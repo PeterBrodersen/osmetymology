@@ -1,0 +1,62 @@
+h1,
+p,
+table {
+    font-family: sans-serif;
+}
+
+table.resulttable,
+table.resulttable tr,
+table.resulttable th,
+table.resulttable td {
+    border: solid 1px black;
+    padding: 5px;
+}
+
+table.resulttable {
+    border-collapse: collapse;
+}
+
+table.resulttable tr.tableheader {
+    background-color: #ddd;
+}
+
+div#userinput {
+    margin-bottom: 2em;
+}
+
+input#namefind {
+    font-size: 1.5em;
+    margin-right: 1em;
+}
+
+span#copylink a {
+    font-size: 1.6em;
+    text-decoration: none;
+    display: none;
+}
+
+div#betaboilerplate {
+    border: 3px dashed black;
+    background-color: #ee5;
+    border-radius: 30px;
+    padding: 20px;
+    margin-top: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+sup a {
+    text-decoration-style: dashed;
+}
+
+.copyright {
+    font-size: 0.7em;
+}
+
+.mapToLink {
+    text-align: center;
+}
+
+.mapToLink span {
+    cursor: pointer;
+}

@@ -1,226 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>
-            Hvad er danske vejnavne opkaldt efter?
-        </title>
-<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-     crossorigin=""/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/flatgeobuf/dist/flatgeobuf-geojson.min.js"></script>
-<script src="https://unpkg.com/json-formatter-js"></script>
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' /> -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
-<script src="/helper.js"></script>
-<meta property="og:image" content="https://navne.findvej.dk/l%C3%A6rkevej.png" />
-<meta property="og:image:width" content="1000" />
-<meta property="og:image:height" content="800" />
-<style>
-    h1, p, table  {
-        font-family: sans-serif;
-    }
-    table.resulttable, table.resulttable tr, table.resulttable th, table.resulttable td {
-        border: solid 1px black;
-        padding: 5px;
-    }
-    table.resulttable {
-        border-collapse: collapse;
-    }
 
-    table.resulttable tr.tableheader {
-        background-color: #ddd;
-    }
-
-    div#userinput {
-        margin-bottom: 2em;
-    }
-
-    input#namefind {
-        font-size: 1.5em;
-        margin-right: 1em;
-    }
-
-    span#copylink a {
-        font-size: 1.6em;
-        text-decoration: none;
-        display: none;
-    }
-
-    div#betaboilerplate {
-        border: 3px dashed black;
-        background-color: #ee5;
-        border-radius: 30px;
-        padding: 20px;
-        margin-top: 20px;
-        padding-top: 0px;
-        padding-bottom: 0px;
-    }
-
-    sup a {
-        text-decoration-style: dashed;
-    }
-
-    .copyright {
-        font-size: 0.7em;
-    }
-
-</style>
+<head>
+    <title>
+        Hvad er danske vejnavne opkaldt efter?
+    </title>
+    <script src="https://unpkg.com/underscore@1.13.1/underscore-min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/flatgeobuf/dist/flatgeobuf-geojson.min.js"></script>
+    <script src="https://unpkg.com/json-formatter-js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+    <script src="/map.js"></script>
+    <script src="/helper.js"></script>
+    <link href='/style.css' rel='stylesheet' />
+    <meta property="og:image" content="https://navne.findvej.dk/l%C3%A6rkevej.png" />
+    <meta property="og:image:width" content="1000" />
+    <meta property="og:image:height" content="800" />
 </head>
+
 <body>
     <h1>Hvad er danske vejnavne opkaldt efter?</h1>
 
-	<div id="userinput"><input required autofocus id="namefind" placeholder="Indtast vejnavn"> <span id="copylink"><a href="#">[kopiér link]</a></span></div>
-	
+    <div id="userinput"><input required autofocus id="namefind" placeholder="Indtast vejnavn"> <span id="copylink"><a href="#">[kopiér link]</a></span></div>
+
     <div id="result">
     </div>
 
     <template id="tabletemplate">
         <table class="resulttable">
-                <tr class="tableheader"><th>Vejnavn</th><th>Kommune</th><th>Wikidata-emne</th><th>Beskrivelse</th></tr>
+            <tr class="tableheader">
+                <th>Kort</th>
+                <th>Vejnavn</th>
+                <th>Kommune</th>
+                <th>Wikidata-emne</th>
+                <th>Beskrivelse</th>
+            </tr>
         </table>
     </template>
 
-    <div id="betaboilerplate">
-        <p>
-            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, statistik, m.m. Forvent fejl og ændringer.
-        </p>
+    <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
-        <p>
-            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. I løbet af 
-            <a href="https://taginfo.geofabrik.de/europe:denmark/keys/name%3Aetymology%3Awikidata#chronology">det seneste år</a> har frivillige
-            bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
-            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter.
-        </p>
-
-        <p>
-            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om over 20.000 veje i Danmark, som er opkaldt efter over 6.500 forskellige emner.
-        </p>
-
-        <p>
-            Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
-            er opkaldt efter æblesorten Rød Ananas. Og for det mest udbredte vejnavn i Danmark, Lærkevej, er 70 % opkaldt efter lærkefuglen, mens 30 % er opkaldt efter
-            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
-        </p>
-
-        <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
-            Har du spørgsmålet om <b>projektet</b> (men <i>ikke</i> spørgsmål om manglende vejnavne), er du mere end velkommen <a href="mailto:peter@ter.dk">sende en mail</a>.
-        </p>
-
-        <p class="copyright">
-            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Data er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>.
-        </p>
-    </div>
 </body>
-</html>
-<?php
-exit;
-?>
-    <div id="header">
-        <h3>Parsed header content</h3>
-    </div>
 
-<div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;">
-<script>
-
-        document.addEventListener("DOMContentLoaded", async () => { 
-            // basic OSM Leaflet map
-            let map = L.map('map').setView([55.6794, 12.5740], 16);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-           // optionally show some meta-data about the FGB file
-            function handleHeaderMeta(headerMeta) {
-                const header = document.getElementById('header')
-                const formatter = new JSONFormatter(headerMeta, 10)
-                header.appendChild(formatter.render())
-            }
-
-            const response = await fetch('/data/aggregate.fgb');
-            for await (let feature of flatgeobuf.deserialize(response.body, undefined, handleHeaderMeta)) {
-                // Leaflet styling
-                const defaultStyle = { 
-                    color: 'blue', 
-                    weight: 2, 
-                    fillOpacity: 0.2,
-                };
-
-                // Add the feature to the map
-                L.geoJSON(feature, { 
-                    style: defaultStyle 
-                }).on({
-                    // highlight on hover
-                    'mouseover': function(e) {
-                        const layer = e.target;
-                        layer.setStyle({
-                            color: 'blue',
-                            weight: 4,
-                            fillOpacity: 0.7,
-                        });
-                        layer.bringToFront();
-                    },
-                    // remove highlight when hover stops
-                    'mouseout': function(e) {
-                        const layer = e.target;
-                        layer.setStyle(defaultStyle);
-                    }
-                })
-                // show some per-feature properties when clicking on the feature
-                .bindPopup(`<h1>${feature.properties["name"]} ${feature.properties["name:etymology:wikidata"]}</h1>`)
-                .addTo(map);
-            }
-        });
-
-/*
-
-var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-});
-
-var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_DAF?service=WMS&token=5d6c5118e3f2ab00b8b2aa21e9140087&', {
-	layers: 'orto_foraar_12_5',
-	attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste'
-});
-
-var Thunderforest_SpinalMap = L.tileLayer('https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=35178872612640c0abf67975149afa20', {
-	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	apikey: '35178872612640c0abf67975149afa20',
-	maxZoom: 19
-});
-let map = L.map('map', {fullscreenControl: true, layers: [osmLayer] }).setView([55.67947149702628, 12.5740236666392], 15);
-
-var baseMaps = {
-	"OpenStreetMap": osmLayer,
-	"Luftfoto": wmsOrtoLayer,
-	"Spinal Map": Thunderforest_SpinalMap,
-}
-var layerControl = L.control.layers(baseMaps).addTo(map);
-L.control.scale().addTo(map);
-
-function addGeoJSONToMap(geojson) {
-    L.geoJSON(geojson).addTo(map);
-}
-
-async function loadFlatGeobuf(url) {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const geojson = await flatgeobuf.deserialize(arrayBuffer);
-    addGeoJSONToMap(geojson);
-}
-
-const flatGeobufUrl = '/data/aggregate.fgb';
-
-*/
-
-
-</script>
-
-
-    </body>
 </html>

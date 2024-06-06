@@ -14,13 +14,14 @@ if ($search) {
 $searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
 $result = [];
 
-function findStreetName($searchname) {
+function findStreetName($searchname)
+{
 	global $dbh;
 	if (strlen($searchname) < 2) {
 		return false;
 	}
 	$q = $dbh->prepare('
-		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname
+		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude
 		FROM osmetymology.ways_agg ow
 		inner join osmetymology.municipalities m on ow.municipality_code = m.kode
 		WHERE searchname LIKE ?
@@ -33,7 +34,8 @@ function findStreetName($searchname) {
 	return $result;
 }
 
-function findStreetsFromItem($itemid) {
+function findStreetsFromItem($itemid)
+{
 	global $dbh;
 	if (!preg_match('_^Q\d+$_', $itemid)) {
 		return false;
@@ -59,5 +61,3 @@ if ($searchname) {
 }
 
 print json_encode($result);
-
-?>
