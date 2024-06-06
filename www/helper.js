@@ -96,12 +96,12 @@ function updateWikidataLabels(itemList) {
   return true;
 }
 
-async function getWikidataItems(itemIdsAll) { // There is a max limit for items. We should handle this here or from called function.
-  let maxLimit = 50; // max limit for wbgetentities in Wikidata API call
+async function getWikidataItems(itemIdsAll) {
+  let itemLimit = 50; // max limit for wbgetentities in Wikidata API call
   itemArr = [];
   // save in chucks
-  for (let i = 0; i < itemIdsAll.length; i += maxLimit) {
-    const chunk = itemIdsAll.slice(i, i + maxLimit);
+  for (let i = 0; i < itemIdsAll.length; i += itemLimit) {
+    const chunk = itemIdsAll.slice(i, i + itemLimit);
     itemArr.push(chunk);
   }
   //  itemArr = [itemArr[0]];
