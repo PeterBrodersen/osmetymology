@@ -27,8 +27,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         "Luftfoto": wmsOrtoLayer,
         "Spinal Map": Thunderforest_SpinalMap,
     }
+    var geocoderOptions = {
+        geocoder: new L.Control.Geocoder.nominatim({
+            geocodingQueryParams: {
+                "countrycodes": "dk"
+            }
+        })
+    };
+
     var layerControl = L.control.layers(baseMaps).addTo(map);
     L.control.scale().addTo(map);
+
+    L.Control.geocoder(geocoderOptions).addTo(map);
 
     function mapBoundingBox() {
         const bounds = map.getBounds();
