@@ -168,10 +168,6 @@ function updateWikidataHTML() {
   return true;
 }
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 /*
 addEventListener("hashchange", (event) => {
   var starttext = decodeURIComponent(window.location.hash.substring(1))

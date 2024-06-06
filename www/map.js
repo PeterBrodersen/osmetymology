@@ -50,13 +50,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     }
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     function getPopupText(feature) {
         let popupText = `<h1>${feature.properties["name"] ?? '(ukendt navn))'}</h1>`;
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         if (feature.properties["name:etymology:wikidata"]) {
             let wikidataId = feature.properties["name:etymology:wikidata"];
             let wikidatalabel = feature.properties["wikidata_label"];
-            let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"]);
+            let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
             popupText += `<div><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
             popupText += `<div>${wikidatadescription}</div>`;
         }
