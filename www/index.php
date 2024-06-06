@@ -44,6 +44,33 @@
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
+    <div id="betaboilerplate">
+        <p>
+            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, statistik, m.m. Forvent fejl og ændringer.
+        </p>
+        <p>
+            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. I løbet af
+            <a href="https://taginfo.geofabrik.de/europe:denmark/keys/name%3Aetymology%3Awikidata#chronology">det seneste år</a> har frivillige
+            bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
+            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter.
+        </p>
+        <p>
+            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om over 20.000 veje i Danmark, som er opkaldt efter over 6.500 forskellige emner.
+        </p>
+        <p>
+            Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
+            er opkaldt efter æblesorten Rød Ananas. Og for det mest udbredte vejnavn i Danmark, Lærkevej, er 70 % opkaldt efter lærkefuglen, mens 30 % er opkaldt efter
+            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
+        </p>
+        <p>
+            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
+            Har du spørgsmålet om <b>projektet</b> (men <i>ikke</i> spørgsmål om manglende vejnavne), er du mere end velkommen <a href="mailto:peter@ter.dk">sende en mail</a>.
+        </p>
+
+        <p class="copyright">
+            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Data er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>.
+        </p>
+    </div>
 </body>
 
 </html>

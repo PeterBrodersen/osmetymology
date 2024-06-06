@@ -21,7 +21,13 @@ psql -f aggregate.sql
 
 # Create aggregated FlatGeobuf file for web usage. Takes about 5 seconds.
 FGBFILE="../www/data/aggregate.fgb"
+CSVFILE="../www/data/navne.csv"
 if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"
 fi
-ogr2ogr "${FGBFILE:?}" PG:dbname="$PGDATABASE" -sql 'SELECT w.id, w.name, w."name:etymology", w."name:etymology:wikipedia", w."name:etymology:wikidata", w.municipality_code, w.geom, m.navn AS municipality_name FROM osmetymology.ways_agg w LEFT JOIN osmetymology.municipalities m ON w.municipality_code = m.kode'
+if [ -f "$CSVFILE" ] ; then
+    rm -- "$CSVFILE"
+fi
+ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql 'SELECT w.id, w.name, w."name:etymology", w."name:etymology:wikipedia", w."name:etymology:wikidata", w.municipality_code, w.geom, m.navn AS municipality_name FROM osmetymology.ways_agg w LEFT JOIN osmetymology.municipalities m ON w.municipality_code = m.kode'
+
+ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql 'SELECT w.id, w.name, w."name:etymology", w."name:etymology:wikipedia", w."name:etymology:wikidata", w.municipality_code, m.navn AS municipality_name, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude FROM osmetymology.ways_agg w LEFT JOIN osmetymology.municipalities m ON w.municipality_code = m.kode'
