@@ -21,9 +21,10 @@ function findStreetName($searchname)
 		return false;
 	}
 	$q = $dbh->prepare('
-		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude
+		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, w."name" AS wikilabel, w.description AS wikidescription, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude
 		FROM osmetymology.ways_agg ow
 		inner join osmetymology.municipalities m on ow.municipality_code = m.kode
+		LEFT JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
 		WHERE searchname LIKE ?
 		ORDER BY ow.name, m.navn
 		LIMIT 1000
@@ -41,9 +42,10 @@ function findStreetsFromItem($itemid)
 		return false;
 	}
 	$q = $dbh->prepare('
-		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, ST_X(ST_Centroid(geom)) AS centroid_longitude, ST_Y(ST_Centroid(geom)) AS centroid_latitude
+		SELECT ow.id, ow.name AS streetname, ow.way_ids, ow.way_ids[1] AS sampleway_id, ow."name:etymology", ow."name:etymology:wikidata", ow."name:etymology:wikipedia", m.navn AS municipalityname, w."name" AS wikilabel, w.description AS wikidescription, ST_X(ST_Centroid(ow.geom)) AS centroid_longitude, ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude
 		FROM osmetymology.ways_agg ow
 		inner join osmetymology.municipalities m on ow.municipality_code = m.kode
+		LEFT JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
 		WHERE "name:etymology:wikidata" = ?
 		ORDER BY ow.name, m.navn
 		LIMIT 1000
