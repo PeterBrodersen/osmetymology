@@ -53,7 +53,6 @@ function getQuerystring($type) {
 	ORDER BY ow.name, m.navn
 	LIMIT 1000
 	EOD;
-	die($querystring);
 	return $querystring;
 }
 
