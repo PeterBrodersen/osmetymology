@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         minZoom,
         maxZoom
     });
-    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([55.6794, 12.5740], 16);
+    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([55.6794, 12.5740], 15);
 
     var baseMaps = {
         "OpenStreetMap": osmLayer,
