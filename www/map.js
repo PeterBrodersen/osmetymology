@@ -55,13 +55,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature) {
-        let popupText = `<h1>${feature.properties["name"] ?? '(ukendt navn))'}</h1>`;
+        let popupText = `<h1>${feature.properties["streetname"] ?? '(uden navn)'}</h1>`;
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         if (feature.properties["name:etymology:wikidata"]) {
             let wikidataId = feature.properties["name:etymology:wikidata"];
             let wikidatalabel = feature.properties["wikidata_label"];
             let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
-            popupText += `<div><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
+            popupText += `<div>Opkaldt efter: <a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
             popupText += `<div>${wikidatadescription}</div>`;
         }
         if (feature.properties["name:etymology"]) {
