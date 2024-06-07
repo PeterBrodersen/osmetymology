@@ -140,7 +140,11 @@ function osm2pgsql.process_way(object)
     
     -- Very simple check to decide whether a way is a polygon or not, in a
     -- real stylesheet we'd have to also look at the tags...
-    if object.is_closed then
+
+    -- let's just import all as ways, as most are highways, buildings, squares, parks, and so on
+
+    -- if object.is_closed then
+    if false then
         tables.polygons:add_row({
             name = object.tags.name,
             ["name:etymology"] = object.tags["name:etymology"],

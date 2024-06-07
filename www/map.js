@@ -1,7 +1,7 @@
 let map;
 let highlightWayId;
 document.addEventListener("DOMContentLoaded", async () => {
-    let minZoom = 13;
+    let minZoom = 12;
     let maxZoom = 19;
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom,
