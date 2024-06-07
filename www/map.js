@@ -1,24 +1,26 @@
 let map;
 let highlightWayId;
 document.addEventListener("DOMContentLoaded", async () => {
+    let minZoom = 13;
+    let maxZoom = 19;
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 14,
-        maxZoom: 19,
+        minZoom,
+        maxZoom,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
 
     var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_DAF?service=WMS&token=5d6c5118e3f2ab00b8b2aa21e9140087&', {
         layers: 'orto_foraar_12_5',
         attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste',
-        minZoom: 14,
-        maxZoom: 19
+        minZoom,
+        maxZoom
     });
 
     var Thunderforest_SpinalMap = L.tileLayer('https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=35178872612640c0abf67975149afa20', {
         attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         apikey: '35178872612640c0abf67975149afa20',
-        minZoom: 14,
-        maxZoom: 19
+        minZoom,
+        maxZoom
     });
     map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([55.6794, 12.5740], 16);
 
@@ -69,7 +71,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             popupText += `<div>${etymologyText}</div>`;
         }
         return popupText;
+    }
 
+    function getLineColorFromGender(feature) {
+        let lineColor = '#00cc0099';
+        if (feature.properties['gender'] == 'male') {
+            lineColor = '#0000ff99';
+        } else if (feature.properties['gender'] == 'female') {
+            lineColor = '#ff000099';
+        }
+        return lineColor;
     }
 
     // track the previous results so we can remove them when adding new results
@@ -86,14 +97,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         for await (let feature of iter) {
 
             const popupText = getPopupText(feature);
-            let lineColor = '#0000ff66';
+            let lineColor = getLineColorFromGender(feature);
             if (feature.properties["id"] == highlightWayId) {
-                lineColor = '#cc0000cc';
+                lineColor = '#cccc00ff';
             }
 
             const defaultStyle = {
                 color: lineColor,
-                weight: 3,
+                weight: 5,
                 fillOpacity: 0.1,
             };
 
@@ -104,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const layer = e.target;
                     layer.setStyle({
                         color: lineColor,
-                        weight: 4,
+                        weight: 7,
                         fillOpacity: 0.7,
                     });
                     layer.bringToFront();
@@ -113,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const layer = e.target;
                     layer.setStyle(defaultStyle);
                 }
-            }).bindPopup(popupText)
+            }).bindPopup(popupText, { autoPan: false })
                 .addTo(nextResults);
         }
     }
