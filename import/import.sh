@@ -38,4 +38,4 @@ if [ -f "$CSVFILE" ] ; then
     rm -- "$CSVFILE"
 fi
 ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql'
-ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
+ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
