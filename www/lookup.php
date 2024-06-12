@@ -19,8 +19,8 @@ function getColumns()
 	$columns = [
 		'ow.id',
 		'ow.name AS streetname',
-		'ow.way_ids',
-		'ow.way_ids[1] AS sampleway_id',
+		'ow.object_ids',
+		'ow.object_ids[1] AS sampleobject_id',
 		'ow."name:etymology"',
 		'ow."name:etymology:wikidata"',
 		'ow."name:etymology:wikipedia"',
