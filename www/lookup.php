@@ -14,7 +14,8 @@ if ($search) {
 $searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
 $result = [];
 
-function getColumns () {
+function getColumns()
+{
 	$columns = [
 		'ow.id',
 		'ow.name AS streetname',
@@ -35,11 +36,12 @@ function getColumns () {
 	return $columnList;
 }
 
-function getQuerystring($type) {
+function getQuerystring($type)
+{
 	$columns = getColumns();
 	$where = '';
 	if ($type == 'searchnamelike') {
-		$where = 'WHERE searchname LIKE ?';
+		$where = "WHERE searchname LIKE TRANSLATE(REGEXP_REPLACE(LOWER(?), '[^[:alnum:]]', '', 'gi'), 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy') || '%'";
 	} elseif ($type = 'itemid') {
 		$where = 'WHERE "name:etymology:wikidata" = ?';
 	}
@@ -65,7 +67,7 @@ function findStreetName($searchname)
 	$querystring = getQuerystring('searchnamelike');
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$searchname . '%']);
+	$q->execute([$searchname]);
 	$result = $q->fetchAll();
 	return $result;
 }

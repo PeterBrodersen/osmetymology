@@ -14,7 +14,7 @@ CREATE TABLE osmetymology.ways_agg (
 
 -- Import, intersect on municipality boundaries
 INSERT INTO osmetymology.ways_agg (name, searchname, municipality_code, way_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", geom)
-SELECT name, REGEXP_REPLACE(LOWER(name), '[^[:alnum:]]', '', 'gi'), m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Multi(ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry))
+SELECT name, TRANSLATE(REGEXP_REPLACE(LOWER(name), '[^[:alnum:]]', '', 'gi'), 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy'), m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Multi(ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry))
 FROM osmetymology.osm_ways ow
 INNER JOIN osmetymology.municipalities m ON st_transform(ow.geom,4326) && m.wkb_geometry AND ST_INTERSECTS(st_transform(ow.geom,4326), m.wkb_geometry)
 WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
