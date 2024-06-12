@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([55.6794, 12.5740], 15);
 
+    map.createPane('polygonsPane');
+    map.getPane('polygonsPane').style.zIndex = 350;
+
     var baseMaps = {
         "OpenStreetMap": osmLayer,
         "Luftfoto": wmsOrtoLayer,
@@ -63,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             let wikidataId = feature.properties["name:etymology:wikidata"];
             let wikidatalabel = feature.properties["wikidata_label"];
             let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
-            popupText += `<div>Opkaldt efter: <a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
+            popupText += `<div>Opkaldt efter: <a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel || ''}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
             popupText += `<div>${wikidatadescription}</div>`;
         }
         if (feature.properties["name:etymology"]) {
@@ -87,14 +90,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     // :TODO: Show spinner when loading
     let previousResults = L.layerGroup().addTo(map);
     async function updateResults() {
+        // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously 
         // remove the old results
         previousResults.remove();
         const nextResults = L.layerGroup().addTo(map);
         previousResults = nextResults;
 
+        let statisticsData = [];
+
         // only fetch the relevant bbox subset of data
         let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox());
         for await (let feature of iter) {
+
+            let gender = feature.properties['gender'] || 'none';
+            statisticsData[gender] = (statisticsData[gender] ?? 0) + 1;
 
             const popupText = getPopupText(feature);
             let lineColor = getLineColorFromGender(feature);
@@ -108,8 +117,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fillOpacity: 0.1,
             };
 
+            // TODO: Create panes with different z indexes for streets and for areas
+
             L.geoJSON(feature, {
                 style: defaultStyle,
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 6,
+                        fillColor: lineColor,
+                        color: "#000",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                },
+                pane: feature.geometry.type === 'Polygon' ? 'polygonsPane' : 'overlayPane'
             }).on({
                 'mouseover': function (e) {
                     const layer = e.target;
@@ -127,6 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }).bindPopup(popupText, { autoPan: false })
                 .addTo(nextResults);
         }
+        console.log(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
     }
     // if the user is panning around alot, only update once per second max
     updateResults = _.throttle(updateResults, 1000);
