@@ -52,8 +52,9 @@ $itemIds = $dbh->query(
 
 $chunks = array_chunk($itemIds, $itemLimit);
 
+print "Importing " . count($itemIds) . " items in " . count($chunks) . " chunks:" . PHP_EOL;
 foreach ($chunks as $chunkid => $chunk) {
-    print "Chunk $chunkid of " . (count($chunks) - 1) . PHP_EOL;
+    print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . PHP_EOL;
     $itemList = implode('|', $chunk);
     $url = $apiurlprefix . $itemList;
     $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
