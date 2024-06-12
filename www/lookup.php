@@ -41,7 +41,7 @@ function getQuerystring($type)
 	$columns = getColumns();
 	$where = '';
 	if ($type == 'searchnamelike') {
-		$where = "WHERE searchname LIKE TRANSLATE(REGEXP_REPLACE(LOWER(?), '[^[:alnum:]]', '', 'gi'), 'áàâäãåçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaaceeeeiiiinooooouuuuyy') || '%'";
+		$where = "WHERE searchname LIKE TRANSLATE(REGEXP_REPLACE(LOWER(?), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy') || '%'";
 	} elseif ($type = 'itemid') {
 		$where = 'WHERE "name:etymology:wikidata" = ?';
 	}
