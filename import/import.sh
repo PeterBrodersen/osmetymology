@@ -14,7 +14,7 @@ fi
 
 wget https://download.geofabrik.de/europe/denmark-latest.osm.pbf -O denmark-latest.osm.pbf
 
-# Main import. Takes about 10-30 minutes
+# Main import. Estimated time: 10-30 minutes
 osm2pgsql -d "$PGDATABASE" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
 # Import municipalities. Takes a couple of seconds. 
@@ -22,13 +22,13 @@ osm2pgsql -d "$PGDATABASE" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 # TODO:
 ogr2ogr PG:dbname="$PGDATABASE" kommuner.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
-# Aggregate, split by municipality boundaries. Takes about 5-10 minutes. Perhaps the geometry should be simplified.
+# Aggregate, split by municipality boundaries. Estimated time: 10-15 minutes. Perhaps the geometry should be simplified.
 psql -f aggregate.sql
 
-# Download and import all Wikidata items
+# Download and import all Wikidata items. Estimated time: 5-10 minutes.
 php wikidataimport.php
 
-# Create aggregated FlatGeobuf file for web usage. Takes about 5 seconds.
+# Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
 FGBFILE="../www/data/aggregate.fgb"
 CSVFILE="../www/data/navne.csv"
 if [ -f "$FGBFILE" ] ; then
