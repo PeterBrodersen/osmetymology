@@ -66,7 +66,7 @@
             lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
         </p>
         <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
+            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/aggregate.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
             Har du spørgsmålet om <b>projektet</b> (men <i>ikke</i> spørgsmål om manglende vejnavne), er du mere end velkommen <a href="mailto:peter@ter.dk">sende en mail</a>.
         </p>
 

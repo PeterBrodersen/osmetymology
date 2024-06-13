@@ -28,6 +28,7 @@ function getColumns()
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
+		'w2.description AS wikiinstanceofdescription',
 		'gendermap.gender',
 		'ST_X(ST_Centroid(ow.geom)) AS centroid_longitude',
 		'ST_Y(ST_Centroid(geom)) AS centroid_latitude'
