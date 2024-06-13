@@ -76,6 +76,7 @@ $(function () {
 
   // Start if hash fragment is present
   if (window.location.hash.length > 1) {
+    // should be moved to map.js startup instead of starting a location that we immediately move away from
     let hash = decodeURIComponent(window.location.hash.substring(1));
     const regex = /^map=(\d+)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/;
     const match = hash.match(regex);

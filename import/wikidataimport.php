@@ -3,8 +3,6 @@
 require("../www/connect.inc.php");
 
 $itemIds = [];
-$itemLimit = 50;
-$apiurlprefix = 'https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=';
 
 function getBestLabel($labels)
 { // Run through languages and search for existing value; pick first existing
@@ -32,6 +30,8 @@ $dbh->query('
     )
 ');
 
+$dbh->query('CREATE UNIQUE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
+
 $insertdb = $dbh->prepare('
     INSERT INTO osmetymology.wikidata (itemid, name, description, claims, sitelinks)
     VALUES (?,?,?,?,?)
@@ -50,25 +50,53 @@ $itemIds = $dbh->query(
     0
 )->fetchAll();
 
-$chunks = array_chunk($itemIds, $itemLimit);
-
-print "Importing " . count($itemIds) . " items in " . count($chunks) . " chunks:" . PHP_EOL;
-foreach ($chunks as $chunkid => $chunk) {
-    print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . PHP_EOL;
-    $itemList = implode('|', $chunk);
-    $url = $apiurlprefix . $itemList;
-    $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
-    foreach ($jsonResult->entities as $entity) {
-        $pageid = $entity->id;
-        if (isset($entity->redirects->from)) {
-            $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
-        }
-        $name = getBestLabel($entity->labels);
-        $description = getBestLabel($entity->descriptions);
-        $claims = json_encode($entity->claims);
-        $sitelinks = json_encode($entity->sitelinks);
-        $insertdb->execute([$pageid, $name, $description, $claims, $sitelinks]);
-    }
+function getInstanceOfItems()
+{
+    global $dbh;
+    $instanceofItems = $dbh->query(
+        <<<EOD
+        SELECT DISTINCT claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' AS instanceOfItemId
+        FROM osmetymology.wikidata w
+        WHERE claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' IS NOT NULL
+        AND claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' NOT IN (SELECT itemid FROM osmetymology.wikidata)
+        EOD,
+        PDO::FETCH_COLUMN,
+        0
+    )->fetchAll();
+    return $instanceofItems;
 }
 
-$dbh->query('CREATE UNIQUE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
+function importItemIds($itemIds)
+{
+    global $insertdb;
+    $itemLimit = 50;
+    $apiurlprefix = 'https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=';
+
+    $chunks = array_chunk($itemIds, $itemLimit);
+
+    print "Importing " . count($itemIds) . " items in " . count($chunks) . " chunks:" . PHP_EOL;
+    foreach ($chunks as $chunkid => $chunk) {
+        print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . PHP_EOL;
+        $itemList = implode('|', $chunk);
+        $url = $apiurlprefix . $itemList;
+        $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
+        foreach ($jsonResult->entities as $entity) {
+            $pageid = $entity->id;
+            if (isset($entity->redirects->from)) {
+                $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
+            }
+            $name = getBestLabel($entity->labels);
+            $description = getBestLabel($entity->descriptions);
+            $claims = json_encode($entity->claims);
+            $sitelinks = json_encode($entity->sitelinks);
+            $insertdb->execute([$pageid, $name, $description, $claims, $sitelinks]);
+        }
+    }
+    return true;
+}
+print date("H:i:s") . ": Initial import" . PHP_EOL;
+importItemIds($itemIds);
+print date("H:i:s") . ": Fetching 'Instance of' items" . PHP_EOL;
+$instanceofItems = getInstanceOfItems();
+print date("H:i:s") . ": Instance import" . PHP_EOL;
+importItemIds($instanceofItems);

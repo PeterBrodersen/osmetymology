@@ -27,6 +27,7 @@ function getColumns()
 		'm.navn AS municipalityname',
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
+		'w2."name" AS wikiinstanceoflabel',
 		'gendermap.gender',
 		'ST_X(ST_Centroid(ow.geom)) AS centroid_longitude',
 		'ST_Y(ST_Centroid(geom)) AS centroid_latitude'
@@ -50,6 +51,7 @@ function getQuerystring($type)
 	FROM osmetymology.ways_agg ow
 	INNER JOIN osmetymology.municipalities m on ow.municipality_code = m.kode
 	LEFT JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
+	LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 	LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) as gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 	$where
 	ORDER BY ow.name, m.navn
