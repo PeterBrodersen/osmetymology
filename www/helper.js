@@ -65,10 +65,25 @@ $(function () {
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
+  $("#copylinkmap a").on("click", function () {
+    let url = $("#copylinkmap a").prop('href');
+    window.location.hash = url;
+    navigator.clipboard.writeText(url);
+    $(this).css('background-color', 'yellow');
+
+    $("#copylinkmap a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
+  });
+
   // Start if hash fragment is present
   if (window.location.hash.length > 1) {
-    var starttext = decodeURIComponent(window.location.hash.substring(1))
-    doSearch(starttext);
+    let hash = decodeURIComponent(window.location.hash.substring(1));
+    const regex = /^map=(\d+)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/;
+    const match = hash.match(regex);
+    if (match && map.setView) {
+      map.setView(L.latLng(match[2], match[3]), match[1]);
+    } else {
+      doSearch(hash);
+    }
   }
 });
 

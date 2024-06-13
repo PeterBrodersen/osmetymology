@@ -44,6 +44,7 @@
         </table>
     </template>
 
+    <div id="copylinkmap"><a href="#">[kopiér link til kortudsnit]</a></div>
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">

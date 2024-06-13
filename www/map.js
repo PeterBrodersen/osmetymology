@@ -157,6 +157,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // update on startup and on movement
     updateResults();
     map.on("moveend", function (s) {
+        let coordLink = '' + map.getZoom() + '/' + parseFloat(map.getCenter().lat).toFixed(5) + '/' + parseFloat(map.getCenter().lng).toFixed(5);
+        $("#copylinkmap a").attr('href', '#map=' + coordLink);
         updateResults();
     });
 });
@@ -164,5 +166,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 function panToWayId(latitude, longitude, wayId) {
     highlightWayId = wayId;
     map.panTo([latitude, longitude]);
-
 }

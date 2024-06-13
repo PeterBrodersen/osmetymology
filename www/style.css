@@ -35,6 +35,15 @@ span#copylink a {
     display: none;
 }
 
+#copylinkmap {
+    text-align: right;
+    font-size: 0.8em;
+}
+
+#copylinkmap a {
+    text-decoration: none;
+}
+
 div#betaboilerplate {
     border: 3px dashed black;
     background-color: #ee5;
