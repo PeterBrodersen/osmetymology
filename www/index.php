@@ -71,7 +71,7 @@
         </p>
 
         <p class="copyright">
-            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Data er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>.
+            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a> og er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href="https://www.wikidata.org/">Wikidata</a> og er frigivet under <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 licens</a>.
         </p>
     </div>
 </body>
