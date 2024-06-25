@@ -107,17 +107,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const popupText = getPopupText(feature);
             let lineColor = getLineColorFromGender(feature);
-            if (feature.properties["id"] == highlightWayId) {
+            let highlightFeature = (feature.properties["id"] == highlightWayId);
+            if (highlightFeature) {
                 lineColor = '#cccc00ff';
             }
-
             const defaultStyle = {
                 color: lineColor,
-                weight: 5,
+                weight: 7,
                 fillOpacity: 0.1,
             };
-
-            // TODO: Create panes with different z indexes for streets and for areas
 
             L.geoJSON(feature, {
                 style: defaultStyle,
@@ -137,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const layer = e.target;
                     layer.setStyle({
                         color: lineColor,
-                        weight: 7,
+                        weight: 9,
                         fillOpacity: 0.7,
                     });
                     layer.bringToFront();
@@ -149,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }).bindPopup(popupText, { autoPan: false })
                 .addTo(nextResults);
         }
-        console.log(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
+        console.table(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
     }
     // if the user is panning around alot, only update once per second max
     updateResults = _.throttle(updateResults, 1000);
