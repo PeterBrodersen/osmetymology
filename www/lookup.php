@@ -3,6 +3,7 @@ require("connect.inc.php");
 header("Content-Type: application/json");
 $search = (string) ($_GET['search'] ?? '');
 $streetname = (string) ($_GET['streetname'] ?? '');
+$request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -89,10 +90,21 @@ function findStreetsFromItem($itemid)
 	return $result;
 }
 
+function getStats() {
+	global $dbh;
+	$querystring = "SELECT label, value FROM osmetymology.stats";
+	$q = $dbh->query($querystring);
+	$q->setFetchMode(PDO::FETCH_KEY_PAIR);
+	$result = $q->fetchAll();
+	return $result;
+}
+
 if ($searchname) {
 	$result = findStreetName($searchname);
 } elseif ($itemid) {
 	$result = findStreetsFromItem($itemid);
+} elseif ($request == 'stats') {
+	$result = getStats();
 }
 
 print json_encode($result);

@@ -86,7 +86,21 @@ $(function () {
       doSearch(hash);
     }
   }
+  getStats();
 });
+
+function getStats() {
+  $.getJSON("lookup.php", { request: 'stats' })
+    .done(function (data) {
+      console.log(data);
+      if (data) {
+        $("#statstotalroads").text(data.totalroads);
+        $("#statsuniquenamedroads").text(data.uniquenamedroads);
+        $("#statsuniqueetymologywikidata").text(data.uniqueetymologywikidata);
+      }
+    }
+  );
+}
 
 function doSearch(searchword) {
   $("#namefind").val(searchword).trigger('keyup');

@@ -59,7 +59,7 @@ sup a {
     text-decoration-style: dashed;
 }
 
-.copyright {
+.copyright, .stats {
     font-size: 0.7em;
 }
 

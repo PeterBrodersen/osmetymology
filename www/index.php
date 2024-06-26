@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        Hvad er danske vejnavne opkaldt efter?
+        Hvad er danske vejnavne og steder opkaldt efter?
     </title>
     <script src="https://unpkg.com/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    <h1>Hvad er danske vejnavne opkaldt efter?</h1>
+    <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
 
     <div id="userinput"><input required autofocus id="namefind" placeholder="Indtast vejnavn"> <span id="copylink"><a href="#">[kopiér link]</a></span></div>
 
@@ -72,6 +72,13 @@
 
         <p class="copyright">
             Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a> og er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href="https://www.wikidata.org/">Wikidata</a> og er frigivet under <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 licens</a>.
+        </p>
+
+        <p class="stats">
+            Indhold i databasen:<br>
+            Antal steder: <span id="statstotalroads"></span><br>
+            Antal unikt navngivne steder: <span id="statsuniquenamedroads"></span><br>
+            Antal unikke emner, steder er opkaldt efter: <span id="statsuniqueetymologywikidata"></span>
         </p>
     </div>
 </body>
