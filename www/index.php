@@ -76,9 +76,10 @@
 
         <p class="stats">
             Indhold i databasen:<br>
-            Antal steder: <span id="statstotalroads"></span><br>
-            Antal unikt navngivne steder: <span id="statsuniquenamedroads"></span><br>
-            Antal unikke emner, steder er opkaldt efter: <span id="statsuniqueetymologywikidata"></span>
+            Antal steder: <span id="totalroads"></span><br>
+            Antal unikt navngivne steder: <span id="uniquenamedroads"></span><br>
+            Antal unikke emner, steder er opkaldt efter: <span id="uniqueetymologywikidata"></span><br>
+            Seneste indlæsningstidspunkt: <span id="importfinishtime"></span>
         </p>
     </div>
 </body>

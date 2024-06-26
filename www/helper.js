@@ -94,9 +94,10 @@ function getStats() {
     .done(function (data) {
       console.log(data);
       if (data) {
-        $("#statstotalroads").text(data.totalroads);
-        $("#statsuniquenamedroads").text(data.uniquenamedroads);
-        $("#statsuniqueetymologywikidata").text(data.uniqueetymologywikidata);
+        $(".stats #totalroads").text(data.totalroads);
+        $(".stats #uniquenamedroads").text(data.uniquenamedroads);
+        $(".stats #uniqueetymologywikidata").text(data.uniqueetymologywikidata);
+        $(".stats #importfinishtime").text(new Date(data.importfinishtime * 1000).toLocaleDateString() );
       }
     }
   );
