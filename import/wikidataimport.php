@@ -25,6 +25,7 @@ $dbh->query('
         itemId TEXT,
         name TEXT COLLATE "da_DK",
         description TEXT COLLATE "da_DK",
+        labels JSON,
         claims JSON,
         sitelinks JSON
     )
@@ -33,8 +34,8 @@ $dbh->query('
 $dbh->query('CREATE UNIQUE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
 
 $insertdb = $dbh->prepare('
-    INSERT INTO osmetymology.wikidata (itemid, name, description, claims, sitelinks)
-    VALUES (?,?,?,?,?)
+    INSERT INTO osmetymology.wikidata (itemid, name, description, labels, claims, sitelinks)
+    VALUES (?,?,?,?,?,?)
 ');
 
 // :TODO: Split entities
@@ -87,9 +88,10 @@ function importItemIds($itemIds)
             }
             $name = getBestLabel($entity->labels);
             $description = getBestLabel($entity->descriptions);
+            $labels = json_encode($entity->labels);
             $claims = json_encode($entity->claims);
             $sitelinks = json_encode($entity->sitelinks);
-            $insertdb->execute([$pageid, $name, $description, $claims, $sitelinks]);
+            $insertdb->execute([$pageid, $name, $description, $labels, $claims, $sitelinks]);
         }
     }
     return true;
