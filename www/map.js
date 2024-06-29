@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             geocodingQueryParams: {
                 "countrycodes": "dk"
             }
-        })
+        }),
+        placeholder: 'Søg efter sted i Danmark'
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);
