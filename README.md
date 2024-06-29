@@ -20,9 +20,9 @@ Suggested automated process for using content:
 2. Import to PostgreSQL using [osm2pgsql](https://osm2pgsql.org/doc/manual.html#the-flex-output) with Flex output for storing keys in JSON field
 3. Create secondary table with aggregated copy, grouping by name, etymology and highway type. No need to have several individual road segments
 4. Split based on Danish municipality boundaries
-5. Save road map as [FlatGeobuf](https://flatgeobuf.org/) for very fast web lookup ([FlatGeobuf example](https://flatgeobuf.org/examples/leaflet/filtered.html))
-6. Fetch set of every Wikidata entry
-7. Create web interface for secondary table to look up names, municipalities and subjects
+5. Fetch set of every Wikidata entry
+6. Create web interface for secondary table to look up names, municipalities and subjects
+7. Save road map as [FlatGeobuf](https://flatgeobuf.org/) for very fast web lookup ([FlatGeobuf example](https://flatgeobuf.org/examples/leaflet/filtered.html))
 8. Profit!
 
 Currently the [import script](import/import.sh) takes care of most of it (even though the municipality file is not online yet). Wikidata entries are currently fetched directly from the API at Wikidata.org on demand. The map is not yet working.

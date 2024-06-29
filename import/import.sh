@@ -7,20 +7,16 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
-if ! [ -f 'kommuner.fgb' ]; then
-    echo "Error: Download kommuner.fgb" 1>&2
-    exit 1
-fi
-
-wget https://download.geofabrik.de/europe/denmark-latest.osm.pbf -O denmark-latest.osm.pbf
+# Get Denmark OSM file (~400-450 MB) and Danish municipalities with geometry (~115 MB)
+wget 'http://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
+wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
+wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
 
 # Main import. Estimated time: 10-30 minutes
-osm2pgsql -d "$PGDATABASE" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
+osm2pgsql -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
-# Import municipalities. Takes a couple of seconds. 
-# TODO: Create the "kommuner.fgb" for distribution - or even better, import municipalities with geometry from authoritative source!
-# TODO:
-ogr2ogr PG:dbname="$PGDATABASE" kommuner.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+# Import municipalities. Takes about 10 seconds.
+ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner.geojson -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
 # Aggregate, split by municipality boundaries. Estimated time: 10-15 minutes. Perhaps the geometry should be simplified.
 psql -f aggregate.sql
