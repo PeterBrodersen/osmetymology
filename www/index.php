@@ -36,7 +36,7 @@
         <table class="resulttable">
             <tr class="tableheader">
                 <th>Kort</th>
-                <th>Vejnavn</th>
+                <th>Stednavn</th>
                 <th>Kommune</th>
                 <th>Wikidata-emne</th>
                 <th>Beskrivelse</th>
@@ -63,7 +63,7 @@
         <p>
             Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
             er opkaldt efter æblesorten Rød Ananas. Og for det mest udbredte vejnavn i Danmark, Lærkevej, er 70 % opkaldt efter lærkefuglen, mens 30 % er opkaldt efter
-            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
+            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Editing.md?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
         </p>
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/aggregate.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
