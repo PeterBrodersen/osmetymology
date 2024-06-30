@@ -17,6 +17,7 @@ Resources for getting information about the origin of Danish street names.
 | Frederikshavn    | [Tilbageblik - før og nu : historier bag navnet i Frederikshavn](https://bibliotek.dk/materiale/tilbageblik-foer-og-nu_peter-bandholm/work-of%3A870970-basis%3A45209725?type=bog) | Book (2011) | Peter Bandholm, Erik S. Christensen | More stories and anecdotes than lists |
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Hadsund          | [Gade- og vejnavne i Hadsund](https://bibliotek.dk/materiale/gade-og-vejnavne-i-hadsund_birte-overgaard/work-of:870970-basis:135106445?type=bog) | Book (2022) | Birte Overgaard |
+| Holbæk           | [Vejnavne i Holbæk kommune : en kommentar](https://bibliotek.dk/materiale/vejnavne-i-holbaek-kommune_flemming-sylvest/work-of%3A870970-basis%3A25856562?type=bog) | Book (2005) | Flemming Sylvest | Extensive list, probably from before [Strukturreformen](https://da.wikipedia.org/wiki/Strukturreformen). |
 | Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
 | Kolding          | [KoldingWiki, Kategori: Gader og veje](https://koldingwiki.dk/index.php?title=Kategori:Gader_og_veje) | Online, Wiki | Kolding Stadsarkiv |
 | København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
