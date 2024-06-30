@@ -83,8 +83,9 @@ sup a {
 h1.popupplacename {
     margin: 0;
     font-size: 1rem;
+    text-align: right;
 }
 
-div.popupitemname {
+.popupitemname {
     font-weight: bold;
 }
