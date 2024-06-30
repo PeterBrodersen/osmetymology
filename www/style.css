@@ -70,3 +70,21 @@ sup a {
 .mapToLink span {
     cursor: pointer;
 }
+
+.localsearch {
+    font-style: italic;
+}
+
+.popupbirthdeath {
+    font-size: 0.8em;
+    color: #666;
+}
+
+h1.popupplacename {
+    margin: 0;
+    font-size: 1rem;
+}
+
+div.popupitemname {
+    font-weight: bold;
+}

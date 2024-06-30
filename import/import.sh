@@ -1,6 +1,6 @@
 #!/bin/sh
 # Remember to set $PGDATABASE to database name
-# Remember to create schema osmetymology - should be done automatically?
+# Remember to create schema osmetymology - could be done automatically?
 
 if [ -z "${PGDATABASE:-}" ]; then
     echo "Error: Set variable PGDATABASE in environment" 1>&2

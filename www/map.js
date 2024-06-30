@@ -61,18 +61,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature) {
-        let popupText = `<h1>${feature.properties["streetname"] ?? '(uden navn)'}</h1>`;
+        let popupText = `<h1 class="popupplacename">${feature.properties["streetname"] ?? '(uden navn)'}</h1>`;
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
+        let wikipediadaurlprefix = 'https://da.wikipedia.org/w/index.php?title=';
         if (feature.properties["name:etymology:wikidata"]) {
             let wikidataId = feature.properties["name:etymology:wikidata"];
             let wikidatalabel = feature.properties["wikidata_label"];
+            let wikibirth = feature.properties["wikidata_dateofbirth"];
+            let wikideath = feature.properties["wikidata_dateofdeath"];
+            let dateoptions = {
+                // day: 'numeric',
+                // month: 'short',
+                year: 'numeric'
+            }
+            let wikipediatitleda = feature.properties["wikidata_wikipediatitleda"];
             let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
-            popupText += `<div>Opkaldt efter: <a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${wikidatalabel || ''}</a> <sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup></div>`;
-            popupText += `<div>${wikidatadescription}</div>`;
-        }
-        if (feature.properties["name:etymology"]) {
+            popupText += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
+            if (wikibirth || wikideath) {
+                let birthdeathtext = '(';
+                if (wikibirth) {
+                    birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+                }
+                birthdeathtext += ' - ';
+                if (wikideath) {
+                    birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
+                }
+                birthdeathtext += ')';
+                popupText += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
+            }
+            popupText += `<p>${wikidatadescription}</p>`;
+            // Wikidata and Wikipedia links
+            popupText += `<p>`;
+            if (wikipediatitleda) {
+                popupText += `<a href="${wikipediadaurlprefix}${encodeURI(wikipediatitleda)}">Wikipedia-artikel</a> - `;
+            }
+            popupText += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
+            popupText += `</p>`;
+            if (/^(Q\d+)$/.test(wikidataId)) {
+                popupText += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find alle steder opkaldt efter dette emne</a></p>`
+            }
+        } else if (feature.properties["name:etymology"]) {
             let etymologyText = feature.properties["name:etymology"];
-            popupText += `<div>${etymologyText}</div>`;
+            popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
         return popupText;
     }
