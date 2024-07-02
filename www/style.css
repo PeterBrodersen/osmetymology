@@ -83,6 +83,10 @@ sup a {
 
 h1.popupplacename {
     font-size: 1rem;
+    /* Restrict h1 to one line */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .popupitemname {

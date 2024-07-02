@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature) {
-        let popupText = `<h1 class="popupplacename">${feature.properties["streetname"] ?? '(uden navn)'}</h1>`;
+        let placename = feature.properties["streetname"] ?? '(uden navn)';
+        let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         let wikipediadaurlprefix = 'https://da.wikipedia.org/w/index.php?title=';
         if (feature.properties["name:etymology:wikidata"]) {
