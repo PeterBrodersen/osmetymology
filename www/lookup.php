@@ -5,6 +5,8 @@ $search = (string) ($_GET['search'] ?? '');
 $streetname = (string) ($_GET['streetname'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
+$coordinates = (string) ($_GET['coordinates'] ?? '');
+$bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
 		$itemid = $search;
@@ -15,7 +17,7 @@ if ($search) {
 $searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
 $result = [];
 
-function getColumns()
+function getColumns($coordinates = FALSE)
 {
 	$columns = [
 		'ow.id',
@@ -35,21 +37,33 @@ function getColumns()
 		"to_timestamp(w.claims#>'{P570,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_Centroid(ow.geom)) AS centroid_longitude',
-		'ST_Y(ST_Centroid(geom)) AS centroid_latitude'
+		'ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude'
 	];
+	if ($coordinates) {
+		$columns[] = "ow.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude']. " " . $coordinates['latitude'] . ")'::geometry AS distance";
+	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
 }
 
-function getQuerystring($type)
+function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 {
-	$columns = getColumns();
+	$columns = getColumns($coordinates);
 	$where = '';
+	$limit = 1000;
+	$orderbylist = ['ow.name, m.navn'];
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE TRANSLATE(REGEXP_REPLACE(LOWER(?), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy') || '%'";
-	} elseif ($type = 'itemid') {
+	} elseif ($type == 'itemid') {
 		$where = 'WHERE "name:etymology:wikidata" = ?';
+	} elseif ($type == 'nearest') {
+		$limit = 20;
+		$orderbylist = ['distance'];
+	} elseif ($type == 'bbox') {
+		[$latitudeA,$longitudeA,$latitudeB,$longitudeB] = $bbox;
+		$where = "WHERE ST_Intersects(geom, ST_Envelope('SRID=4326;LINESTRING($longitudeA $latitudeA, $longitudeB $latitudeB)'::geometry))";
 	}
+	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
 	SELECT $columns
 	FROM osmetymology.ways_agg ow
@@ -58,8 +72,8 @@ function getQuerystring($type)
 	LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 	LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) as gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 	$where
-	ORDER BY ow.name, m.navn
-	LIMIT 1000
+	ORDER BY $orderby
+	LIMIT $limit
 	EOD;
 	return $querystring;
 }
@@ -92,6 +106,29 @@ function findStreetsFromItem($itemid)
 	return $result;
 }
 
+function findNearestPlacesFromLocation($coordinates) {
+	global $dbh;
+	[$latitude,$longitude] = explode(",",$coordinates);
+	$latLng = ['latitude' => (float) $latitude, 'longitude' => (float) $longitude];
+	$querystring = getQuerystring('nearest', $latLng);
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute();
+	$result = $q->fetchAll();
+	return $result;
+}
+
+function findNearestPlacesFromBBOX($bboxstring) {
+	global $dbh;
+	$bbox = array_map('floatval',explode(",",$bboxstring));
+	$querystring = getQuerystring('bbox', FALSE, $bbox);
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute();
+	$result = $q->fetchAll();
+	return $result;
+}
+
 function getStats() {
 	global $dbh;
 	$querystring = "SELECT label, value FROM osmetymology.stats";
@@ -105,6 +142,10 @@ if ($searchname) {
 	$result = findStreetName($searchname);
 } elseif ($itemid) {
 	$result = findStreetsFromItem($itemid);
+} elseif ($coordinates) {
+	$result = findNearestPlacesFromLocation($coordinates);
+} elseif ($bbox) {
+	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
 }
