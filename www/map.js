@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const layer = e.target;
                     layer.setStyle(defaultStyle);
                 }
-            }).bindPopup(popupText, { autoPan: false })
+            }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
                 .addTo(nextResults);
         }
         console.table(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));

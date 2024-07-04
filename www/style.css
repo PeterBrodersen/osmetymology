@@ -93,6 +93,6 @@ h1.popupplacename {
     font-weight: bold;
 }
 
-.leaflet-popup-content-wrapper {
+.place-popup .leaflet-popup-content-wrapper {
     background: linear-gradient(180deg, rgb(169, 200, 255) 40px, rgba(255, 255, 255, 1) 40px);
 }
