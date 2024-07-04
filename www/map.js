@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fillOpacity: 0.1,
             };
 
-            L.geoJSON(feature, {
+            let mapFeature = L.geoJSON(feature, {
                 style: defaultStyle,
                 pointToLayer: function (feature, latlng) {
                     return L.circleMarker(latlng, {
@@ -178,8 +178,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
                 .addTo(nextResults);
+            if (highlightFeature) {
+                mapFeature.openPopup();
+            }
         }
-        console.table(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
+        // Gender breakdown
+        // console.table(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
     }
     // if the user is panning around alot, only update once per second max
     updateResults = _.throttle(updateResults, 1000);
