@@ -40,7 +40,7 @@ function getColumns($coordinates = FALSE)
 		'ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude'
 	];
 	if ($coordinates) {
-		$columns[] = "ow.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude']. " " . $coordinates['latitude'] . ")'::geometry AS distance";
+		$columns[] = "ow.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
@@ -60,7 +60,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		$limit = 20;
 		$orderbylist = ['distance'];
 	} elseif ($type == 'bbox') {
-		[$latitudeA,$longitudeA,$latitudeB,$longitudeB] = $bbox;
+		[$latitudeA, $longitudeA, $latitudeB, $longitudeB] = $bbox;
 		$where = "WHERE ST_Intersects(geom, ST_Envelope('SRID=4326;LINESTRING($longitudeA $latitudeA, $longitudeB $latitudeB)'::geometry))";
 	}
 	$orderby = implode(', ', $orderbylist);
@@ -106,9 +106,10 @@ function findStreetsFromItem($itemid)
 	return $result;
 }
 
-function findNearestPlacesFromLocation($coordinates) {
+function findNearestPlacesFromLocation($coordinates)
+{
 	global $dbh;
-	[$latitude,$longitude] = explode(",",$coordinates);
+	[$latitude, $longitude] = explode(",", $coordinates);
 	$latLng = ['latitude' => (float) $latitude, 'longitude' => (float) $longitude];
 	$querystring = getQuerystring('nearest', $latLng);
 	$q = $dbh->prepare($querystring);
@@ -118,9 +119,10 @@ function findNearestPlacesFromLocation($coordinates) {
 	return $result;
 }
 
-function findNearestPlacesFromBBOX($bboxstring) {
+function findNearestPlacesFromBBOX($bboxstring)
+{
 	global $dbh;
-	$bbox = array_map('floatval',explode(",",$bboxstring));
+	$bbox = array_map('floatval', explode(",", $bboxstring));
 	$querystring = getQuerystring('bbox', FALSE, $bbox);
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -129,7 +131,8 @@ function findNearestPlacesFromBBOX($bboxstring) {
 	return $result;
 }
 
-function getStats() {
+function getStats()
+{
 	global $dbh;
 	$querystring = "SELECT label, value FROM osmetymology.stats";
 	$q = $dbh->query($querystring);

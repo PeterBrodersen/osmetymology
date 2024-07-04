@@ -185,13 +185,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateResults = _.throttle(updateResults, 1000);
 
     // update on startup and on movement
+    updateMapLink();
     updateResults();
-    map.on("moveend", function (s) {
-        let coordLink = '' + map.getZoom() + '/' + parseFloat(map.getCenter().lat).toFixed(5) + '/' + parseFloat(map.getCenter().lng).toFixed(5);
-        $("#copylinkmap a").attr('href', '#map=' + coordLink);
+    map.on("moveend", () => {
+        updateMapLink();
         updateResults();
     });
 });
+
+function updateMapLink() {
+    let coordLink = '' + map.getZoom() + '/' + parseFloat(map.getCenter().lat).toFixed(5) + '/' + parseFloat(map.getCenter().lng).toFixed(5);
+    $("#copylinkmap a").attr('href', '#map=' + coordLink);
+}
 
 function panToWayId(latitude, longitude, wayId) {
     highlightWayId = wayId;
