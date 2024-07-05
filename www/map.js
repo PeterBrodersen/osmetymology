@@ -1,5 +1,6 @@
 let map;
 let highlightWayId;
+let highlightWayPopup = false;
 document.addEventListener("DOMContentLoaded", async () => {
     let minZoom = 12;
     let maxZoom = 19;
@@ -178,8 +179,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
                 .addTo(nextResults);
-            if (highlightFeature) {
+            if (highlightFeature && highlightWayPopup) {
                 mapFeature.openPopup();
+                highlightWayPopup = false; // should perhaps only be set if popup is closed?
             }
         }
         // Gender breakdown
@@ -204,5 +206,6 @@ function updateMapLink() {
 
 function panToWayId(latitude, longitude, wayId) {
     highlightWayId = wayId;
+    highlightWayPopup = true;
     map.panTo([latitude, longitude]);
 }
