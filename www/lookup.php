@@ -53,7 +53,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$limit = 1000;
 	$orderbylist = ['ow.name, m.navn'];
 	if ($type == 'searchnamelike') {
-		$where = "WHERE searchname LIKE TRANSLATE(REGEXP_REPLACE(LOWER(?), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy') || '%'";
+		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
 		$where = 'WHERE "name:etymology:wikidata" = ?';
 	} elseif ($type == 'nearest') {

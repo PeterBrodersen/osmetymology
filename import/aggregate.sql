@@ -1,3 +1,12 @@
+-- Create normalized search string for all uses
+CREATE OR REPLACE FUNCTION osmetymology.toSearchString (text text) RETURNS text
+	AS $$
+		SELECT TRANSLATE(REGEXP_REPLACE(LOWER(text), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy')
+	$$
+	LANGUAGE SQL
+	IMMUTABLE
+	RETURNS NULL ON NULL INPUT;
+
 -- Create aggregated table
 DROP TABLE IF EXISTS osmetymology.ways_agg;
 CREATE TABLE osmetymology.ways_agg (
@@ -15,21 +24,21 @@ CREATE TABLE osmetymology.ways_agg (
 
 -- Import points, ways, areas/polygons; intersect on municipality boundaries
 INSERT INTO osmetymology.ways_agg (name, searchname, geomtype, municipality_code, object_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", geom)
-SELECT name, TRANSLATE(REGEXP_REPLACE(LOWER(name), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy'), 'point', m.kode, array_agg(node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry)
+SELECT name, osmetymology.toSearchString(name), 'point', m.kode, array_agg(node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry)
 FROM osmetymology.osm_points op
 INNER JOIN osmetymology.municipalities m ON st_transform(op.geom,4326) && m.wkb_geometry AND ST_INTERSECTS(st_transform(op.geom,4326), m.wkb_geometry)
 WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
 GROUP by name, m.navn, m.kode, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", m.wkb_geometry;
 
 INSERT INTO osmetymology.ways_agg (name, searchname, geomtype, municipality_code, object_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", geom)
-SELECT name, TRANSLATE(REGEXP_REPLACE(LOWER(name), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy'), 'line', m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry)
+SELECT name, osmetymology.toSearchString(name), 'line', m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_COLLECT(geom), 4326), m.wkb_geometry)
 FROM osmetymology.osm_ways ow
 INNER JOIN osmetymology.municipalities m ON st_transform(ow.geom,4326) && m.wkb_geometry AND ST_INTERSECTS(st_transform(ow.geom,4326), m.wkb_geometry)
 WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
 GROUP by name, m.navn, m.kode, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", m.wkb_geometry;
 
 INSERT INTO osmetymology.ways_agg (name, searchname, geomtype, municipality_code, object_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", geom)
-SELECT name, TRANSLATE(REGEXP_REPLACE(LOWER(name), '[^[:alnum:]]', '', 'gi'), 'áàâäãçéèêëíìîïñóòôöõúùûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy'), 'polygon', m.kode, array_agg(area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_UNION(geom), 4326), m.wkb_geometry)
+SELECT name, osmetymology.toSearchString(name), 'polygon', m.kode, array_agg(area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", ST_Intersection(st_transform(ST_UNION(geom), 4326), m.wkb_geometry)
 FROM osmetymology.osm_polygons op
 INNER JOIN osmetymology.municipalities m ON st_transform(op.geom,4326) && m.wkb_geometry AND ST_INTERSECTS(st_transform(op.geom,4326), m.wkb_geometry)
 WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
