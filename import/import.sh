@@ -8,7 +8,7 @@ if [ -z "${PGDATABASE:-}" ]; then
 fi
 
 # Get Denmark OSM file (~400-450 MB) and Danish municipalities with geometry (~115 MB)
-wget 'http://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
+wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
 wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
 wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
 
@@ -35,3 +35,4 @@ if [ -f "$CSVFILE" ] ; then
 fi
 ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql'
 ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
+php updatestatsfile.php

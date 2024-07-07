@@ -197,14 +197,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateMapLink();
         updateMapData();
     });
-    map.on("locationfound", (data) => {
-        $(".resulttable").fadeTo("slow", 0.5);
+    map.on('locationfound', (data) => {
+        // $(".resulttable").fadeTo("slow", 0.5);
+        $("#result").html('Henter nærmeste steder ...');
         let coordinates = `${data.latlng.lat},${data.latlng.lng}`;
         map.panTo(data.latlng);
+        const radius = data.accuracy / 2;
+        const locationMarker = L.marker(data.latlng).addTo(map)
+            .bindPopup(`Du er inden for ${radius.toLocaleString()} meter fra dette punkt`).openPopup();
+        const locationCircle = L.circle(data.latlng, radius).addTo(map);
         $.getJSON("lookup.php", { coordinates })
+            .fail((jqxhr, textStatus, error) => updateResultTableError(error))
             .done((data) => updateResultTable(data));
     });
-
+    map.on('locationerror', (e) => {
+        $("#result").html('Kan ikke finde din position: ' + e.message);
+        console.log(e);
+    });
 });
 
 function updateMapLink() {

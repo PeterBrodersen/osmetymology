@@ -20,6 +20,7 @@ $(function () {
     $("#copylink a").show().attr('href', '#' + inputname);
     $(".resulttable").fadeTo("slow", 0.5);
     $.getJSON("lookup.php", { search: inputname })
+      .fail((jqxhr, textStatus, error) => updateResultTableError(error))
       .done((data) => updateResultTable(data));
   });
 
@@ -33,8 +34,10 @@ $(function () {
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
-  $("#getposition").on("click", () => {
-    map.locate({ enableHighAccuracy: true });
+  $("#getposition").on("click", () => { // :TODO: Indicate a location search is going on
+    $("#result").html('Finder din position - et øjeblik ...');
+    // map.locate({ enableHighAccuracy: true });
+    map.locate();
   });
 
   $("#copylinktomap").on("click", () => {
@@ -62,13 +65,13 @@ $(function () {
 });
 
 function getStats() {
-  $.getJSON("lookup.php", { request: 'stats' })
+  $.getJSON('data/stats.json')
     .done((data) => {
       if (data) {
-        $(".stats #totalroads").text(data.totalroads.toLocaleString());
-        $(".stats #uniquenamedroads").text(data.uniquenamedroads.toLocaleString());
-        $(".stats #uniqueetymologywikidata").text(data.uniqueetymologywikidata.toLocaleString());
-        $(".stats #importfinishtime").text(new Date(data.importfinishtime * 1000).toLocaleDateString());
+        $('.stats #totalroads').text(data.totalroads.toLocaleString());
+        $('.stats #uniquenamedroads').text(data.uniquenamedroads.toLocaleString());
+        $('.stats #uniqueetymologywikidata').text(data.uniqueetymologywikidata.toLocaleString());
+        $('.stats #importfiletime').text(new Date(data.importfiletime * 1000).toLocaleDateString());
       }
     }
     );
@@ -211,4 +214,9 @@ function updateResultTable(data) {
   } else {
     $("#result").html('Intet resultat!');
   }
+}
+
+function updateResultTableError(error) {
+  console.log(error);
+  $("#result").html('Fejl: ' + error);
 }

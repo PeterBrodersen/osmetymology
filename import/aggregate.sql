@@ -60,9 +60,3 @@ CREATE TABLE osmetymology.stats (
 	label TEXT COLLATE "da_DK",
 	value INT
 );
-
-INSERT INTO osmetymology.stats (label, value) VALUES ('totalroads', (SELECT COUNT(*) FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('uniquenamedroads', (SELECT COUNT(DISTINCT name) FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('uniqueetymologywikidata', (SELECT COUNT(DISTINCT "name:etymology:wikidata") FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('localwikidataitems', (SELECT COUNT(*) FROM osmetymology.wikidata) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('importfinishtime', (SELECT EXTRACT(epoch from now())::INT) ); -- Should be file date for 'denmark-latest.osm.pbf'?

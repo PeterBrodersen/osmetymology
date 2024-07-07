@@ -48,7 +48,7 @@
 
     <div id="maplinks">
         <div>
-            <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a>
+            <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a> <span class="location-loader" style="display:none;"></span>
         </div>
         <div>
             <a href="#" id="copylinktomap">[kopiér link til kortudsnit]</a>
@@ -89,7 +89,7 @@
             Antal steder: <span id="totalroads"></span><br>
             Antal unikt navngivne steder: <span id="uniquenamedroads"></span><br>
             Antal unikke emner, steder er opkaldt efter: <span id="uniqueetymologywikidata"></span><br>
-            Seneste indlæsningstidspunkt: <span id="importfinishtime"></span>
+            Dato for datasæt: <span id="importfiletime"></span>
         </p>
     </div>
 </body>

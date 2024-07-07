@@ -101,3 +101,63 @@ div#maplinks {
     display: flex;
     justify-content: space-between;
 }
+
+.location-loader {
+    width: 16px;
+    height: 16px;
+    display: inline;
+    margin: 10px auto;
+    box-sizing: border-box;
+    position: relative;
+    transform: scale(0.5);
+}
+
+.location-loader::after {
+    content: '';
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    border-radius: 50% 50% 0;
+    border: 6px solid #8d0000;
+    transform: rotate(45deg) translate(0, 0);
+    box-sizing: border-box;
+    animation: animMarker 0.4s ease-in-out infinite alternate;
+}
+
+.location-loader::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 150%;
+    width: 24px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    animation: animShadow 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes animMarker {
+    0% {
+        transform: rotate(45deg) translate(3px, 3px);
+    }
+
+    100% {
+        transform: rotate(45deg) translate(-3px, -3px);
+    }
+}
+
+@keyframes animShadow {
+    0% {
+        transform: scale(0.5);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
