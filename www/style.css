@@ -22,7 +22,7 @@ table.resulttable tr.tableheader {
 }
 
 div#userinput {
-    margin-bottom: 2em;
+    margin-bottom: 0.8em;
 }
 
 input#namefind {
@@ -36,12 +36,8 @@ span#copylink a {
     display: none;
 }
 
-#copylinkmap {
-    text-align: right;
+#maplinks a {
     font-size: 0.8em;
-}
-
-#copylinkmap a {
     text-decoration: none;
 }
 
@@ -95,4 +91,13 @@ h1.popupplacename {
 
 .place-popup .leaflet-popup-content-wrapper {
     background: linear-gradient(180deg, rgb(169, 200, 255) 40px, rgba(255, 255, 255, 1) 40px);
+}
+
+#map {
+    margin-top: 2px !important;
+}
+
+div#maplinks {
+    display: flex;
+    justify-content: space-between;
 }

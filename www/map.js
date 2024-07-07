@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // track the previous results so we can remove them when adding new results
     // :TODO: Show spinner when loading
     let previousResults = L.layerGroup().addTo(map);
-    async function updateResults() {
+    async function updateMapData() {
         // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously 
         // remove the old results
         previousResults.remove();
@@ -188,20 +188,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         // console.table(Object.entries(statisticsData).sort((a, b) => b[1] - a[1]));
     }
     // if the user is panning around alot, only update once per second max
-    updateResults = _.throttle(updateResults, 1000);
+    updateMapData = _.throttle(updateMapData, 1000);
 
     // update on startup and on movement
     updateMapLink();
-    updateResults();
+    updateMapData();
     map.on("moveend", () => {
         updateMapLink();
-        updateResults();
+        updateMapData();
     });
+    map.on("locationfound", (data) => {
+        $(".resulttable").fadeTo("slow", 0.5);
+        let coordinates = `${data.latlng.lat},${data.latlng.lng}`;
+        map.panTo(data.latlng);
+        $.getJSON("lookup.php", { coordinates })
+            .done((data) => updateResultTable(data));
+    });
+
 });
 
 function updateMapLink() {
     let coordLink = '' + map.getZoom() + '/' + parseFloat(map.getCenter().lat).toFixed(5) + '/' + parseFloat(map.getCenter().lng).toFixed(5);
-    $("#copylinkmap a").attr('href', '#map=' + coordLink);
+    $("#copylinktomap").attr('href', '#map=' + coordLink);
 }
 
 function panToWayId(latitude, longitude, wayId) {

@@ -2,11 +2,10 @@ let requestCount = 0;
 let lastinputname = '';
 let wikidata = {};
 let languages = ['da', 'en', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
+let currentCount = 0;
 
 $(function () {
-  $("#namefind").on("keyup", function () {
-    requestCount++;
-    let currentCount = requestCount;
+  $("#namefind").on("keyup", () => {
     let inputname = $("#namefind").val();
     if (inputname == lastinputname) { // don't request for random key presses such as shift
       return;
@@ -15,48 +14,17 @@ $(function () {
 
     // if (inputname.length < 3) {
     if (! /^(Q\d+|.{3,})$/.test(inputname)) {
+      $("#result").html('');
       return;
     }
     $("#copylink a").show().attr('href', '#' + inputname);
     $(".resulttable").fadeTo("slow", 0.5);
     $.getJSON("lookup.php", { search: inputname })
-      .done(function (data) {
-        if (data && data.length > 0) {
-          let newtable = $("#tabletemplate").contents().clone();
-          let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
-          let wikidataitems = [];
-          for (row of data) {
-            var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">🌍</span>`;
-            var streetname = row['streetname'] ?? '';
-            var streetnamehtml = streetname;
-            // if (row['sampleway_id']) {
-            //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
-            // }
-            var municipalityname = row['municipalityname'] ?? '';
-            var wikidatalinkhtml = '';
-            var wikidatadescriptionhtml = '';
-            if (row['name:etymology:wikidata']) {
-              var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
-              wikidataitems.push(row['name:etymology:wikidata']);
-              var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}">${row['wikidescription'] ?? ''}</span>`;
-            } else if (row['name:etymology']) {
-              var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
-            }
-            // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
-            //        E.g. create as jquery DOM and add text with .text()
-            newtable.append(`<tr><td class="mapToLink">${mapTohtml}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${wikidatalinkhtml}</td><td>${wikidatadescriptionhtml}</td></tr>`);
-          }
-          console.log('Current: ' + currentCount + ', request: ' + requestCount);
-          $("#result").html(newtable);
-          // updateWikidataLabels(wikidataitems);
-        } else {
-          $("#result").html('Intet resultat!');
-        }
-      });
+      .done((data) => updateResultTable(data));
   });
 
   // copy function
-  $("#copylink a").on("click", function () {
+  $("#copylink a").on("click", () => {
     let url = $("#copylink a").prop('href');
     window.location.hash = url;
     navigator.clipboard.writeText(url);
@@ -65,13 +33,17 @@ $(function () {
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
-  $("#copylinkmap a").on("click", function () {
-    let url = $("#copylinkmap a").prop('href');
+  $("#getposition").on("click", () => {
+    map.locate({ enableHighAccuracy: true });
+  });
+
+  $("#copylinktomap").on("click", () => {
+    let url = $("#copylinktomap").prop('href');
     window.location.hash = url;
     navigator.clipboard.writeText(url);
     $(this).css('background-color', 'yellow');
 
-    $("#copylinkmap a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
+    $("#copylinktomap").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
   // Start if hash fragment is present
@@ -91,16 +63,15 @@ $(function () {
 
 function getStats() {
   $.getJSON("lookup.php", { request: 'stats' })
-    .done(function (data) {
-      console.log(data);
+    .done((data) => {
       if (data) {
-        $(".stats #totalroads").text(data.totalroads);
-        $(".stats #uniquenamedroads").text(data.uniquenamedroads);
-        $(".stats #uniqueetymologywikidata").text(data.uniqueetymologywikidata);
-        $(".stats #importfinishtime").text(new Date(data.importfinishtime * 1000).toLocaleDateString() );
+        $(".stats #totalroads").text(data.totalroads.toLocaleString());
+        $(".stats #uniquenamedroads").text(data.uniquenamedroads.toLocaleString());
+        $(".stats #uniqueetymologywikidata").text(data.uniqueetymologywikidata.toLocaleString());
+        $(".stats #importfinishtime").text(new Date(data.importfinishtime * 1000).toLocaleDateString());
       }
     }
-  );
+    );
 }
 
 function doSearch(searchword) {
@@ -205,3 +176,39 @@ addEventListener("hashchange", (event) => {
   doSearch(starttext);
 });
 */
+
+function updateResultTable(data) {
+  requestCount++;
+  currentCount = requestCount;
+  if (data && data.length > 0) {
+    let newtable = $("#tabletemplate").contents().clone();
+    let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
+    let wikidataitems = [];
+    for (row of data) {
+      var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">🌍</span>`;
+      var streetname = row['streetname'] ?? '';
+      var streetnamehtml = streetname;
+      // if (row['sampleway_id']) {
+      //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
+      // }
+      var municipalityname = row['municipalityname'] ?? '';
+      var wikidatalinkhtml = '';
+      var wikidatadescriptionhtml = '';
+      if (row['name:etymology:wikidata']) {
+        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
+        wikidataitems.push(row['name:etymology:wikidata']);
+        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}">${row['wikidescription'] ?? ''}</span>`;
+      } else if (row['name:etymology']) {
+        var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
+      }
+      // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
+      //        E.g. create as jquery DOM and add text with .text()
+      newtable.append(`<tr><td class="mapToLink">${mapTohtml}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${wikidatalinkhtml}</td><td>${wikidatadescriptionhtml}</td></tr>`);
+    }
+    // console.log('Current: ' + currentCount + ', request: ' + requestCount);
+    // updateWikidataLabels(wikidataitems);
+    $("#result").html(newtable);
+  } else {
+    $("#result").html('Intet resultat!');
+  }
+}

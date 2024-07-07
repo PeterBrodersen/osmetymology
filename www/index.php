@@ -16,6 +16,8 @@
     <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script> -->
     <script src="/map.js"></script>
     <script src="/helper.js"></script>
     <link href='/style.css' rel='stylesheet' />
@@ -44,7 +46,15 @@
         </table>
     </template>
 
-    <div id="copylinkmap"><a href="#">[kopiér link til kortudsnit]</a></div>
+    <div id="maplinks">
+        <div>
+            <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a>
+        </div>
+        <div>
+            <a href="#" id="copylinktomap">[kopiér link til kortudsnit]</a>
+        </div>
+
+    </div>
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">
