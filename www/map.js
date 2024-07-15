@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             let wikipediatitleda = feature.properties["wikidata_wikipediatitleda"];
             let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
+            let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
+            let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
             popupText += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
             if (wikibirth || wikideath) {
                 let birthdeathtext = '(';
@@ -97,9 +99,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (wikipediatitleda) {
                 popupText += `<a href="${wikipediadaurlprefix}${encodeURI(wikipediatitleda)}">Wikipedia-artikel</a> - `;
             }
-            popupText += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
+            if (hasSingleWikidataItem) {
+                popupText += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
+            } else if (hasMultipleWikidataItems) {
+                console.log('multiple');
+                popupText += `Wikidata-emne: `;
+                let countItems = 0;
+                for (let wikidataSingleId of wikidataId.split(/\s*;\s*/) ) {
+                    countItems++;
+                    popupText += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
+                }
+            }
             popupText += `</p>`;
-            if (/^(Q\d+)$/.test(wikidataId)) {
+            if (hasSingleWikidataItem) {
                 popupText += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find alle steder opkaldt efter dette emne</a></p>`
             }
         } else if (feature.properties["name:etymology"]) {
