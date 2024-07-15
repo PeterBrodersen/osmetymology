@@ -102,7 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (hasSingleWikidataItem) {
                 popupText += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
             } else if (hasMultipleWikidataItems) {
-                console.log('multiple');
                 popupText += `Wikidata-emne: `;
                 let countItems = 0;
                 for (let wikidataSingleId of wikidataId.split(/\s*;\s*/) ) {

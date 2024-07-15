@@ -197,8 +197,10 @@ function updateResultTable(data) {
       var municipalityname = row['municipalityname'] ?? '';
       var wikidatalinkhtml = '';
       var wikidatadescriptionhtml = '';
-      if (row['name:etymology:wikidata']) {
-        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a> <sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
+      let hasSingleWikidataItem = /^(Q\d+)$/.test(row['name:etymology:wikidata']);
+      if (hasSingleWikidataItem) {
+        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a>` +
+          `<sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
         wikidataitems.push(row['name:etymology:wikidata']);
         var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}">${row['wikidescription'] ?? ''}</span>`;
       } else if (row['name:etymology']) {

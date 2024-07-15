@@ -37,10 +37,11 @@ function getColumns($coordinates = FALSE)
 		"to_timestamp(w.claims#>'{P570,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_Centroid(ow.geom)) AS centroid_longitude',
-		'ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude'
+		'ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude',
+		'array_to_json(wikidatas) AS wikidatas_json',
 	];
 	if ($coordinates) {
-		$columns[] = "ow.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry AS distance";
+		$columns[] = "ow.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
