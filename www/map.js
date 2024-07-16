@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // :TODO: Show spinner when loading
     let previousResults = L.layerGroup().addTo(map);
     async function updateMapData() {
-        // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously 
+        // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously
         // remove the old results
         previousResults.remove();
         const nextResults = L.layerGroup().addTo(map);
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         map.panTo(data.latlng);
         const radius = data.accuracy / 2;
         const locationMarker = L.marker(data.latlng).addTo(map)
-            .bindPopup(`Du er inden for ${radius.toLocaleString()} meter fra dette punkt`).openPopup();
+            .bindPopup(`Du er inden for ${Math.round(radius).toLocaleString()} meter af dette punkt`).openPopup();
         const locationCircle = L.circle(data.latlng, radius).addTo(map);
         $.getJSON("lookup.php", { coordinates })
             .fail((jqxhr, textStatus, error) => updateResultTableError(error))
