@@ -21,7 +21,7 @@
     <script src="/map.js"></script>
     <script src="/helper.js"></script>
     <link href='/style.css' rel='stylesheet' />
-    <meta property="og:image" content="https://navne.findvej.dk/l%C3%A6rkevej.png" />
+    <meta property="og:image" content="https://navne.findvej.dk/media/l%C3%A6rkevej.png" />
     <meta property="og:image:width" content="1000" />
     <meta property="og:image:height" content="800" />
 </head>

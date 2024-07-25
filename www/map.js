@@ -62,11 +62,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature) {
+        let osmurls = {
+            point: 'https://www.openstreetmap.org/node/',
+            line: 'https://www.openstreetmap.org/way/',
+            polygon: 'https://www.openstreetmap.org/way/'
+        }
         let placename = feature.properties["streetname"] ?? '(uden navn)';
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         let wikipediadaurlprefix = 'https://da.wikipedia.org/w/index.php?title=';
         if (feature.properties["name:etymology:wikidata"]) {
+            let etymologyText = feature.properties["name:etymology"];
             let wikidataId = feature.properties["name:etymology:wikidata"];
             let wikidatalabel = feature.properties["wikidata_label"];
             let wikibirth = feature.properties["wikidata_dateofbirth"];
@@ -93,7 +99,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 birthdeathtext += ')';
                 popupText += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
             }
-            popupText += `<p>${wikidatadescription}</p>`;
+            if (wikidatadescription) {
+                popupText += `<p>${wikidatadescription}</p>`;
+            } else if (etymologyText) {
+                popupText += `<p>${etymologyText}</p>`;
+            }
             // Wikidata and Wikipedia links
             popupText += `<p>`;
             if (wikipediatitleda) {
@@ -104,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else if (hasMultipleWikidataItems) {
                 popupText += `Wikidata-emne: `;
                 let countItems = 0;
-                for (let wikidataSingleId of wikidataId.split(/\s*;\s*/) ) {
+                for (let wikidataSingleId of wikidataId.split(/\s*;\s*/)) {
                     countItems++;
                     popupText += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
                 }
@@ -117,6 +127,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             let etymologyText = feature.properties["name:etymology"];
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
+        let osmurl = osmurls[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
+        popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a></div>`;
         return popupText;
     }
 
