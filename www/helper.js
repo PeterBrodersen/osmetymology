@@ -197,12 +197,24 @@ function updateResultTable(data) {
       var municipalityname = row['municipalityname'] ?? '';
       var wikidatalinkhtml = '';
       var wikidatadescriptionhtml = '';
-      let hasSingleWikidataItem = /^(Q\d+)$/.test(row['name:etymology:wikidata']);
+      let wikidataId = row['name:etymology:wikidata'];
+      let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
+      let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
       if (hasSingleWikidataItem) {
-        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${row['name:etymology:wikidata']}" class="wikidataname" data-wikidata="${row['name:etymology:wikidata']}">${row['wikilabel']}</a>` +
-          `<sup><a href="#${row['name:etymology:wikidata']}" onclick="doSearch('${row['name:etymology:wikidata']}'); return false;">[Søg]</a></sup>`;
-        wikidataitems.push(row['name:etymology:wikidata']);
-        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${row['name:etymology:wikidata']}">${row['wikidescription'] ?? ''}</span>`;
+        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${row['wikilabel']}</a>` +
+          `<sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup>`;
+        wikidataitems.push(wikidataId);
+        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${row['wikidescription'] ?? ''}</span>`;
+      } else if (hasMultipleWikidataItems) {
+        var wikidatalinkhtml = `Wikidata-emne: `;
+        let countItems = 0;
+        for (let wikidataSingleId of wikidataId.split(/\s*;\s*/)) {
+          countItems++;
+          wikidatalinkhtml += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
+        }
+        if (row['name:etymology']) {
+          var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
+        }
       } else if (row['name:etymology']) {
         var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
       }
