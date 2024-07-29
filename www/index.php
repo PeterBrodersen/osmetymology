@@ -29,7 +29,7 @@
 <body>
     <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
 
-    <div id="userinput"><input required autofocus id="namefind" placeholder="Slå vejnavn op"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
+    <div id="userinput"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
 
     <div id="result">
     </div>
