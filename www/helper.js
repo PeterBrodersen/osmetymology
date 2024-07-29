@@ -49,6 +49,15 @@ $(function () {
     $("#copylinktomap").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
+  $("#showplacesinmapview").on("click", () => {
+    const bounds = map.getBounds();
+    let bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
+    $.getJSON("lookup.php", { bbox })
+      .fail((jqxhr, textStatus, error) => updateResultTableError(error))
+      .done((data) => updateResultTable(data));
+
+  });
+
   // Start if hash fragment is present
   if (window.location.hash.length > 1) {
     // should be moved to map.js startup instead of starting a location that we immediately move away from

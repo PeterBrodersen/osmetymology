@@ -29,7 +29,7 @@
 <body>
     <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
 
-    <div id="userinput"><input required autofocus id="namefind" placeholder="Slå vejnavn op"> <span id="copylink"><a href="#">[kopiér link]</a></span></div>
+    <div id="userinput"><input required autofocus id="namefind" placeholder="Slå vejnavn op"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
 
     <div id="result">
     </div>
@@ -51,7 +51,10 @@
             <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a> <span class="location-loader" style="display:none;"></span>
         </div>
         <div>
-            <a href="#" id="copylinktomap">[kopiér link til kortudsnit]</a>
+            <a href="#" id="showplacesinmapview">[list alle steder i kortudsnit]</a><br>
+        </div>
+        <div>
+            <a href="#" id="copylinktomap">[kopiér link til kortudsnit 🔗]</a><br>
         </div>
 
     </div>

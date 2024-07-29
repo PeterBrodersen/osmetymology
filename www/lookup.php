@@ -63,6 +63,8 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	} elseif ($type == 'bbox') {
 		[$latitudeA, $longitudeA, $latitudeB, $longitudeB] = $bbox;
 		$where = "WHERE ST_Intersects(geom, ST_Envelope('SRID=4326;LINESTRING($longitudeA $latitudeA, $longitudeB $latitudeB)'::geometry))";
+		$limit = 100;
+		// :TODO: add order by distance from center of bbox
 	}
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
