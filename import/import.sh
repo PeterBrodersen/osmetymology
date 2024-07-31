@@ -33,6 +33,6 @@ fi
 if [ -f "$CSVFILE" ] ; then
     rm -- "$CSVFILE"
 fi
-ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql'
+ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Stednavne'
 ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
 php updatestatsfile.php
