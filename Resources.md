@@ -61,5 +61,5 @@ Resources for getting information about the origin of Danish street names.
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
 | Aarhus           | [AarhusWiki](https://aarhuswiki.dk/wiki/Forside)| Online, Wiki | Aarhus Stadsarkiv | Some roads do not have Wiki entries yet |
-|                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Locations all around Denmark |
+|                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
 |                  | [Dansk Gadenavneskik](https://slaegtsbibliotek.dk/2023/935413.pdf) | Online book (1970), PDF | Bent Jørgensen | All-round information about Danish street naming traditions |
