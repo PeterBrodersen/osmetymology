@@ -3,6 +3,8 @@ Etymology map based on OpenStreetMap and Wikidata. This is geared for Danish con
 
 OpenStreetMap has references to Wikidata for a bunch of Danish streets. This project aims to make the information searchable.
 
+A live version of the project can be found at **https://navne.findvej.dk/**
+
 ## Overview
 OpenStreetMap is a freely available map resource. Wikidata is a freely available structured data resource.
 
