@@ -3,6 +3,7 @@ Resources for getting information about the origin of Danish street names.
 
 | Location         | Resource | Type | Owner | Note |
 | ---------------- | -------- | ---- | ----- | ---- |
+| Allerød          | [Veje i Allerød Kommune](https://www.lafak.dk/veje) | Online | Lokalhistorisk Arkiv & Forening i Allerød Kommune | Site mentions origin of streets and towns, and describes local people |
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
