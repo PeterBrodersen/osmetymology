@@ -15,6 +15,7 @@ Resources for getting information about the origin of Danish street names.
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
 | Fredericia       | [Gade- og vejnavne i Fredericia Kommune - og historien bag dem](https://bibliotek.dk/materiale/gade-og-vejnavne-i-fredericia-kommune-og-historien-bag-dem_morten-zierau/work-of:870970-basis:26678358?type=bog) | Book (2007) | Morten Zierau |
+| Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
 | Frederikshavn    | [Tilbageblik - før og nu : historier bag navnet i Frederikshavn](https://bibliotek.dk/materiale/tilbageblik-foer-og-nu_peter-bandholm/work-of%3A870970-basis%3A45209725?type=bog) | Book (2011) | Peter Bandholm, Erik S. Christensen | More stories and anecdotes than lists |
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Hadsund          | [Gade- og vejnavne i Hadsund](https://bibliotek.dk/materiale/gade-og-vejnavne-i-hadsund_birte-overgaard/work-of:870970-basis:135106445?type=bog) | Book (2022) | Birte Overgaard |
