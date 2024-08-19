@@ -62,10 +62,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature) {
-        let osmurls = {
+        // :TODO: URLs probably don't support relations at the moment
+        let osmURLs = {
             point: 'https://www.openstreetmap.org/node/',
             line: 'https://www.openstreetmap.org/way/',
             polygon: 'https://www.openstreetmap.org/way/'
+        }
+        let mapCompleteEtymologyURLs = {
+            point: 'https://mapcomplete.org/etymology.html#node/',
+            line: 'https://mapcomplete.org/etymology.html#way/',
+            polygon: 'https://mapcomplete.org/etymology.html#way/'
         }
         let placename = feature.properties["streetname"] ?? '(uden navn)';
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
@@ -127,8 +133,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             let etymologyText = feature.properties["name:etymology"];
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
-        let osmurl = osmurls[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
-        popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a></div>`;
+        let osmurl = osmURLs[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
+        let mapcompleteurl = mapCompleteEtymologyURLs[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
+        popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Ret stedet på MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
         return popupText;
     }
 
