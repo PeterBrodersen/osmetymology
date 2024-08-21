@@ -25,10 +25,10 @@ $dbh->query('
         itemId TEXT,
         name TEXT COLLATE "da_DK",
         description TEXT COLLATE "da_DK",
-        labels JSON,
-        descriptions JSON,
-        claims JSON,
-        sitelinks JSON
+        labels JSONB,
+        descriptions JSONB,
+        claims JSONB,
+        sitelinks JSONB
     )
 ');
 

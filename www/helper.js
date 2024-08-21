@@ -254,7 +254,11 @@ function getFeatureTypeIcon(featuretype) {
     'place_of_worship': '🛐',
     'square': '🔳',
     'equestrian': '🐎',
-    'parking': '🅿️'
+    'parking': '🅿️',
+    'school': '🏫',
+    'bridge': '🌉',
+    'sport': '🏟️',
+    'power': '⚡'
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];

@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION osmetymology.toSearchString (text text) RETURNS text
 	RETURNS NULL ON NULL INPUT;
 
 -- Normalize featuretype from tags
-CREATE OR REPLACE FUNCTION osmetymology.featureType (tags json) RETURNS text
+CREATE OR REPLACE FUNCTION osmetymology.featureType (tags jsonb) RETURNS text
 AS $$
 	SELECT CASE
 		WHEN tags->>'leisure' = 'park' THEN 'park'
@@ -17,11 +17,15 @@ AS $$
 		WHEN tags->>'office' is not null THEN 'office'
 		WHEN tags->>'place' = 'square' THEN 'square'
 		WHEN tags->>'amenity' = 'place_of_worship' THEN 'place_of_worship'
-		WHEN tags->>'place' in ('city','borough','suburb','quarter','neighbourhood','city_block','town','village','hamlet') THEN 'place'
+		WHEN tags->>'place' in ('city','borough','suburb','quarter','neighbourhood','city_block','town','village','hamlet','islet') THEN 'place'
 		WHEN tags->>'tourism' = 'museum' THEN 'museum'
 		WHEN tags->>'highway' IS NOT NULL OR tags->'footway' IS NOT NULL OR tags->'cycleway' IS NOT NULL THEN 'way'
 		WHEN tags->>'amenity' = 'parking' THEN 'parking'
 		WHEN tags->>'sport' = 'equestrian' THEN 'equestrian'
+		WHEN tags->>'amenity' = 'school' THEN 'school'
+		WHEN tags->>'man_made' = 'bridge' THEN 'bridge'
+		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
+		WHEN tags->>'power' = 'substation' THEN 'power'
 		ELSE ''
 	END
 	AS featuretype
@@ -30,6 +34,17 @@ LANGUAGE SQL
 IMMUTABLE
 RETURNS NULL ON NULL INPUT;
 
+-- Helper function for grouping and merging json together
+CREATE OR REPLACE FUNCTION jsonb_merge(a jsonb, b jsonb)
+RETURNS jsonb LANGUAGE sql IMMUTABLE AS $$
+    SELECT a || b;
+$$;
+
+CREATE OR REPLACE AGGREGATE jsonb_merge_agg(jsonb) (
+    SFUNC = jsonb_merge,
+    STYPE = jsonb,
+    INITCOND = '{}'
+);
 
 
 -- Create aggregated table
@@ -55,7 +70,7 @@ CREATE TABLE osmetymology.ways_agg (
 -- Several points should probably still be aggregated together (e.g. two bus stops across each other with the same name)
 INSERT INTO osmetymology.ways_agg (name, searchname, geomtype, featuretype, municipality_code, object_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", wikidatas, geom)
 (
-	SELECT name, osmetymology.toSearchString(name), 'point', osmetymology.featureType(json_agg(tags)->0), m.kode, array_agg(node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), m.wkb_geometry)
+	SELECT name, osmetymology.toSearchString(name), 'point', osmetymology.featureType(jsonb_merge_agg(tags)), m.kode, array_agg(node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), m.wkb_geometry)
 	FROM osmetymology.osm_points op
 	INNER JOIN osmetymology.municipalities m ON ST_Transform(op.geom,4326) && m.wkb_geometry AND ST_Intersects(ST_Transform(op.geom,4326), m.wkb_geometry)
 	WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
@@ -63,14 +78,14 @@ INSERT INTO osmetymology.ways_agg (name, searchname, geomtype, featuretype, muni
 )
 UNION
 (
-	SELECT name, osmetymology.toSearchString(name), 'line', osmetymology.featureType(json_agg(tags)->0), m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), m.wkb_geometry)
+	SELECT name, osmetymology.toSearchString(name), 'line', osmetymology.featureType(jsonb_merge_agg(tags)), m.kode, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), m.wkb_geometry)
 	FROM osmetymology.osm_ways ow
 	INNER JOIN osmetymology.municipalities m ON ST_Transform(ow.geom,4326) && m.wkb_geometry AND ST_Intersects(ST_Transform(ow.geom,4326), m.wkb_geometry)
 	WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
 	GROUP by name, m.navn, m.kode, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", m.wkb_geometry
 )
 UNION (
-	SELECT name, osmetymology.toSearchString(name), 'polygon', osmetymology.featureType(json_agg(tags)->0), m.kode, array_agg(area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Union(geom), 4326), m.wkb_geometry)
+	SELECT name, osmetymology.toSearchString(name), 'polygon', osmetymology.featureType(jsonb_merge_agg(tags)), m.kode, array_agg(area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Union(geom), 4326), m.wkb_geometry)
 	FROM osmetymology.osm_polygons op
 	INNER JOIN osmetymology.municipalities m ON ST_Transform(op.geom,4326) && m.wkb_geometry AND ST_Intersects(ST_Transform(op.geom,4326), m.wkb_geometry)
 	WHERE name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
