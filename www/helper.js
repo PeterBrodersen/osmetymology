@@ -13,7 +13,7 @@ $(function () {
     lastinputname = inputname;
 
     // if (inputname.length < 3) {
-    if (! /^(Q\d+|.{3,})$/.test(inputname)) {
+    if (! (/^(Q\d+|.{3,})$/).test(inputname)) {
       $("#result").html('');
       return;
     }
@@ -94,7 +94,7 @@ function updateWikidataLabels(itemList) {
   itemList = [...new Set(itemList)];
   let shortList = [];
   for (itemId of itemList) {
-    if (! /^Q\d+$/.test(itemId)) { // Must match Q + digits
+    if (! (/^Q\d+$/).test(itemId)) { // Must match Q + digits
       continue;
     }
     if (wikidata[itemId]) { // already set
@@ -197,7 +197,7 @@ function updateResultTable(data) {
     let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
     let wikidataitems = [];
     for (row of data) {
-      var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">🌍</span>`;
+      var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">📍</span>`;
       var streetname = row['streetname'] ?? '';
       var streetnamehtml = streetname;
       // if (row['sampleway_id']) {
@@ -207,6 +207,7 @@ function updateResultTable(data) {
       var wikidatalinkhtml = '';
       var wikidatadescriptionhtml = '';
       let wikidataId = row['name:etymology:wikidata'];
+      let featureType = `<span title="${capitalizeFirstLetter(row['featuretype'])}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
       let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
       let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
       if (hasSingleWikidataItem) {
@@ -229,7 +230,7 @@ function updateResultTable(data) {
       }
       // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
       //        E.g. create as jquery DOM and add text with .text()
-      newtable.append(`<tr><td class="mapToLink">${mapTohtml}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${wikidatalinkhtml}</td><td>${wikidatadescriptionhtml}</td></tr>`);
+      newtable.append(`<tr><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${wikidatalinkhtml}</td><td>${wikidatadescriptionhtml}</td></tr>`);
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     // updateWikidataLabels(wikidataitems);
@@ -237,6 +238,30 @@ function updateResultTable(data) {
   } else {
     $("#result").html('Intet resultat!');
   }
+}
+
+function getFeatureTypeIcon(featuretype) {
+  let icon = '';
+  let icons = {
+    'museum': '🖼️',
+    'way': '🛣️',
+    'artwork': '🗿',
+    'office': '🏢',
+    'pedestrian': '🚶',
+    'building': '🏠',
+    'place': '🏙️',
+    'park': '🌳',
+    'place_of_worship': '🛐',
+    'square': '🔳',
+    'equestrian': '🐎',
+    'parking': '🅿️'
+  }
+  if (icons[featuretype]) {
+    icon = icons[featuretype];
+  } else {
+    icon = '🌍';
+  }
+  return icon;
 }
 
 function updateResultTableError(error) {

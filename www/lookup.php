@@ -24,6 +24,7 @@ function getColumns($coordinates = FALSE)
 		'ow.name AS streetname',
 		'ow.object_ids',
 		'ow.object_ids[1] AS sampleobject_id',
+		'ow.featuretype',
 		'ow."name:etymology"',
 		'ow."name:etymology:wikidata"',
 		'ow."name:etymology:wikipedia"',

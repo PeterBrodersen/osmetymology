@@ -60,7 +60,7 @@ sup a {
     font-size: 0.7em;
 }
 
-.mapToLink {
+.mapToLink, .featuretype {
     text-align: center;
 }
 

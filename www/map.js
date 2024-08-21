@@ -57,10 +57,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     }
 
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
     function getPopupText(feature) {
         // :TODO: URLs probably don't support relations at the moment
         let osmURLs = {
@@ -255,4 +251,8 @@ function panToWayId(latitude, longitude, wayId) {
     highlightWayId = wayId;
     highlightWayPopup = true;
     map.panTo([latitude, longitude]);
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

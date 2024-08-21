@@ -38,6 +38,7 @@
         <table class="resulttable">
             <tr class="tableheader">
                 <th>Kort</th>
+                <th>Type</th>
                 <th>Stednavn</th>
                 <th>Kommune</th>
                 <th>Wikidata-emne</th>
