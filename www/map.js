@@ -62,12 +62,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         let osmURLs = {
             point: 'https://www.openstreetmap.org/node/',
             line: 'https://www.openstreetmap.org/way/',
-            polygon: 'https://www.openstreetmap.org/way/'
+            polygon: 'https://www.openstreetmap.org/way/',
+            relation: 'https://www.openstreetmap.org/relation/',
         }
         let mapCompleteEtymologyURLs = {
             point: 'https://mapcomplete.org/etymology.html#node/',
             line: 'https://mapcomplete.org/etymology.html#way/',
-            polygon: 'https://mapcomplete.org/etymology.html#way/'
+            polygon: 'https://mapcomplete.org/etymology.html#way/',
+            relation: 'https://mapcomplete.org/etymology.html#relation/'
         }
         let placename = feature.properties["streetname"] ?? '(uden navn)';
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
@@ -129,8 +131,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             let etymologyText = feature.properties["name:etymology"];
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
-        let osmurl = osmURLs[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
-        let mapcompleteurl = mapCompleteEtymologyURLs[feature.properties["geomtype"]] + feature.properties["sampleobject_id"];
+        let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
+        let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation)  + Math.abs(feature.properties["sampleobject_id"]);
         popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Ret stedet på MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
         return popupText;
     }
