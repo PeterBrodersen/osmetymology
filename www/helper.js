@@ -258,7 +258,8 @@ function getFeatureTypeIcon(featuretype) {
     'school': '🏫',
     'bridge': '🌉',
     'sport': '🏟️',
-    'power': '⚡'
+    'power': '⚡',
+    'castle': '🏰',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];

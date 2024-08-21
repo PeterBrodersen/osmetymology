@@ -26,6 +26,7 @@ AS $$
 		WHEN tags->>'man_made' = 'bridge' THEN 'bridge'
 		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
 		WHEN tags->>'power' = 'substation' THEN 'power'
+		WHEN tags->>'historic' = 'castle' THEN 'castle'
 		ELSE ''
 	END
 	AS featuretype

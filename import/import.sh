@@ -7,6 +7,11 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
+# :TODO: Switch to cURL for conditional requests - no need to fetch large files again
+# 
+# curl -o 'denmark-latest.osm.pbf' -z 'denmark-latest.osm.pbf' 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf'
+# https://download.geofabrik.de/europe/denmark-latest.osm.pbf
+
 # Get Denmark OSM file (~400-450 MB) and Danish municipalities with geometry (~115 MB)
 wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
 wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
