@@ -10,7 +10,6 @@ Resources for getting information about the origin of Danish street names.
 | Dragør           | [Dragoerhistorie.dk](http://www.dragoerhistorie.dk/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
-| Gladsaxe         | [Vejnavn](https://web.archive.org/web/20210418150809/https://gladsaxe.dk/Files//Files/SKOHR-DIA-BYS/Byarkiv/Tekstfiler/Vejnavn-uden-Helms-alle.pdf)| Online (Internet Archive), PDF | Gladsaxe Kommune
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
