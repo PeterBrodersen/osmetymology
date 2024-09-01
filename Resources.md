@@ -30,6 +30,7 @@ Resources for getting information about the origin of Danish street names.
 | Liseleje         | [Liselejefiskerne : fra overdrev til fiskerleje og sommerland](https://bibliotek.dk/materiale/liselejefiskerne_holger-j-hansen/work-of:870970-basis:25234979?workId=work-of%3A870970-basis%3A25234979&type=bog) | Book (2003) | Holger J. Hansen | List of old families, some assumed connected to streets in Liseleje |
 | Liseleje         | [Liselejes Historie](https://liselejeqr.dk/) | Online | | Only a few locations |
 | Lyngby           | [Vejnavne i Lyngby-Taarbæk Kommune](https://slaegtsbibliotek.dk/923295.pdf) | Online book (1992), PDF | Peter Wahl | Very detailed |
+| Lyngby           | [Lyngby-Bogen 2022](https://slaegtsbibliotek.dk/2024/938601.pdf) | Online book (2022), PDF | Historisk-topografisk Selskab for Lyngby-Taarbæk Kommune | Very detailed |
 | Middelfart       | [Middelfarts veje](https://bibliotek.dk/materiale/middelfarts-veje_karen-lisbeth-vognsen/work-of%3A870970-basis%3A24738078?type=bog) | Book (2019) | Karen-Lisbeth Vognsen | Good overview |
 | Nakskov          | [Gade og vejnavne i Nakskov](https://arkiv.dk/vis/740167) | Book | Nakskov lokalhistoriske Arkiv | Not sure where the resource is available... |
 | Nakskov          | [Læs om Nakskovs jøder](https://nakskovlokalarkiv.dk/nakskovs-joeder) | Article | Nakskov lokalhistoriske Arkiv | Article mentioning Jødevej, Nakskov |
