@@ -20,8 +20,9 @@ wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojso
 # Main import. Estimated time: 10-30 minutes
 osm2pgsql -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
-# Import municipalities. Takes about 10 seconds.
+# Import municipalities. Takes about 20 seconds.
 ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner.geojson -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+psql -f municipalitybuffers.sql
 
 # Aggregate, split by municipality boundaries. Estimated time: 10-15 minutes. Perhaps the geometry should be simplified.
 psql -f aggregate.sql
