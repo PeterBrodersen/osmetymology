@@ -6,7 +6,7 @@ $itemIds = [];
 
 function getBestLabel($labels)
 { // Run through languages and search for existing value; pick first existing
-    $languages = ['da', 'en', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
+    $languages = ['da', 'en', 'mul', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
     $label = NULL;
     foreach ($languages as $language) {
         if (isset($labels->$language)) {
