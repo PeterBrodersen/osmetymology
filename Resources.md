@@ -23,6 +23,7 @@ Resources for getting information about the origin of Danish street names.
 | Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
 | Hundested        | [Gade op og gade ned : gade- og vejnavne i Hundested og Lynæs samt den nærmeste omegn](https://bibliotek.dk/materiale/gade-op-og-gade-ned_svend-gade/work-of%3A159002-lokalbibl%3A126271891?type=artikel) | Article (2018) | Svend Gade | |
 | Kolding          | [KoldingWiki, Kategori: Gader og veje](https://koldingwiki.dk/index.php?title=Kategori:Gader_og_veje) | Online, Wiki | Kolding Stadsarkiv |
+| København        | [Hvem var menneskene bag Ørestads vejnavne?](http://greir.dk/index.php/orestad/4629-hvem-var-menneskene-bag-orestads-vejnavne) | Online | Ørestad Avis | Focus on Ørestad |
 | København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
 | København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book (1999) | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
 | København        | [Urbane navne - storbyens sproglige dimension](https://vbn.aau.dk/ws/files/549463328/Ph.d._2016_Sandst_Appendiks.pdf) | Online, PDF | Line Sandst | Thesis (2016) |
