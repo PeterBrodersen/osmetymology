@@ -72,7 +72,7 @@
             hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter.
         </p>
         <p>
-            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om over 20.000 veje i Danmark, som er opkaldt efter over 6.500 forskellige emner.
+            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om over 25.000 veje i Danmark, som er opkaldt efter over 9.500 forskellige emner.
         </p>
         <p>
             Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
