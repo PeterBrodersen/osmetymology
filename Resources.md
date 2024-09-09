@@ -7,7 +7,7 @@ Resources for getting information about the origin of Danish street names.
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
-| Dragør           | [Dragoerhistorie.dk](http://www.dragoerhistorie.dk/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
+| Dragør           | [Gader og huse](http://www.dragoerhistorie.dk/gader-og-huse/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
