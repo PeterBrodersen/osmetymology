@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
         let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
-        let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation)  + Math.abs(feature.properties["sampleobject_id"]);
+        let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
         popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Ret stedet på MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
         return popupText;
     }
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let statisticsData = [];
 
         // only fetch the relevant bbox subset of data
-        let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox());
+        let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox(), false, true);
         for await (let feature of iter) {
 
             let hasWikidata = feature.properties["name:etymology:wikidata"];
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 weight: 7,
                 fillOpacity: 0.1,
             };
-            if (!hasWikidata)  {
+            if (!hasWikidata) {
                 defaultStyle.dashArray = '6, 14';
             }
 
