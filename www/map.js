@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function getLineColorFromGender(feature) {
         let lineColor = '#00cc0099';
         if (feature.properties['gender'] == 'male') {
-            lineColor = '#0000ff99';
+            lineColor = '#2244ff99';
         } else if (feature.properties['gender'] == 'female') {
             lineColor = '#ff000099';
         }
@@ -163,6 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox());
         for await (let feature of iter) {
 
+            let hasWikidata = feature.properties["name:etymology:wikidata"];
             let gender = feature.properties['gender'] || 'none';
             statisticsData[gender] = (statisticsData[gender] ?? 0) + 1;
 
@@ -172,11 +173,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (highlightFeature) {
                 lineColor = '#cccc00ff';
             }
-            const defaultStyle = {
+            let defaultStyle = {
                 color: lineColor,
                 weight: 7,
                 fillOpacity: 0.1,
             };
+            if (!hasWikidata)  {
+                defaultStyle.dashArray = '6, 14';
+            }
 
             let mapFeature = L.geoJSON(feature, {
                 style: defaultStyle,
