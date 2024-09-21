@@ -71,13 +71,14 @@ function osm2pgsql.process_node(object)
         return
     end
 
-    tables.points:add_row({
+    tables.points:insert({
         name = object.tags.name,
         ["name:etymology"] = object.tags["name:etymology"],
         ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
         ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
         highway = object.tags.highway,
-        tags = object.tags
+        tags = object.tags,
+        geom = object:as_point()
     })
 end
 
@@ -91,23 +92,24 @@ function osm2pgsql.process_way(object)
     -- TODO: Support panes with different Z indexes before loading areas
     -- if false then
     if is_area(object.tags) then
-        tables.polygons:add_row({
+        tables.polygons:insert({
             name = object.tags.name,
             ["name:etymology"] = object.tags["name:etymology"],
             ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
             ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             highway = object.tags.highway,
             tags = object.tags,
-            geom = { create = 'area' }
+            geom = object:as_polygon()
         })
     else
-        tables.ways:add_row({
+        tables.ways:insert({
             name = object.tags.name,
             ["name:etymology"] = object.tags["name:etymology"],
             ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
             ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             highway = object.tags.highway,
-            tags = object.tags
+            tags = object.tags,
+            geom = object:as_linestring()
         })
     end
 end
@@ -122,13 +124,13 @@ function osm2pgsql.process_relation(object)
     -- Store multipolygons and boundaries as polygons
     if object.tags.type == 'multipolygon' or
        object.tags.type == 'boundary' then
-         tables.polygons:add_row({
+         tables.polygons:insert({
             name = object.tags.name,
             ["name:etymology"] = object.tags["name:etymology"],
             ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
             ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"],
             tags = object.tags,
-            geom = { create = 'area' }
+            geom = object:as_multipolygon()
         })
     end
 
