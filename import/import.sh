@@ -15,16 +15,17 @@ fi
 # Get Denmark OSM file (~400-450 MB) and Danish municipalities with geometry (~115 MB)
 wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
 wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
-wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
+#wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
 
-# Main import. Estimated time: 10-30 minutes
+# Main import. Estimated time: 10-20 minutes
 osm2pgsql -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
-# Import municipalities. Takes about 20 seconds.
-ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner.geojson -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
-psql -f municipalitybuffers.sql
+# Import municipalities. Takes about a second.
+#ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner.geojson -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+#psql -f municipalitybuffers.sql
+ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
-# Aggregate, split by municipality boundaries. Estimated time: 10-15 minutes. Perhaps the geometry should be simplified.
+# Aggregate, split by municipality boundaries. Estimated time: 2-4 minutes.
 psql -f aggregate.sql
 
 # Download and import all Wikidata items. Estimated time: 5-10 minutes.
