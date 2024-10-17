@@ -28,6 +28,7 @@ A couple of examples:
   * [Vejlegade, Nakskov](https://www.openstreetmap.org/way/105868044) is not named after the Danish town Vejle but after "vejle", an old name for a ford (vadested). This is also the origin of Vejle's name.
 * Some names are just deceptive.
   * [Ananasvænget, Odense](https://www.openstreetmap.org/way/55451768) ("Pineapple field") is not named after Ananas/Pineapple but after a specific apple cultivar called [Rød Ananas/Red Pineapple](https://www.wikidata.org/wiki/Q44275015).
+  * [Fuglebakken, Vordingborg](https://www.openstreetmap.org/way/25472023) ("Bird hill") is not named after birds, but after a gardener named [Axel Fugl](https://www.wikidata.org/wiki/Q130548760)
 * Some roads have names based on historic data but due to changes they could be misinterpreted.
   * Roads with names such as Kirkevej, Skolevej, Stationsvej and so on might refer to earlier schools, churches and railway stations. School buildings have often changed purposes (public schools becoming gymnasiums, gymnasiums might merge, etc).
     * [Kirkevej, Dragør](https://www.openstreetmap.org/way/237227739) is just outside Dragør Kirke, but it was named before Dragør Kirke was built, and it in fact leads to [Store Magleby Kirke](https://www.wikidata.org/wiki/Q12003400).
