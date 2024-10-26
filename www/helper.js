@@ -53,11 +53,13 @@ $(function () {
     }
   })
     .autocomplete("instance")._renderItem = function (ul, item) {
-      console.log(item);
+      var optionHTML = `<span class="autoitemname" style="font-weight: bold;">${item.name}</span>`;
+      if (item.description) {
+        optionHTML += `<br><span class="autoitemdescription" style="font-size: 0.8rem; margin-left: 0.4rem;">${item.description}</span>`;
+      }
+      optionHTML += `<br><span class="autoitemcount" style="font-size: 0.8rem; margin-left: 0.4rem;">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
       return $("<li>")
-        .append(`<span class="autoitemname" style="font-weight: bold;">${item.name} </b>`)
-        .append(`<br><span class="autoitemdescription" style="font-size: 0.8rem">${item.description}</span>`)
-        .append(`<br><span class="autoitemcount" style="font-size: 0.8rem">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`)
+        .append(optionHTML)
         .appendTo(ul);
     }
 
