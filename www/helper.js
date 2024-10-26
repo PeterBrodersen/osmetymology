@@ -1,5 +1,6 @@
 let requestCount = 0;
 let lastinputname = '';
+let lastinputlabel = '';
 let wikidata = {};
 let languages = ['da', 'en', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
 let currentCount = 0;
@@ -13,7 +14,7 @@ $(function () {
     lastinputname = inputname;
 
     // if (inputname.length < 3) {
-    if (! (/^(Q\d+|.{3,})$/).test(inputname)) {
+    if (!(/^(Q\d+|.{3,})$/).test(inputname)) {
       $("#result").html('');
       return;
     }
@@ -23,6 +24,42 @@ $(function () {
       .fail((jqxhr, textStatus, error) => updateResultTableError(error))
       .done((data) => updateResultTable(data));
   });
+
+  // $("#itemfind").on("keyup", () => {
+  //   let inputlabel = $("#itemfind").val();
+  //   if (inputlabel == lastinputlabel) { // don't request for random key presses such as shift
+  //     return;
+  //   }
+  //   lastinputlabel = inputlabel;
+
+  //   if (!(/^.{3,}$/).test(inputlabel)) {
+  //     $("#result").html('');
+  //     return;
+  //   }
+  //   $(".resulttable").fadeTo("slow", 0.5);
+  //   $.getJSON("lookup.php", { itemname: inputlabel })
+  //     .fail((jqxhr, textStatus, error) => updateResultTableError(error))
+  //   // .done((data) => updateResultTable(data));
+  // });
+
+  $("#itemfind").autocomplete({
+    // source: 'auto.php',
+    source: 'lookup.php',
+    minLength: 2,
+    delay: 100,
+    select: function (event, ui) {
+      console.log("Selected: " + ui.item.value + " aka " + ui.item.itemid);
+      doSearch(ui.item.itemid);
+    }
+  })
+    .autocomplete("instance")._renderItem = function (ul, item) {
+      console.log(item);
+      return $("<li>")
+        .append(`<span class="autoitemname" style="font-weight: bold;">${item.name} </b>`)
+        .append(`<br><span class="autoitemdescription" style="font-size: 0.8rem">${item.description}</span>`)
+        .append(`<br><span class="autoitemcount" style="font-size: 0.8rem">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`)
+        .appendTo(ul);
+    }
 
   // copy function
   $("#copylink a").on("click", () => {
@@ -94,7 +131,7 @@ function updateWikidataLabels(itemList) {
   itemList = [...new Set(itemList)];
   let shortList = [];
   for (itemId of itemList) {
-    if (! (/^Q\d+$/).test(itemId)) { // Must match Q + digits
+    if (!(/^Q\d+$/).test(itemId)) { // Must match Q + digits
       continue;
     }
     if (wikidata[itemId]) { // already set

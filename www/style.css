@@ -26,7 +26,7 @@ div#userinput {
     margin-bottom: 0.8em;
 }
 
-input#namefind {
+input#namefind, input#itemfind {
     font-size: 1.5em;
     margin-right: 1em;
 }
@@ -101,6 +101,12 @@ div#maplinks {
     display: flex;
     justify-content: space-between;
 }
+
+div#userinput {
+    display: flex;
+    justify-content: space-between;
+}
+
 
 .location-loader {
     width: 16px;

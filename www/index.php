@@ -13,7 +13,9 @@
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
     <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
@@ -29,7 +31,10 @@
 <body>
     <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
 
-    <div id="userinput"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
+    <div id="userinput">
+        <div id="placename"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
+        <div id="itemname"><input required autofocus id="itemfind" placeholder="Slå emne op" accesskey="t"></div>
+    </div>
 
     <div id="result">
     </div>

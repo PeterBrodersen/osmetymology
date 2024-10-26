@@ -3,6 +3,8 @@ require("connect.inc.php");
 header("Content-Type: application/json");
 $search = (string) ($_GET['search'] ?? '');
 $streetname = (string) ($_GET['streetname'] ?? '');
+$itemname = (string) ($_GET['itemname'] ?? '');
+$term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
@@ -14,7 +16,12 @@ if ($search) {
 		$streetname = $search;
 	}
 }
+if (!$itemname) {
+	$itemname = $term;
+}
+
 $searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
+$searchitem = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($itemname));
 $result = [];
 
 function getColumns($coordinates = FALSE)
@@ -82,7 +89,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	return $querystring;
 }
 
-function findStreetName($searchname)
+function findPlaceName($searchname)
 {
 	global $dbh;
 	if (strlen($searchname) < 2) {
@@ -92,6 +99,27 @@ function findStreetName($searchname)
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$searchname]);
+	$result = $q->fetchAll();
+	return $result;
+}
+
+function findWikidataLabel($searchitem) {
+	global $dbh;
+	if (strlen($searchitem) < 2) {
+		return false;
+	}
+	$querystring = <<<EOD
+	SELECT COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
+	FROM osmetymology.wikilabels wl
+	INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
+	INNER JOIN osmetymology.ways_agg wa ON w.itemid = wa."name:etymology:wikidata" 
+	WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
+	GROUP BY wl.label, w.itemid, w.description, w.name
+	ORDER BY 1 DESC
+	EOD;
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$searchitem]);
 	$result = $q->fetchAll();
 	return $result;
 }
@@ -146,7 +174,9 @@ function getStats()
 }
 
 if ($searchname) {
-	$result = findStreetName($searchname);
+	$result = findPlaceName($searchname);
+} elseif ($searchitem) {
+	$result = findWikidataLabel($searchitem);
 } elseif ($itemid) {
 	$result = findStreetsFromItem($itemid);
 } elseif ($coordinates) {
