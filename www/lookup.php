@@ -109,13 +109,16 @@ function findWikidataLabel($searchitem) {
 		return false;
 	}
 	$querystring = <<<EOD
-	SELECT COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
-	FROM osmetymology.wikilabels wl
-	INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-	INNER JOIN osmetymology.ways_agg wa ON w.itemid = wa."name:etymology:wikidata" 
-	WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
-	GROUP BY wl.label, w.itemid, w.description, w.name
-	ORDER BY 1 DESC
+	SELECT * FROM (
+		SELECT DISTINCT ON (w.itemid) COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
+		FROM osmetymology.wikilabels wl
+		INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
+		INNER JOIN osmetymology.ways_agg wa ON w.itemid = wa."name:etymology:wikidata" 
+		WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
+		GROUP BY wl.label, w.itemid, w.description, w.name
+	) t
+	ORDER BY placecount DESC, name, itemid
+	LIMIT 50
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
