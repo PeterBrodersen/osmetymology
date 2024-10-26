@@ -63,7 +63,7 @@ end
 
 -- Assume input object is not a point
 function is_area(tags)
-    return tags.building or tags.landuse or tags.amenity or tags.shop or tags["building:part"] or tags.boundary or tags.historic or tags.place or tags["area:highway"] or tags.leisure or tags.natural or tags.area == 'yes' or tags.highway == 'platform' or tags.railway == 'platform' or tags.man_made == 'bridge' or tags.man_made == 'storage_tank' or tags.man_made == 'pier' or tags.man_made == 'silo' or tags.man_made == 'chimney'
+    return tags.building or tags.landuse or tags.amenity or tags.shop or tags["building:part"] or tags.boundary or tags.historic or tags.place or tags["area:highway"] or tags.leisure or tags.natural or tags.area == 'yes' or tags.highway == 'platform' or tags.railway == 'platform' or tags.man_made == 'bridge' or tags.man_made == 'storage_tank' or tags.man_made == 'pier' or tags.man_made == 'silo' or tags.man_made == 'chimney' or tags.aeroway = 'aerodrome'
 end
 
 function osm2pgsql.process_node(object)
