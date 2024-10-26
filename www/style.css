@@ -26,7 +26,8 @@ div#userinput {
     margin-bottom: 0.8em;
 }
 
-input#namefind, input#itemfind {
+input#namefind,
+input#itemfind {
     font-size: 1.5em;
     margin-right: 1em;
 }
@@ -60,7 +61,8 @@ sup a {
     font-size: 0.7em;
 }
 
-.mapToLink, .featuretype {
+.mapToLink,
+.featuretype {
     text-align: center;
 }
 
@@ -166,4 +168,14 @@ div#userinput {
     100% {
         transform: scale(1);
     }
+}
+
+.ui-autocomplete {
+    max-height: 600px ! important;
+    max-width: 300px ! important;
+    overflow-y: auto ! important;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden ! important;
+    font-size: 0.8em ! important;
+    margin-right: 30px ! important;
 }
