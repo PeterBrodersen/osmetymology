@@ -53,11 +53,14 @@ $(function () {
     }
   })
     .autocomplete("instance")._renderItem = function (ul, item) {
-      var optionHTML = `<span class="autoitemname" style="font-weight: bold;">${item.name}</span>`;
+      let optionHTML = `<div class="autoitemblock">`;
+      optionHTML += `<span class="autoitemname">${item.name}</span>`;
+      optionHTML += `<div class="autoitemdetails">`;
       if (item.description) {
-        optionHTML += `<br><span class="autoitemdescription" style="font-size: 0.8rem; margin-left: 0.4rem;">${item.description}</span>`;
+        optionHTML += `<span class="autoitemdescription">${item.description}</span><br>`;
       }
-      optionHTML += `<br><span class="autoitemcount" style="font-size: 0.8rem; margin-left: 0.4rem;">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
+      optionHTML += `<span class="autoitemcount">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
+      optionHTML += `</div></div>`;
       return $("<li>")
         .append(optionHTML)
         .appendTo(ul);

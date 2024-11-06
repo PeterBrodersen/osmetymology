@@ -179,3 +179,12 @@ div#userinput {
     font-size: 0.8em ! important;
     margin-right: 30px ! important;
 }
+
+.autoitemblock .autoitemname {
+    font-weight: bold;
+}
+
+.autoitemblock .autoitemdetails {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+}
