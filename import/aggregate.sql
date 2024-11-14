@@ -13,10 +13,9 @@ AS $$
 	SELECT CASE
 		WHEN tags->>'leisure' = 'park' THEN 'park'
 		WHEN tags->>'tourism' = 'artwork' THEN 'artwork'
-		WHEN tags->>'building' is not NULL THEN 'building'
+		WHEN tags->>'amenity' = 'place_of_worship' THEN 'place_of_worship'
 		WHEN tags->>'office' is not null THEN 'office'
 		WHEN tags->>'place' = 'square' THEN 'square'
-		WHEN tags->>'amenity' = 'place_of_worship' THEN 'place_of_worship'
 		WHEN tags->>'place' in ('city','borough','suburb','quarter','neighbourhood','city_block','town','village','hamlet','islet') THEN 'place'
 		WHEN tags->>'tourism' = 'museum' THEN 'museum'
 		WHEN tags->>'highway' IS NOT NULL OR tags->'footway' IS NOT NULL OR tags->'cycleway' IS NOT NULL THEN 'way'
@@ -27,6 +26,7 @@ AS $$
 		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
 		WHEN tags->>'power' = 'substation' THEN 'power'
 		WHEN tags->>'historic' = 'castle' THEN 'castle'
+		WHEN tags->>'building' is not NULL THEN 'building'
 		ELSE ''
 	END
 	AS featuretype
