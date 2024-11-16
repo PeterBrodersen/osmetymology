@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fillOpacity: 0.1,
             };
             if (!hasWikidata) {
-                defaultStyle.dashArray = '6, 14';
+                defaultStyle.dashArray = '9, 11';
             }
 
             let mapFeature = L.geoJSON(feature, {

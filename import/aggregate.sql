@@ -24,6 +24,7 @@ AS $$
 		WHEN tags->>'sport' = 'equestrian' THEN 'equestrian'
 		WHEN tags->>'amenity' = 'school' THEN 'school'
 		WHEN tags->>'man_made' = 'bridge' THEN 'bridge'
+		WHEN tags->>'natural' = 'tree' OR tags->>'natural' = 'wood' OR tags->>'landuse' = 'forest' THEN 'wood'
 		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
 		WHEN tags->>'power' = 'substation' THEN 'power'
 		WHEN tags->>'historic' = 'castle' THEN 'castle'
