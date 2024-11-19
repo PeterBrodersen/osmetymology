@@ -3,6 +3,7 @@
 require("../www/connect.inc.php");
 $statefile = 'state.txt';
 $statsjsonfile = '../www/data/stats.json';
+$municipalityjsonfile = '../www/data/municipalities.json';
 
 print date("H:i:s") . ": Creating stats" . PHP_EOL;
 
@@ -25,6 +26,44 @@ $stats = [
     'importfiletime' => $importfiletime
 ];
 file_put_contents($statsjsonfile, json_encode($stats));
+
+function getMunicipalityStats() {
+	global $dbh;
+	$querystring = <<<EOD
+	WITH dist AS (
+		SELECT DISTINCT ow.municipality_code, m.navn, gendermap.gender, w.itemid
+		FROM osmetymology.ways_agg ow
+		INNER JOIN osmetymology.municipalities m ON ow.municipality_code = m.kode
+		INNER JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
+		LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		WHERE ow.featuretype = 'way'
+	), groups AS (
+		SELECT municipality_code, navn, coalesce(SUM((gender = 'female')::int),0) AS female, coalesce(SUM((gender = 'male')::int),0) AS male, coalesce(SUM((gender is NULL)::int),0) AS no_gender, COUNT(*) AS totalcount
+		FROM dist
+		GROUP BY municipality_code, navn
+	)
+	SELECT *, (female+male) AS gendered_ways, female::float/greatest(female+male, 1) AS female_share, male::float/greatest(female+male, 1) AS male_share
+	FROM groups
+	ORDER BY municipality_code
+	EOD;
+	$q = $dbh->query($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$result = $q->fetchAll();
+	$resultclean = [];
+	foreach($result AS $row) {
+		$resultclean[] = array_map('strtofloat', $row); // hack due to PDO returning floats as string; fixed in PHP 8.4: https://github.com/devnexen/php-src/commit/c176f3d21688b0c7cc10f8afe31c17ca9adaed16
+	}
+	return $resultclean;
+}
+
+function strtofloat($scalar) {
+    return is_numeric($scalar) ? $scalar+0 : $scalar;
+}
+
+$municipalitystats = getMunicipalityStats();
+file_put_contents($municipalityjsonfile, json_encode($municipalitystats));
+
+
 /*
 SELECT COUNT(*) FROM osmetymology.ways_agg
 SELECT COUNT(DISTINCT name) FROM osmetymology.ways_agg
