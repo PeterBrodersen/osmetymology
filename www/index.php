@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/flatgeobuf/dist/flatgeobuf-geojson.min.js"></script>
-    <script src="https://unpkg.com/json-formatter-js"></script>
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -41,14 +40,16 @@
 
     <template id="tabletemplate">
         <table class="resulttable">
-            <tr class="tableheader">
-                <th>Kort</th>
-                <th>Type</th>
-                <th>Stednavn</th>
-                <th>Kommune</th>
-                <th>Wikidata-emne</th>
-                <th>Beskrivelse</th>
-            </tr>
+            <thead>
+                <tr class="tableheader">
+                    <th>Kort</th>
+                    <th>Type</th>
+                    <th>Stednavn</th>
+                    <th>Kommune</th>
+                    <th>Wikidata-emne</th>
+                    <th>Beskrivelse</th>
+                </tr>
+            </thead>
         </table>
     </template>
 
@@ -86,7 +87,7 @@
         </p>
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/aggregate.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
-            Har du spørgsmålet om <b>projektet</b> (men <i>ikke</i> spørgsmål om manglende vejnavne), er du mere end velkommen <a href="mailto:peter@ter.dk">sende en mail</a>.
+            Har du spørgsmålet til projektet, er du mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
         </p>
 
         <p class="copyright">
