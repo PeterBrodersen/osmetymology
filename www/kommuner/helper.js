@@ -49,7 +49,21 @@ function getSingleMunicipalityStats(municipality_code) {
         .done((data) => {
             if (data) {
                 let html = `<thead><tr><th colspan="2">${data.municipality_name}, ${data.region_name}</th></tr></thead><tbody>`;
+                let lastgender = '';
                 for (item of data.items) {
+                    if (lastgender != item.gender) {
+                        let label = '';
+                        let color = '';
+                        if (item.gender == 'female') {
+                            label = 'Kvinder';
+                            color = '#e99';
+                        } else {
+                            label = 'Mænd';
+                            color = '#88e'
+                        }
+                        html += `<tr><th colspan="2" style="background-color: ${color}">${label}</th></tr>`
+                        lastgender = item.gender;
+                    }
                     var symbol = (item.gender == 'female' ? '♀' : '♂'); // assuming gender is set
                     var ways = item.ways.replace(';', '<br>');
                     // :TODO: Escape HTML
