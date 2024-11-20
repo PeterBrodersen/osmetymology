@@ -8,6 +8,7 @@ Resources for getting information about the origin of Danish street names.
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
 | Dragør           | [Gader og huse](http://www.dragoerhistorie.dk/gader-og-huse/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
+| Egedal           | [Egedal Leksikon: Kategori: Gader, Veje og Broer](http://egedalleksikon.dk/index.php/Kategori:Gader,_Veje_og_Broer) | Online, Wiki | Egedal Arkiver og Museum | |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
 | Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
