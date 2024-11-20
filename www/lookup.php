@@ -179,21 +179,34 @@ function getStats()
 function getMunicipalityStats() {
 	global $dbh;
 	$querystring = <<<EOD
-	WITH dist AS (
-		SELECT DISTINCT ow.municipality_code, m.navn, gendermap.gender, w.itemid
-		FROM osmetymology.ways_agg ow
-		INNER JOIN osmetymology.municipalities m ON ow.municipality_code = m.kode
-		INNER JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
+		WITH expanded AS (
+			SELECT ow.municipality_code, ow.name, UNNEST(wikidatas) AS wikidata_id
+			FROM osmetymology.ways_agg ow
+			WHERE ow.featuretype = 'way'
+		)
+		SELECT
+			expanded.municipality_code,
+			m.navn AS municipality_name,
+			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
+			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
+			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
+			COUNT(DISTINCT w.itemid) AS total_unique_topics,
+			COUNT(DISTINCT CASE WHEN gender IS NOT NULL THEN w.itemid END) AS total_gendered_topics,
+			COUNT(DISTINCT CASE WHEN gender IS NOT NULL THEN expanded.name END) AS unique_ways_with_gender, -- A person can have more than one way named after them
+			ROUND(
+				100.0 * COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) / 
+				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
+			) AS female_percentage,
+			ROUND(
+				100.0 * COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) / 
+				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
+			) AS male_percentage
+		FROM expanded
+		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
+		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		WHERE ow.featuretype = 'way'
-	), groups AS (
-		SELECT municipality_code, navn, coalesce(SUM((gender = 'female')::int),0) AS female, coalesce(SUM((gender = 'male')::int),0) AS male, coalesce(SUM((gender is NULL)::int),0) AS no_gender, COUNT(*) AS totalcount
-		FROM dist
-		GROUP BY municipality_code, navn
-	)
-	SELECT *, (female+male) AS gendered_ways, female::float/greatest(female+male, 1) AS female_share, male::float/greatest(female+male, 1) AS male_share
-	FROM groups
-	ORDER BY municipality_code
+		GROUP BY expanded.municipality_code, m.navn
+		ORDER BY expanded.municipality_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
