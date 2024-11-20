@@ -18,15 +18,15 @@
     <h1>Statistik for kommuner og vejnavne</h1>
     <p>
         Statistik fra <a href="/">Navneprojektet</a> for kønsfordeling på veje i kommunen. Hver person tælles kun med én gang inden for en kommune, også selv
-        om flere vejnavne refererer til personen.
+        om flere vejnavne refererer til personen. Klik på et kommunenavn for at se personer i kommunen med veje tilknyttet.
     </p>
     <p>Dato for datasæt: <span id="importfiletime"></span></p>
 
-    <table id="municipalitystats" class="resulttable">
+    <table id="municipalitystats" class="resulttable" style="float: left">
         <thead>
-            <tr>
+            <tr style="cursor: pointer;">
                 <th onclick="sortTable(0,true)">Kommunekode</th>
-                <th onclick="sortTable(1)">Kommune</th>
+                <th onclick="sortTable(1,false)">Kommune</th>
                 <th onclick="sortTable(2,true)">Kvinder</th>
                 <th onclick="sortTable(3,true)">Mænd</th>
                 <th onclick="sortTable(4,true)">Kvinder (%)</th>
@@ -38,6 +38,10 @@
         </tbody>
     </table>
 
+    <table class="resulttable" id="singlemunicipality" style="float: left; margin-left: 3em;">
+    </table>
+
+    <div style="clear: both;"></div>
 
     <div id="betaboilerplate">
         <p>

@@ -8,6 +8,7 @@ $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
+$municipalitycode = (int) ($_GET['municipalitycode'] ?? 0);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -176,6 +177,38 @@ function getStats()
 	return $result;
 }
 
+function getSingleMunicipalityWayPersons($municipalitycode) {
+	global $dbh;
+	$municipalitycode = '0' . $municipalitycode;
+	$q = $dbh->prepare("SELECT kode AS municipality_code, navn AS municipality_name, regionsnavn AS region_name FROM osmetymology.municipalities WHERE kode = ?");
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$municipalitycode]);
+	$result = $q->fetch();
+	if (!$result) {
+		return [];
+	}
+
+	$querystring = <<<EOD
+		WITH expanded AS (
+			SELECT DISTINCT wa."name", unnest(wikidatas) AS wd
+			FROM osmetymology.ways_agg wa
+			WHERE wa.featuretype = 'way'
+			AND wa.municipality_code = ?
+		)
+		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		FROM expanded
+		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
+		INNER JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		GROUP BY personname, gender, description
+		ORDER BY gender, personname
+	EOD;
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$municipalitycode]);
+	$result['items'] = $q->fetchAll();
+	return $result;
+}
+
 function getMunicipalityStats() {
 	global $dbh;
 	$querystring = <<<EOD
@@ -234,6 +267,8 @@ if ($searchname) {
 	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
+} elseif ($municipalitycode) {
+	$result = getSingleMunicipalityWayPersons($municipalitycode);
 } elseif ($request == 'municipalitystats') {
 	$result = getMunicipalityStats();
 }

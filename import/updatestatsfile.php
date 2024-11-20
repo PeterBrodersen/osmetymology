@@ -4,6 +4,7 @@ require("../www/connect.inc.php");
 $statefile = 'state.txt';
 $statsjsonfile = '../www/data/stats.json';
 $municipalityjsonfile = '../www/data/municipalities.json';
+$municipalityjsonfolder = '../www/data/municipalities/';
 
 print date("H:i:s") . ": Creating stats" . PHP_EOL;
 
@@ -73,10 +74,64 @@ function strtofloat($scalar) {
     return is_numeric($scalar) ? $scalar+0 : $scalar;
 }
 
+
+function getSingleMunicipalityWayPersons($municipalitycode) {
+	global $dbh;
+	$municipalitycode = '0' . (int) $municipalitycode;
+	$q = $dbh->prepare("SELECT kode AS municipality_code, navn AS municipality_name, regionsnavn AS region_name FROM osmetymology.municipalities WHERE kode = ?");
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$municipalitycode]);
+	$result = $q->fetch();
+	if (!$result) {
+		return [];
+	}
+
+	$querystring = <<<EOD
+		WITH expanded AS (
+			SELECT DISTINCT wa."name", unnest(wikidatas) AS wd
+			FROM osmetymology.ways_agg wa
+			WHERE wa.featuretype = 'way'
+			AND wa.municipality_code = ?
+		)
+		SELECT w.name AS personname, gendermap.gender, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		FROM expanded
+		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
+		INNER JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		GROUP BY personname, gender, description, wikidata_item
+		ORDER BY gender, personname
+	EOD;
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$municipalitycode]);
+	$result['items'] = $q->fetchAll();
+	return $result;
+}
+
+function getMunicipalityCodes() {
+	global $dbh;
+	$result = $dbh->query("SELECT kode FROM osmetymology.municipalities ORDER BY kode")->fetchAll(PDO::FETCH_COLUMN);
+	return $result;
+}
+
+
 $municipalitystats = getMunicipalityStats();
 // :TODO: Add date and other information; put municipalities in their own array
 file_put_contents($municipalityjsonfile, json_encode($municipalitystats));
 
+print date("H:i:s") . ": Creating municipality stats" . PHP_EOL;
+$mcount = 0;
+$municipalitycodes = getMunicipalityCodes();
+foreach ($municipalitycodes AS $municipalitycode) {
+	$mcount++;
+	$data = getSingleMunicipalityWayPersons($municipalitycode);
+	$jsonpath = $municipalityjsonfolder . $municipalitycode . '.json';
+	file_put_contents($jsonpath, json_encode($data));
+	if ($mcount % 10 === 0) {
+		print $mcount . ' / ' . count($municipalitycodes) . ' municipalities'. PHP_EOL;
+	}
+}
+
+print date("H:i:s") . ": Stats done!" . PHP_EOL;
 
 /*
 SELECT COUNT(*) FROM osmetymology.ways_agg

@@ -13,6 +13,10 @@ table.resulttable td {
     padding: 5px;
 }
 
+tr {
+    vertical-align: top;
+}
+
 .numeric {
     text-align: right;
 }
@@ -191,4 +195,9 @@ div#userinput {
 .autoitemblock .autoitemdetails {
     margin-left: 0.5rem;
     font-size: 0.8rem;
+}
+
+.persondetails {
+    margin-left: 1rem;
+    font-size: 0.9rem;
 }
