@@ -65,7 +65,7 @@ function getSingleMunicipalityStats(municipality_code) {
                         lastgender = item.gender;
                     }
                     var symbol = (item.gender == 'female' ? '♀' : '♂'); // assuming gender is set
-                    var ways = item.ways.replace(';', '<br>');
+                    var ways = item.ways.replaceAll(';', '<br>');
                     // :TODO: Escape HTML
                     html += `
                     <tr>
