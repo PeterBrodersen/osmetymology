@@ -60,6 +60,9 @@ function getSingleMunicipalityStats(municipality_code) {
                     </tr>
                     `;
                 }
+                if (data.items.length == 0) {
+                    html += `<tr><td colspan="2" style="font-style: italic">Ingen registrerede veje i kommunen er opkaldt efter personer</td></tr>`
+                }
                 html += `</tbody>`;
                 $('#singlemunicipality').html(html);
                 location.hash = code;

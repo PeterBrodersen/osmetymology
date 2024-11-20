@@ -69,7 +69,7 @@
 
     <div id="betaboilerplate">
         <p>
-            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, statistik, m.m. Forvent fejl og ændringer.
+            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, <a href="kommuner/">statistik</a>, m.m. Forvent fejl og ændringer.
         </p>
         <p>
             Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. I løbet af

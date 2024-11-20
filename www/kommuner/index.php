@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        Oversigt og statistik for kommuner og vejnavne
+        Oversigt og statistik for kønsfordeling for vejnavne i kommuner
     </title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href='/style.css' rel='stylesheet' />
@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <h1>Statistik for kommuner og vejnavne</h1>
+    <h1>Statistik for kønsfordeling for vejnavne i kommuner</h1>
     <p>
         Statistik fra <a href="/">Navneprojektet</a> for kønsfordeling på veje i kommunen. Hver person tælles kun med én gang inden for en kommune, også selv
         om flere vejnavne refererer til personen. Klik på et kommunenavn for at se personer i kommunen med veje tilknyttet.
