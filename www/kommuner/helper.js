@@ -1,6 +1,10 @@
 $(function () {
+    window.onhashchange = hashChanged;
     getStats();
     getMunicipalityStats();
+    if (window.location.hash.length > 1) {
+        hashChanged();
+    }
 });
 
 function getStats() {
@@ -22,7 +26,7 @@ function getMunicipalityStats() {
                     html += `
                     <tr>
                     <td class="numeric">${municipality.municipality_code}</td>
-                    <td data-municipalitycode="${municipality.municipality_code}"><a href="#" onclick="getSingleMunicipalityStats(parentElement.dataset.municipalitycode)">${municipality.municipality_name}</a></td>
+                    <td data-municipalitycode="${municipality.municipality_code}"><a href="#" onclick="getSingleMunicipalityStats(parentElement.dataset.municipalitycode); return false;">${municipality.municipality_name}</a></td>
                     <td class="numeric">${municipality.unique_female_topic}</td>
                     <td class="numeric">${municipality.unique_male_topic}</td>
                     <td class="numeric">${municipality.female_percentage.toFixed(0)}</td>
@@ -58,7 +62,7 @@ function getSingleMunicipalityStats(municipality_code) {
                 }
                 html += `</tbody>`;
                 $('#singlemunicipality').html(html);
-
+                location.hash = code;
             }
         }
         );
@@ -119,5 +123,17 @@ function sortTable(n, numeric) {
                 switching = true;
             }
         }
+    }
+}
+
+function hashChanged() {
+    let hash = decodeURIComponent(window.location.hash.substring(1));
+    hash = parseInt(hash);
+    if (hash) {
+        getSingleMunicipalityStats(hash);
+        return true;
+    } else {
+        $('#singlemunicipality').html('');
+        return false;
     }
 }

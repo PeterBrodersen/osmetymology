@@ -22,7 +22,7 @@
     </p>
     <p>Dato for datasæt: <span id="importfiletime"></span></p>
 
-    <table id="municipalitystats" class="resulttable" style="float: left">
+    <table id="municipalitystats" class="resulttable" style="float: left;  margin-right: 3em;">
         <thead>
             <tr style="cursor: pointer;">
                 <th onclick="sortTable(0,true)">Kommunekode</th>
@@ -38,7 +38,7 @@
         </tbody>
     </table>
 
-    <table class="resulttable" id="singlemunicipality" style="float: left; margin-left: 3em;">
+    <table class="resulttable" id="singlemunicipality" style="float: left;">
     </table>
 
     <div style="clear: both;"></div>
