@@ -32,10 +32,14 @@
             <tr style="cursor: pointer;">
                 <th onclick="sortTable(0,true)">Kommunekode</th>
                 <th onclick="sortTable(1,false)">Kommune</th>
-                <th onclick="sortTable(2,true)">Kvinder</th>
-                <th onclick="sortTable(3,true)">Mænd</th>
-                <th onclick="sortTable(4,true)">Kvinder (%)</th>
-                <th onclick="sortTable(5,true)">Mænd (%)</th>
+                <th onclick="sortTable(2,true)">Kvinder,<br>menneske</th>
+                <th onclick="sortTable(3,true)">Mænd,<br>menneske</th>
+                <th onclick="sortTable(4,true)">Kvinder (%)<br>menneske</th>
+                <th onclick="sortTable(5,true)">Mænd (%)<br>menneske</th>
+                <th onclick="sortTable(6,true)">Kvinder,<br>alle</th>
+                <th onclick="sortTable(7,true)">Mænd,<br>alle</th>
+                <th onclick="sortTable(8,true)">Kvinder (%)<br>alle</th>
+                <th onclick="sortTable(9,true)">Mænd (%)<br>alle</th>
             </tr>
         </thead>
         <tbody>

@@ -32,19 +32,29 @@ function getMunicipalityStats() {
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT ow.municipality_code, ow.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.ways_agg ow
-			WHERE ow.featuretype = 'way'
+			SELECT wa.municipality_code, wa.name, UNNEST(wikidatas) AS wikidata_id
+			FROM osmetymology.ways_agg wa
+			WHERE wa.featuretype IN('way','square')
 		)
 		SELECT
 			expanded.municipality_code,
 			m.navn AS municipality_name,
+			COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_female_topic,
+			COUNT(DISTINCT CASE WHEN gender = 'male' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_male_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
 			COUNT(DISTINCT w.itemid) AS total_unique_topics,
 			COUNT(DISTINCT CASE WHEN gender IS NOT NULL THEN w.itemid END) AS total_gendered_topics,
 			COUNT(DISTINCT CASE WHEN gender IS NOT NULL THEN expanded.name END) AS unique_ways_with_gender, -- A person can have more than one way named after them
+			ROUND(
+				100.0 * COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) / 
+				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END), 1), 2
+			) AS human_female_percentage,
+			ROUND(
+				100.0 * COUNT(DISTINCT CASE WHEN gender = 'male' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) / 
+				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END), 1), 2
+			) AS human_male_percentage,
 			ROUND(
 				100.0 * COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) / 
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
@@ -90,15 +100,15 @@ function getSingleMunicipalityWayPersons($municipalitycode) {
 		WITH expanded AS (
 			SELECT DISTINCT wa."name", unnest(wikidatas) AS wd
 			FROM osmetymology.ways_agg wa
-			WHERE wa.featuretype = 'way'
+			WHERE wa.featuretype IN('way','square')
 			AND wa.municipality_code = ?
 		)
-		SELECT w.name AS personname, gendermap.gender, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
 		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
 		INNER JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY personname, gender, description, wikidata_item
-		ORDER BY gender, personname
+		GROUP BY personname, gender, description, wikidata_item, is_human
+		ORDER BY gender, is_human DESC, personname
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);

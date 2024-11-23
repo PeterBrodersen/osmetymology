@@ -27,6 +27,10 @@ function getMunicipalityStats() {
                     <tr>
                     <td class="numeric">${municipality.municipality_code}</td>
                     <td data-municipalitycode="${municipality.municipality_code}"><a href="#" onclick="getSingleMunicipalityStats(parentElement.dataset.municipalitycode); return false;">${municipality.municipality_name}</a></td>
+                    <td class="numeric">${municipality.unique_human_female_topic}</td>
+                    <td class="numeric">${municipality.unique_human_male_topic}</td>
+                    <td class="numeric">${municipality.human_female_percentage.toFixed(0)}</td>
+                    <td class="numeric">${municipality.human_male_percentage.toFixed(0)}</td>
                     <td class="numeric">${municipality.unique_female_topic}</td>
                     <td class="numeric">${municipality.unique_male_topic}</td>
                     <td class="numeric">${municipality.female_percentage.toFixed(0)}</td>
@@ -64,8 +68,17 @@ function getSingleMunicipalityStats(municipality_code) {
                         html += `<tr><th colspan="2" style="background-color: ${color}">${label}</th></tr>`
                         lastgender = item.gender;
                     }
-                    var symbol = (item.gender == 'female' ? '♀' : '♂'); // assuming gender is set
-                    var ways = item.ways.replaceAll(';', '<br>');
+                    let symbol = '';
+                    if (item.is_human) {
+                        symbol += '<span title="Menneske">🧑</span>';
+                    }
+                    if (item.gender == 'female') {
+                        symbol += '<span title="Kvinde">♀</span>';
+                    }
+                    if (item.gender == 'male') {
+                        symbol += '<span title="Mand">♂</span>';
+                    }
+                    let ways = item.ways.replaceAll(';', '<br>');
                     // :TODO: Escape HTML
                     html += `
                     <tr>
