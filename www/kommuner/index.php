@@ -21,7 +21,7 @@
         om flere vejnavne refererer til personen. Klik på et kommunenavn for at se personer i kommunen med veje tilknyttet.
     </p>
     <p>
-        Der er registreret ca. 35.000 veje i Danmark. Ikke alle veje er med endnu, og projektet er stadigvæk under udvikling, baseret på frivilligt arbejde.
+        Der er registreret ophav for ca. 35.000 veje i Danmark. Ikke alle veje er med endnu, og projektet er stadigvæk under udvikling, baseret på frivilligt arbejde.
     </p>
     <p>
         Dato for datasæt: <span id="importfiletime"></span>
