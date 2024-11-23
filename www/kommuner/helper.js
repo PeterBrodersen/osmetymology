@@ -80,6 +80,10 @@ function getSingleMunicipalityStats(municipality_code) {
                 html += `</tbody>`;
                 $('#singlemunicipality').html(html);
                 location.hash = code;
+                // scroll to table
+                $('html, body').animate({
+                    scrollTop: $("#singlemunicipality").offset().top
+                }, 500);
             }
         }
         );
