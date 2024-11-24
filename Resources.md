@@ -55,6 +55,7 @@ Resources for getting information about the origin of Danish street names.
 | Silkeborg        | [Gader og veje i Silkeborg : hvorfor hedder de sådan?](https://bibliotek.dk/materiale/gader-og-veje-i-silkeborg_g-noergaard-jepsen/work-of%3A870970-basis%3A06652212?type=bog) | Book (1987) | G. Nørgaard Jepsen | Useful overview |
 | Slagelse         | [Hvorfor hedder det ... ? Gadenavne i Slagelse](https://arkiv.dk/pdfviewer/viewpdf?originalId=8a68906e412c4c4e870cfc9d3d518a4b) | Online book (2007), PDF | Hardy Sørensen | [Paper edition](https://bibliotek.dk/materiale/hvorfor-hedder-det-_hardy-soerensen/work-of%3A870970-basis%3A44266741?type=bog)
 | Skagen           | [Skagens Vejnavne](http://www.skagenlokal.dk/skagens_vejnavne.html) ([alternative view](http://www.skagenlokal.dk/Sider/Vej.html)) | Online | Hans Nielsen og Skagen Lokalhistoriske Forening | Many roads |
+| Skanderborg      | [Skanderborg Leksikon, Kategori: Gader & veje](http://www.skanderborgleksikon.dk/index.php/Kategori:Gader_%26_veje) | Online, Wiki | Skanderborg Historiske Arkiv | |
 | Sorø             | [Veje og gader i Sorø og omegn](https://www.soroehistorie.dk/arkiv/Veje_og_gader.html) | Online | Lokalhistorisk Arkiv for Sorø og Omegn |
 | Svendborg        | [Svendborg Historie](https://www.svendborghistorie.dk/sofart/andet/130-gader-og-veje/gader-og-veje-sp-131) | Online | | Only a few roads |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
