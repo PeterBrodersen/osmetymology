@@ -82,7 +82,7 @@ function getSingleMunicipalityStats(municipality_code) {
                     // :TODO: Escape HTML
                     html += `
                     <tr>
-                    <td>${symbol} <a href="/#${item.wikidata_item}">${item.personname}</a><br><div class="persondetails">${item.description}</div></td>
+                    <td>${symbol} <a href="/#${item.wikidata_item}">${item.personname}</a><br><div class="persondetails">${item.description ?? ''}</div></td>
                     <td>${ways}</td>
                     </tr>
                     `;
