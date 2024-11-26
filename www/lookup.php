@@ -65,7 +65,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
-		$where = 'WHERE "name:etymology:wikidata" = ?';
+		$where = 'WHERE ? = ANY (wikidatas)';
 	} elseif ($type == 'nearest') {
 		$limit = 20;
 		$orderbylist = ['distance'];
@@ -114,7 +114,7 @@ function findWikidataLabel($searchitem) {
 		SELECT DISTINCT ON (w.itemid) COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
 		FROM osmetymology.wikilabels wl
 		INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-		INNER JOIN osmetymology.ways_agg wa ON w.itemid = wa."name:etymology:wikidata" 
+		INNER JOIN osmetymology.ways_agg wa ON w.itemid = ANY (wa.wikidatas)
 		WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
 		GROUP BY wl.label, w.itemid, w.description, w.name
 	) t
