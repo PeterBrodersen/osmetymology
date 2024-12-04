@@ -43,3 +43,8 @@ fi
 ogr2ogr "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Stednavne'
 ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
 php updatestatsfile.php
+
+# Backup stats file with import date
+DATE=$(date +%Y-%m-%d)
+cp ../www/data/stats.json ../www/data/old/stats_${DATE:?}.json
+cp ../www/data/municipalities.json ../www/data/old/municipalities_${DATE:?}.json
