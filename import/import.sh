@@ -17,6 +17,11 @@ wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.t
 wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
 #wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
 
+if [ ! -s "denmark-latest.osm.pbf" ]; then
+    echo "Error: Couldn't download denmark-latest.osm.pbf"
+    exit 1
+fi
+
 # Main import. Estimated time: 10-20 minutes
 osm2pgsql -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
@@ -45,6 +50,6 @@ ogr2ogr "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tocsv.sql'
 php updatestatsfile.php
 
 # Backup stats file with import date
-DATE=$(date +%Y-%m-%d)
+DATE=$(date +%F)
 cp ../www/data/stats.json ../www/data/old/stats_${DATE:?}.json
 cp ../www/data/municipalities.json ../www/data/old/municipalities_${DATE:?}.json
