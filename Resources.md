@@ -35,6 +35,7 @@ Resources for getting information about the origin of Danish street names.
 | København        | [Urbane navne - storbyens sproglige dimension](https://vbn.aau.dk/ws/files/549463328/Ph.d._2016_Sandst_Appendiks.pdf) | Online, PDF | Line Sandst | Thesis (2016) |
 | København        | [Om københavnske Gadenavne](https://bibliotek.dk/materiale/om-koebenhavnske-gadenavne_otto-mackeprang/work-of:870970-basis:44021099?workId=work-of%3A870970-basis%3A44021099&type=bog) | Book (1948) | Otto Mackeprang | Lots of streets mentioned, not in list form though |
 | Køge             | [Køge bys gader og veje](http://koegearkiverne.dk/wp-content/uploads/Kge-Bys-gader-og-veje.pdf) | Online book (1951) | Wilhelm von Antoniewitz | 
+| Køge             | [Historien bag navnet](https://koegearkiverne.dk/category/historien-bag-navnet) | Blog | Køge arkiverne |
 | Liseleje         | [Liselejefiskerne : fra overdrev til fiskerleje og sommerland](https://bibliotek.dk/materiale/liselejefiskerne_holger-j-hansen/work-of:870970-basis:25234979?workId=work-of%3A870970-basis%3A25234979&type=bog) | Book (2003) | Holger J. Hansen | List of old families, some assumed connected to streets in Liseleje |
 | Liseleje         | [Liselejes Historie](https://liselejeqr.dk/) | Online | | Only a few locations |
 | Lyngby           | [Vejnavne i Lyngby-Taarbæk Kommune](https://slaegtsbibliotek.dk/923295.pdf) | Online book (1992), PDF | Peter Wahl | Very detailed |
