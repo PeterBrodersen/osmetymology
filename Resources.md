@@ -21,11 +21,13 @@ Resources for getting information about the origin of Danish street names.
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Hadsund          | [Gade- og vejnavne i Hadsund](https://bibliotek.dk/materiale/gade-og-vejnavne-i-hadsund_birte-overgaard/work-of:870970-basis:135106445?type=bog) | Book (2022) | Birte Overgaard |
 | Helsingør        | [Gader og veje i Helsingør Kommune - historisk og generelt](https://helsingorleksikon.dk/index.php/Gader_og_veje_i_Helsing%C3%B8r_Kommune_-_historisk_og_generelt) | Online, Wiki | Helsingør Kommunes Museer | 
+| Hillerød         | [Gader og veje i Hillerød Kommune](https://bibliotek.dk/materiale/gader-og-veje-i-hilleroed-kommune_eva-holm-nielsen/work-of%253A870970-basis%253A20137819) | Book (1992) | Eva Holm-Nielsen | Extensive list |
 | Holbæk           | [Vejnavne i Holbæk kommune : en kommentar](https://bibliotek.dk/materiale/vejnavne-i-holbaek-kommune_flemming-sylvest/work-of%3A870970-basis%3A25856562?type=bog) | Book (2005) | Flemming Sylvest | Extensive list, probably from before [Strukturreformen](https://da.wikipedia.org/wiki/Strukturreformen). |
 | Horsens          | [Gader og veje i Horsens opkaldt efter personer](https://bibliotek.dk/materiale/gader-og-veje-i-horsens-opkaldt-efter-personer/work-of%3A870970-basis%3A05238897?type=bog) | Book (1977) | Horsens Bibliotek | Reference of roads named after persons |
 | Horsens          | [Horsens Leksikon](https://www.horsensleksikon.dk/) | Online | Byarkivet, Horsens Museum og Horsens Bibliotek | |
-| Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
 | Hundested        | [Gade op og gade ned : gade- og vejnavne i Hundested og Lynæs samt den nærmeste omegn](https://bibliotek.dk/materiale/gade-op-og-gade-ned_svend-gade/work-of%3A159002-lokalbibl%3A126271891?type=artikel) | Article (2018) | Svend Gade | |
+| Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
+| Ishøj            | [Ishøj kommunes vejnavne](https://bibliotek.dk/materiale/ishoej-kommunes-vejnavne_leif-nielsen-f-1938-/work-of%3A870970-basis%3A05496829) | Book (1979) | Leif Nielsen | [Also available online](https://ishoejlokalhistorisk.dk/wp-content/uploads/2020/04/Ish%C3%B8j-kommunes-vejnavne-1979.pdf) |
 | Kolding          | [KoldingWiki, Kategori: Gader og veje](https://koldingwiki.dk/index.php?title=Kategori:Gader_og_veje) | Online, Wiki | Kolding Stadsarkiv |
 | København        | [Hvem var menneskene bag Ørestads vejnavne?](http://greir.dk/index.php/orestad/4629-hvem-var-menneskene-bag-orestads-vejnavne) | Online | Ørestad Avis | Focus on Ørestad |
 | København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
