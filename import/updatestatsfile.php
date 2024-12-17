@@ -136,12 +136,10 @@ foreach ($municipalitycodes AS $municipalitycode) {
 	$data = getSingleMunicipalityWayPersons($municipalitycode);
 	$jsonpath = $municipalityjsonfolder . $municipalitycode . '.json';
 	file_put_contents($jsonpath, json_encode($data));
-	if ($mcount % 10 === 0) {
-		print $mcount . ' / ' . count($municipalitycodes) . ' municipalities'. PHP_EOL;
-	}
+	print $mcount . ' / ' . count($municipalitycodes) . ' municipalities' . "\r";
 }
 
-print date("H:i:s") . ": Stats done!" . PHP_EOL;
+print PHP_EOL . date("H:i:s") . ": Stats done!" . PHP_EOL;
 
 /*
 SELECT COUNT(*) FROM osmetymology.ways_agg
