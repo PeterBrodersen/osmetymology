@@ -97,7 +97,7 @@ function importItemIds($itemIds)
 
     print "Importing " . count($itemIds) . " items in " . count($chunks) . " chunks:" . PHP_EOL;
     foreach ($chunks as $chunkid => $chunk) {
-        print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . PHP_EOL;
+        print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . "\r";
         $itemList = implode('|', $chunk);
         $url = $apiurlprefix . $itemList;
         $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
@@ -116,6 +116,7 @@ function importItemIds($itemIds)
             $insertdb->execute([$pageid, $name, $description, $labels, $descriptions, $claims, $sitelinks, $aliases]);
         }
     }
+    print PHP_EOL;
     return true;
 }
 
