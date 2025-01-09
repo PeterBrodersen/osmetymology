@@ -65,7 +65,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
-		$where = 'WHERE ? = ANY (wikidatas)';
+		$where = 'WHERE wikidatas @> ARRAY[?]';
 	} elseif ($type == 'nearest') {
 		$limit = 20;
 		$orderbylist = ['distance'];
