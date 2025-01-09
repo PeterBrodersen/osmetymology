@@ -102,6 +102,7 @@ CREATE INDEX ways_agg_name_idx ON osmetymology.ways_agg ("name" text_pattern_ops
 CREATE INDEX ways_agg_searchname_idx ON osmetymology.ways_agg ("searchname" text_pattern_ops);
 CREATE INDEX ways_agg_municipality_idx ON osmetymology.ways_agg ("municipality_code");
 CREATE INDEX ways_agg_name_etymology_wikidata_idx ON osmetymology.ways_agg ("name:etymology:wikidata");
+CREATE INDEX ways_agg_wikidatas_idx ON osmetymology.ways_agg USING gin("wikidatas");
 
 DROP INDEX IF EXISTS osmetymology.municipalities_kode_idx;
 CREATE INDEX municipalities_kode_idx ON osmetymology.municipalities ("kode");

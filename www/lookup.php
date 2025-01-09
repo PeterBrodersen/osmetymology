@@ -104,7 +104,8 @@ function findPlaceName($searchname)
 	return $result;
 }
 
-function findWikidataLabel($searchitem) {
+function findWikidataLabel($searchitem)
+{
 	global $dbh;
 	if (strlen($searchitem) < 2) {
 		return false;
@@ -114,7 +115,7 @@ function findWikidataLabel($searchitem) {
 		SELECT DISTINCT ON (w.itemid) COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
 		FROM osmetymology.wikilabels wl
 		INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-		INNER JOIN osmetymology.ways_agg wa ON w.itemid = ANY (wa.wikidatas)
+		INNER JOIN osmetymology.ways_agg wa ON wa.wikidatas @> ARRAY[w.itemid]
 		WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
 		GROUP BY wl.label, w.itemid, w.description, w.name
 	) t
@@ -177,7 +178,8 @@ function getStats()
 	return $result;
 }
 
-function getSingleMunicipalityWayPersons($municipalitycode) {
+function getSingleMunicipalityWayPersons($municipalitycode)
+{
 	global $dbh;
 	$municipalitycode = '0' . $municipalitycode;
 	$q = $dbh->prepare("SELECT kode AS municipality_code, navn AS municipality_name, regionsnavn AS region_name FROM osmetymology.municipalities WHERE kode = ?");
@@ -209,7 +211,8 @@ function getSingleMunicipalityWayPersons($municipalitycode) {
 	return $result;
 }
 
-function getMunicipalityStats() {
+function getMunicipalityStats()
+{
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
@@ -245,14 +248,15 @@ function getMunicipalityStats() {
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$result = $q->fetchAll();
 	$resultclean = [];
-	foreach($result AS $row) {
+	foreach ($result as $row) {
 		$resultclean[] = array_map('strtofloat', $row); // hack due to PDO returning floats as string; fixed in PHP 8.4: https://github.com/devnexen/php-src/commit/c176f3d21688b0c7cc10f8afe31c17ca9adaed16
 	}
 	return $resultclean;
 }
 
-function strtofloat($scalar) {
-    return is_numeric($scalar) ? $scalar+0 : $scalar;
+function strtofloat($scalar)
+{
+	return is_numeric($scalar) ? $scalar + 0 : $scalar;
 }
 
 if ($searchname) {
