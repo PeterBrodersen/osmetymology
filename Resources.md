@@ -58,12 +58,14 @@ Resources for getting information about the origin of Danish street names.
 | Roskilde         | [Roskildes gader](https://roskildesudvikling.dk/FORSIDE/Gader%20og%20str%C3%A6der/) | Online | | Only a few roads |
 | Roskilde         | [Gader og stræder - i Roskilde Kommune](https://bibliotek.dk/materiale/gader-og-straeder-i-roskilde-kommune_lotte-fang/work-of%3A870970-basis%3A22349600?type=bog) | Book (2015) | Lotte Fang | Extremely detailed |
 | Rudersdal        | [Vejnavne](https://museer.rudersdal.dk/rum/sektioner/vejnavne) | Online | Rudersdal Museer | Only some roads |
+| Sejs-Svejbæk     | [Historien om Vejnavne i Sejs-Svejbæk](https://sslf.dk/wp-content/uploads/2018/12/181211-Historien-om-vejnavne-i-SejsSvejb%C3%A6k-PDF.pdf) | Online book (2018), PDF | Sejs-Svejbæk Lokalhistoriske Forening |
 | Silkeborg        | [Gader og veje i Silkeborg : hvorfor hedder de sådan?](https://bibliotek.dk/materiale/gader-og-veje-i-silkeborg_g-noergaard-jepsen/work-of%3A870970-basis%3A06652212?type=bog) | Book (1987) | G. Nørgaard Jepsen | Useful overview |
 | Slagelse         | [Hvorfor hedder det ... ? Gadenavne i Slagelse](https://arkiv.dk/pdfviewer/viewpdf?originalId=8a68906e412c4c4e870cfc9d3d518a4b) | Online book (2007), PDF | Hardy Sørensen | [Paper edition](https://bibliotek.dk/materiale/hvorfor-hedder-det-_hardy-soerensen/work-of%3A870970-basis%3A44266741?type=bog)
 | Skagen           | [Skagens Vejnavne](http://www.skagenlokal.dk/skagens_vejnavne.html) ([alternative view](http://www.skagenlokal.dk/Sider/Vej.html)) | Online | Hans Nielsen og Skagen Lokalhistoriske Forening | Many roads |
 | Skanderborg      | [Skanderborg Leksikon, Kategori: Gader & veje](http://www.skanderborgleksikon.dk/index.php/Kategori:Gader_%26_veje) | Online, Wiki | Skanderborg Historiske Arkiv | |
 | Sorø             | [Veje og gader i Sorø og omegn](https://www.soroehistorie.dk/arkiv/Veje_og_gader.html) | Online | Lokalhistorisk Arkiv for Sorø og Omegn |
-| Svendborg        | [Svendborg Historie](https://www.svendborghistorie.dk/sofart/andet/130-gader-og-veje/gader-og-veje-sp-131) | Online | | Only a few roads |
+| Svendborg        | [Gader og veje](https://www.svendborghistorie.dk/historier/erhverv/130-gader-og-veje/gader-og-veje-sp-131/) | Online | Museum Sydfyn | |
+| Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
 | Tårnby           | [Steder og veje](https://lokalarkiv.taarnby.dk/tarnby-historier/steder-og-veje/) | Online | Tårnby Lokalarkiv | |
 | Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Ternby Kommunes Lokalhistoriske Samling | |
@@ -76,6 +78,7 @@ Resources for getting information about the origin of Danish street names.
 | Viborg           | [Viborg bys gadenavne](https://bibliotek.dk/materiale/viborg-bys-gadenavne_otto-von-spreckelsen/work-of%3A870970-basis%3A08559104?type=bog) | Book (1962) | Otto von Spreckelsen | Small overview in the beginning |
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
+| Aalborg          | [Historien bag de gamle gader i Aalborg anno 1949](https://bibliotek.dk/materiale/historien-bag-de-gamle-gader-i-aalborg-anno-1949_kr-vaernfelt/work-of:870970-basis:41212497?workId=work-of%3A870970-basis%3A41212497&type=bog) | Book (1949?) |
 | Aarhus           | [AarhusWiki](https://aarhuswiki.dk/wiki/Forside)| Online, Wiki | Aarhus Stadsarkiv | Some roads do not have Wiki entries yet |
 |                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
 |                  | [Dansk Gadenavneskik](https://slaegtsbibliotek.dk/2023/935413.pdf) | Online book (1970), PDF | Bent Jørgensen | All-round information about Danish street naming traditions |
