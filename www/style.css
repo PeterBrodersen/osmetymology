@@ -13,10 +13,6 @@ table.resulttable td {
     padding: 5px;
 }
 
-tr {
-    vertical-align: top;
-}
-
 .numeric {
     text-align: right;
 }
@@ -200,4 +196,27 @@ div#userinput {
 .persondetails {
     margin-left: 2.4rem;
     font-size: 0.9rem;
+}
+
+#municipalitystats {
+    float: left;
+    margin-right: 3em;
+}
+
+#municipalitystats thead tr {
+    cursor: pointer;
+}
+
+#singlemunicipality {
+    float: left;
+}
+
+#municipalitystats tfoot tr {
+    border-top: solid 2px black;
+    border-bottom: solid 2px black;
+    text-align: left;
+}
+
+div.clear {
+    clear: both;
 }

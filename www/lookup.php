@@ -82,7 +82,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	INNER JOIN osmetymology.municipalities m on ow.municipality_code = m.kode
 	LEFT JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
 	LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-	LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) as gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+	LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 	$where
 	ORDER BY $orderby
 	LIMIT $limit
@@ -200,7 +200,7 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
 		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
-		INNER JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description
 		ORDER BY gender, personname
 	EOD;
@@ -240,7 +240,7 @@ function getMunicipalityStats()
 		FROM expanded
 		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN (VALUES ('Q6581072', 'female'), ('Q6581097', 'male'), ('Q1052281', 'female'), ('Q2449503', 'male')) AS gendermap (itemid, gender) ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY expanded.municipality_code, m.navn
 		ORDER BY expanded.municipality_code
 	EOD;

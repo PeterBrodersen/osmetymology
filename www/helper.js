@@ -51,16 +51,34 @@ $(function () {
       console.log("Selected: " + ui.item.value + " aka " + ui.item.itemid);
       doSearch(ui.item.itemid);
     }
-  })
+    })
     .autocomplete("instance")._renderItem = function (ul, item) {
-      let optionHTML = `<div class="autoitemblock">`;
-      optionHTML += `<span class="autoitemname">${item.name}</span>`;
+      var showname = item.name;
+      if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim() )) {
+        showname = item.name + ' (<em>' + item.label + '</em>)';
+      }
+
+      let optionHTML = `<div class="autoitemblock" title="${item.label}">`;
+      optionHTML += `<span class="autoitemname">${showname}</span>`;
       optionHTML += `<div class="autoitemdetails">`;
       if (item.description) {
         optionHTML += `<span class="autoitemdescription">${item.description}</span><br>`;
       }
       optionHTML += `<span class="autoitemcount">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
       optionHTML += `</div></div>`;
+      // .autocomplete("instance")._renderItem = function (ul, item) {
+      //   let optionHTML = `<div class="autoitemblock">`;
+      //   optionHTML += `<span class="autoitemname">${item.name}</span>`;
+      //   optionHTML += `<div style="display: flex; align-items: center;">`;
+      //   // Cirklen er nogle gange en ellipse!
+      //   optionHTML += `<div style="border-radius: 50%; background: #9ee; text-align: center; box-sizing: border-box; width: 25px; height: 25px; padding: 5px; text-align: center; justify-content: center; align-items: center; line-height: 17px; font-family: sans-serif;"><span title="${item.placecount} ${item.placecount == 1 ? "sted" : "steder"}">${item.placecount}</div><div style="flex-grow: 1; padding-left: 20px;">${item.description ?? ''}</div>`;
+      //   optionHTML += `</div></div>`;
+      //   // optionHTML += `<div class="autoitemdetails">`;
+      //   // if (item.description) {
+      //   //   optionHTML += `<span class="autoitemdescription">${item.description}</span><br>`;
+      //   // }
+      //   // optionHTML += `<span class="autoitemcount">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
+      //   // optionHTML += `</div></div>`;
       return $("<li>")
         .append(optionHTML)
         .appendTo(ul);
@@ -253,8 +271,8 @@ function updateResultTable(data) {
       let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
       let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
       if (hasSingleWikidataItem) {
-        var wikidatalinkhtml = `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${row['wikilabel']}</a>` +
-          `<sup><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">[Søg]</a></sup>`;
+        var wikidatalinkhtml = `<a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${row['wikilabel']}</a> ` +
+          `<sup><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a></sup>`;
         wikidataitems.push(wikidataId);
         var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${row['wikidescription'] ?? ''}</span>`;
       } else if (hasMultipleWikidataItems) {
@@ -293,6 +311,7 @@ function getFeatureTypeIcon(featuretype) {
     'building': '🏠',
     'place': '🏙️',
     'park': '🌳',
+    'wood': '🌲',
     'place_of_worship': '🛐',
     'square': '🔳',
     'equestrian': '🐎',

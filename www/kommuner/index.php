@@ -6,8 +6,8 @@
         Oversigt og statistik for kønsfordeling for vejnavne i kommuner
     </title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js" integrity="sha512-O/JP2r8BG27p5NOtVhwqsSokAwEP5RwYgvEzU9G6AfNjLYqyt2QT8jqU1XrXCiezS50Qp1i3ZtCQWkHZIRulGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='/style.css' rel='stylesheet' />
-    <!-- Find tablesorter -->
     <script src="/kommuner/helper.js"></script>
     <meta property="og:image" content="https://navne.findvej.dk/media/l%C3%A6rkevej.png" />
     <meta property="og:image:width" content="1000" />
@@ -27,30 +27,38 @@
         Dato for datasæt: <span id="importfiletime"></span>
     </p>
 
-    <table id="municipalitystats" class="resulttable" style="float: left;  margin-right: 3em;">
+    <table id="municipalitystats" class="resulttable">
         <thead>
-            <tr style="cursor: pointer;">
-                <th onclick="sortTable(0,true)">Kommunekode</th>
-                <th onclick="sortTable(1,false)">Kommune</th>
-                <th onclick="sortTable(2,true)">Kvinder,<br>menneske</th>
-                <th onclick="sortTable(3,true)">Mænd,<br>menneske</th>
-                <th onclick="sortTable(4,true)">Kvinder (%)<br>menneske</th>
-                <th onclick="sortTable(5,true)">Mænd (%)<br>menneske</th>
-                <th onclick="sortTable(6,true)">Kvinder,<br>alle</th>
-                <th onclick="sortTable(7,true)">Mænd,<br>alle</th>
-                <th onclick="sortTable(8,true)">Kvinder (%)<br>alle</th>
-                <th onclick="sortTable(9,true)">Mænd (%)<br>alle</th>
+            <tr>
+                <th>Kommunekode</th>
+                <th>Kommune</th>
+                <th>Kvinder,<br>menneske</th>
+                <th>Mænd,<br>menneske</th>
+                <th>Kvinder (%)<br>menneske</th>
+                <th>Mænd (%)<br>menneske</th>
+                <th>Kvinder,<br>alle</th>
+                <th>Mænd,<br>alle</th>
+                <th>Kvinder (%)<br>alle</th>
+                <th>Mænd (%)<br>alle</th>
             </tr>
         </thead>
         <tbody>
 
         </tbody>
+        <tfoot>
+
+        </tfoot>
     </table>
 
-    <table class="resulttable" id="singlemunicipality" style="float: left;">
+    <table class="resulttable" id="singlemunicipality">
     </table>
 
-    <div style="clear: both;"></div>
+    <div class="clear"></div>
+
+    <p>
+        Tallene for <b>Alle kommuner</b> er lavere end summen for de enkelte kommuner, idet dubletter (personer, som optræder
+        i flere kommuner) kun tælles med én gang.
+    </p>
 
     <div id="betaboilerplate">
         <p>

@@ -46,7 +46,7 @@
                     <th>Type</th>
                     <th>Stednavn</th>
                     <th>Kommune</th>
-                    <th>Wikidata-emne</th>
+                    <th>Emne</th>
                     <th>Beskrivelse</th>
                 </tr>
             </thead>
