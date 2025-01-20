@@ -46,7 +46,18 @@
 
         </tbody>
         <tfoot>
-
+            <tr>
+                <th>Kommunekode</th>
+                <th>Kommune</th>
+                <th>Kvinder,<br>menneske</th>
+                <th>Mænd,<br>menneske</th>
+                <th>Kvinder (%)<br>menneske</th>
+                <th>Mænd (%)<br>menneske</th>
+                <th>Kvinder,<br>alle</th>
+                <th>Mænd,<br>alle</th>
+                <th>Kvinder (%)<br>alle</th>
+                <th>Mænd (%)<br>alle</th>
+            </tr>
         </tfoot>
     </table>
 
@@ -56,8 +67,8 @@
     <div class="clear"></div>
 
     <p>
-        Tallene for <b>Alle kommuner</b> er lavere end summen for de enkelte kommuner, idet dubletter (personer, som optræder
-        i flere kommuner) kun tælles med én gang.
+        Tallene for <b>Alle kommuner</b> er lavere end summen for de enkelte kommuner, idet dubletter (samme personer, som optræder
+        i flere kommuner) kun bliver talt med én gang.
     </p>
 
     <div id="betaboilerplate">

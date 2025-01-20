@@ -54,8 +54,8 @@ function getMunicipalityStats() {
                     <th class="numeric">${data.etymologystats.total.male_percentage.toFixed(0)}</th>
                     </tr>
                 `;
-                $('#municipalitystats tbody').html(tbodyhtml);
-                $('#municipalitystats tfoot').html(tfoothtml);
+                $('#municipalitystats tbody').append(tbodyhtml);
+                $('#municipalitystats tfoot').append(tfoothtml);
             }
             $("#municipalitystats").tablesorter();
         }
