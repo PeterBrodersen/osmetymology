@@ -271,7 +271,7 @@ function updateResultTable(data) {
       let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
       let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
       if (hasSingleWikidataItem) {
-        var wikidatalinkhtml = `<a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${row['wikilabel']}</a> ` +
+        var wikidatalinkhtml = `<a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${row['wikilabel'] ?? '(under opdatering)'}</a> ` +
           `<sup><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a></sup>`;
         wikidataitems.push(wikidataId);
         var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${row['wikidescription'] ?? ''}</span>`;
