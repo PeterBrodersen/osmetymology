@@ -45,8 +45,8 @@ function getColumns($coordinates = FALSE)
 		"to_date(w.claims#>'{P569,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
 		"to_date(w.claims#>'{P570,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
-		'ST_X(ST_Centroid(ow.geom)) AS centroid_longitude',
-		'ST_Y(ST_Centroid(ow.geom)) AS centroid_latitude',
+		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
+		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
 		'array_to_json(wikidatas) AS wikidatas_json',
 	];
 	if ($coordinates) {

@@ -51,10 +51,10 @@ $(function () {
       console.log("Selected: " + ui.item.value + " aka " + ui.item.itemid);
       doSearch(ui.item.itemid);
     }
-    })
+  })
     .autocomplete("instance")._renderItem = function (ul, item) {
       var showname = item.name;
-      if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim() )) {
+      if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim())) {
         showname = item.name + ' (<em>' + item.label + '</em>)';
       }
 
@@ -257,7 +257,7 @@ function updateResultTable(data) {
     let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
     let wikidataitems = [];
     for (row of data) {
-      var mapTohtml = `<span onclick="panToWayId(${row['centroid_latitude']}, ${row['centroid_longitude']}, ${row['id']});">📍</span>`;
+      var mapTohtml = `<span onclick="panToWayId(${row['centroid_onfeature_latitude']}, ${row['centroid_onfeature_longitude']}, ${row['id']});">📍</span>`;
       var streetname = row['streetname'] ?? '';
       var streetnamehtml = streetname;
       // if (row['sampleway_id']) {
