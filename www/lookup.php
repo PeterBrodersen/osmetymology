@@ -47,7 +47,7 @@ function getColumns($coordinates = FALSE)
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
-		'array_to_json(wikidatas) AS wikidatas_json',
+		'wikidatas',
 	];
 	if ($coordinates) {
 		$columns[] = "ow.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
