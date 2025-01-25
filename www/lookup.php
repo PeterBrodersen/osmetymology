@@ -25,12 +25,23 @@ $searchname = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($streetname));
 $searchitem = preg_replace('_[^[:alnum:]]_u', '', mb_strtolower($itemname));
 $result = [];
 
+function convertPGArraysToPHPArray($result)
+{
+	$cleanresult = [];
+	foreach ($result as $row) {
+		$row['object_ids'] = json_decode($row['object_ids']);
+		$row['wikidatas'] = json_decode($row['wikidatas']);
+		$cleanresult[] = $row;
+	}
+	return $cleanresult;
+}
+
 function getColumns($coordinates = FALSE)
 {
 	$columns = [
 		'ow.id',
 		'ow.name AS streetname',
-		'ow.object_ids',
+		'array_to_json(ow.object_ids) AS object_ids',
 		'ow.object_ids[1] AS sampleobject_id',
 		'ow.featuretype',
 		'ow."name:etymology"',
@@ -47,7 +58,7 @@ function getColumns($coordinates = FALSE)
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
-		'wikidatas',
+		'array_to_json(ow.wikidatas) AS wikidatas',
 	];
 	if ($coordinates) {
 		$columns[] = "ow.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
@@ -101,6 +112,7 @@ function findPlaceName($searchname)
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$searchname]);
 	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
 	return $result;
 }
 
@@ -140,6 +152,7 @@ function findStreetsFromItem($itemid)
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$itemid]);
 	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
 	return $result;
 }
 
@@ -153,6 +166,7 @@ function findNearestPlacesFromLocation($coordinates)
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
 	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
 	return $result;
 }
 
@@ -165,6 +179,7 @@ function findNearestPlacesFromBBOX($bboxstring)
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
 	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
 	return $result;
 }
 
