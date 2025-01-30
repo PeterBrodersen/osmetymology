@@ -217,6 +217,14 @@ div#userinput {
     text-align: left;
 }
 
+#municipalitystats tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+#municipalitystats tbody tr.active {
+    background-color: #d0e0f0;
+}
+
 div.clear {
     clear: both;
 }

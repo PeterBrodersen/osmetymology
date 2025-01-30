@@ -63,6 +63,12 @@ function getMunicipalityStats() {
 }
 
 function getSingleMunicipalityStats(municipality_code) {
+    // Remove highlight from previously clicked row
+    $('#municipalitystats tbody tr').removeClass('active');
+
+    // Highlight the clicked row
+    $(`#municipalitystats tbody tr td[data-municipalitycode="${municipality_code}"]`).parent().addClass('active');
+
     let code = municipality_code.toString().padStart(4, '0'); // four digit municipality code
     let jsonurl = `/data/municipalities/${code}.json`;
     $.getJSON(jsonurl)
