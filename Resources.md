@@ -48,6 +48,7 @@ Resources for getting information about the origin of Danish street names.
 | Nakskov          | [Læs om Nakskovs jøder](https://nakskovlokalarkiv.dk/nakskovs-joeder) | Article | Nakskov lokalhistoriske Arkiv | Article mentioning Jødevej, Nakskov |
 | Nakskov          | [Egeskov og ørneklo : en bog om Nakskov](https://bibliotek.dk/materiale/egeskov-og-oerneklo_carl-emil-hansen-f-1913-/work-of%3A870970-basis%3A06963927?type=bog) | Book (1989) | Carl Emil Hansen |
 | Nakskov          | [Hvorfor hedder de det?](https://bibliotek.dk/materiale/hvorfor-hedder-de-det-/work-of%3A800010-katalog%3A99122170238405763?type=bog) | Book (2000) | Det Gamle Trykkeri | Reference, describes many roads |
+| Nyborg           | [Gade op og gade ned: Nyborgs historie i gadeplan](https://bibliotek.dk/materiale/gade-op-og-gade-ned_john-maaloe-larsen/work-of:870970-basis:53657605?type=bog) | Book (2017) | John Maalø Larsen | Many roads, also historic roads |
 | Nysted           | [Tema: Stednavne](https://www.nysted-lokalhistorie.dk/tema-stednavne/) | Online | Nysted lokalhistoriske Arkiv |
 | Næstved          | [Byens gader fortæller en historie](https://www.sn.dk/naestved-kommune/byens-gader-fortaeller-en-historie/) | Online, article | Sjællandske Nyheder | Article about new signs in the municipality |
 | Odense           | [Adresser - vejnavne og husnumre](https://www.odense.dk/borger/trafik-og-veje/veje/adresser-vejnavne-og-husnumre) | Online | Odense Kommune | Overview |
