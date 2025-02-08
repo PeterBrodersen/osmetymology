@@ -73,6 +73,7 @@ Resources for getting information about the origin of Danish street names.
 | Svendborg        | [Gader og veje](https://www.svendborghistorie.dk/historier/erhverv/130-gader-og-veje/gader-og-veje-sp-131/) | Online | Museum Sydfyn | |
 | Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
+| Sønderborg       | [Sønderborghistorier: Gader og veje](http://sonderborghistorier.dk/gader-og-veje/) | Online | Sten Boye Poulsen | More than 40 streets |
 | Tårnby           | [Steder og veje](https://lokalarkiv.taarnby.dk/tarnby-historier/steder-og-veje/) | Online | Tårnby Lokalarkiv | |
 | Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Ternby Kommunes Lokalhistoriske Samling | |
 | Taastrup         | [Runeparkens historie](https://www.runeparken.dk/historie) | Online | Ib Sandahl, Taastrup Avis | Fire veje i Runeparken |
