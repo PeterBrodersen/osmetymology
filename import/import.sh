@@ -1,6 +1,5 @@
 #!/bin/sh
 # Remember to set $PGDATABASE to database name
-# Remember to create schema osmetymology - could be done automatically?
 
 if [ -z "${PGDATABASE:-}" ]; then
     echo "Error: Set variable PGDATABASE in environment" 1>&2
@@ -23,11 +22,10 @@ if [ ! -s "denmark-latest.osm.pbf" ]; then
 fi
 
 # Main import. Estimated time: 10-20 minutes
-osm2pgsql -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
+psql -c 'CREATE SCHEMA IF NOT EXISTS osmetymology'
+osm2pgsql --schema osmetymology -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
 
 # Import municipalities. Takes about a second.
-#ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner.geojson -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
-#psql -f municipalitybuffers.sql
 ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
 
 # Aggregate, split by municipality boundaries. Estimated time: 2-4 minutes.
