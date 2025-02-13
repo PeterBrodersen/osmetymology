@@ -75,14 +75,16 @@ Resources for getting information about the origin of Danish street names.
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
 | Sønderborg       | [Sønderborghistorier: Gader og veje](http://sonderborghistorier.dk/gader-og-veje/) | Online | Sten Boye Poulsen | More than 40 streets |
 | Tårnby           | [Steder og veje](https://lokalarkiv.taarnby.dk/tarnby-historier/steder-og-veje/) | Online | Tårnby Lokalarkiv | |
-| Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Ternby Kommunes Lokalhistoriske Samling | |
+| Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Tårnby Kommunes Lokalhistoriske Samling | |
 | Taastrup         | [Runeparkens historie](https://www.runeparken.dk/historie) | Online | Ib Sandahl, Taastrup Avis | Fire veje i Runeparken |
 | Tønder           | [Gader og veje i Tønder](https://dengang.dk/gader-og-veje-i-toender/) | Online | Uwe Brodersen | |
 | Vanløse          | [Forsvundne vejnavne og veje i Vanløse](http://vanloese.dk/om-vanloese/vejenes-historie/forsvundne-vejnavne/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
 | Vanløse          | [Vanløsebasen](http://www.vanløse.dk/) | Online |
 | Vejle            | [VejleWiki](http://vejlewiki.dk/) | Online, Wiki | Vejle Stadsarkiv |
+| Viborg           | [Leksikon over steder, begivenheder, personer og genstande i Viborg](https://viborgmuseum.dk/leksikon) | Website | Viborg Museum | |
 | Viborg           | [Viborg bys gadenavne](https://bibliotek.dk/materiale/viborg-bys-gadenavne_otto-von-spreckelsen/work-of%3A870970-basis%3A08559104?type=bog) | Book (1962) | Otto von Spreckelsen | Small overview in the beginning |
+| Viborg           | [Viborgegnens stednavne](https://bibliotek.dk/work/pid/870970-basis:06494447?scrollToEdition=true) | Book (1986) | Bent Jørgensen | No street names, only area names |
 | Vesthimmerland   | [Historier og steder](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder) | Online | Kulturarvstjenesten Vesthimmerland | Contains information for a few roads in [Aars](https://www.vesthimmerlandsmuseum.dk/Kulturarvstjenesten/Historier-og-steder/Gadeskilte/Gadeskilte-Aars), [Løgstør](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-loegstoer), [Farsø](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-farsoe), and [Aalestrup](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-aalestrup) |
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
