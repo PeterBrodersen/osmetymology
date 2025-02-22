@@ -62,6 +62,7 @@ Resources for getting information about the origin of Danish street names.
 | Roskilde         | [Roskildes gader](https://roskildesudvikling.dk/FORSIDE/Gader%20og%20str%C3%A6der/) | Online | | Only a few roads |
 | Roskilde         | [Gader og stræder - i Roskilde Kommune](https://bibliotek.dk/materiale/gader-og-straeder-i-roskilde-kommune_lotte-fang/work-of%3A870970-basis%3A22349600?type=bog) | Book (2015) | Lotte Fang | Extremely detailed |
 | Rudersdal        | [Vejnavne](https://museer.rudersdal.dk/rum/sektioner/vejnavne) | Online | Rudersdal Museer | Only some roads |
+| Rønne            | [Gaderne i Rønne - Mennesket bag navnet](https://bibliotek.dk/materiale/gaderne-i-roenne_ole-kofod/work-of:870970-basis:00143170) | Book (1973) | Ole Kofod | |
 | Sejs-Svejbæk     | [Historien om Vejnavne i Sejs-Svejbæk](https://sslf.dk/wp-content/uploads/2018/12/181211-Historien-om-vejnavne-i-SejsSvejb%C3%A6k-PDF.pdf) | Online book (2018), PDF | Sejs-Svejbæk Lokalhistoriske Forening |
 | Silkeborg        | [Gader og veje i Silkeborg : hvorfor hedder de sådan?](https://bibliotek.dk/materiale/gader-og-veje-i-silkeborg_g-noergaard-jepsen/work-of%3A870970-basis%3A06652212?type=bog) | Book (1987) | G. Nørgaard Jepsen | Useful overview |
 | Silkeborg        | [Gadenavne i Silkeborg](https://www.silkeborgarkiv.dk/wp-content/SilkeborgBibliotek/om-silkeborg/gadenavne/version-1/default.html) | Online | Silkeborg Bibliotekerne | Many roads | 
