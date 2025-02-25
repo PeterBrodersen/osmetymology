@@ -102,7 +102,6 @@ $(function () {
 
   $("#copylinktomap").on("click", () => {
     let url = $("#copylinktomap").prop('href');
-    window.location.hash = url;
     navigator.clipboard.writeText(url);
     $(this).css('background-color', 'yellow');
 
