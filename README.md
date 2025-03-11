@@ -43,15 +43,14 @@ A search option allows users to search for street names.
 The import script works as follows:
 
 1. Download [copy of OpenStreetMap data in Denmark](https://download.geofabrik.de/europe/denmark.html) from GeoFabrik
-2. Download [geometry of Danish municipalities](https://dawadocs.dataforsyningen.dk/dok/api/kommune) from DAWA
-3. Import to PostgreSQL using [osm2pgsql](https://osm2pgsql.org/doc/manual.html#the-flex-output) with Flex output for storing keys in JSON field
-4. Import Danish municipality boundaries
-5. Create aggregated table of imported data, grouping by name and etymology - no need to have several individual road segments
-6. Fetch set of every Wikidata item from the OpenStreetMap data as well as their "Instance of" items
-7. Save geometry table as [FlatGeobuf](https://flatgeobuf.org/) file for web service as well as CSV file
-8. Profit!
+2. Import to PostgreSQL using [osm2pgsql](https://osm2pgsql.org/doc/manual.html#the-flex-output) with Flex output for storing keys in JSON field
+3. Import Danish extended municipality boundaries (included)
+4. Create aggregated table of imported data, grouping by name and etymology - no need to have several individual road segments
+5. Fetch set of every Wikidata item from the OpenStreetMap data as well as their "Instance of" items
+6. Save geometry table as [FlatGeobuf](https://flatgeobuf.org/) file for web service as well as CSV file
+7. Profit!
 
-The munitipality split is based on the idea that any named conceptual road should only exist once in a municipality. Every road segment for a street with a specific name should be considered the conceptually same road. OpenStreetMap does not group roads with the same name in the same area or split roads on municipality boundaries and roads do not have the official Danish muncipality+street codes (3+4 digits).
+The munitipality split is based on the idea that any named conceptual road should only exist once in a municipality. Every road segment for a street with a specific name should be considered the conceptually same road. OpenStreetMap does not group roads with the same name in the same area or split roads on municipality boundaries and roads do not have the official Danish muncipality+street codes (4+4 digits).
 
 Performing the grouping and split makes it easier to answer conceptual questions such as:
 * _How many roads are named after H.C. Andersen?_
@@ -96,7 +95,8 @@ A couple of examples:
   * [Vejlegade, Nakskov](https://www.openstreetmap.org/way/105868044) is not named after the Danish town Vejle but after "vejle", an old name for a ford (vadested). This is also the origin of Vejle's name.
 * Some names are just deceptive.
   * [Ananasvænget, Odense](https://www.openstreetmap.org/way/55451768) ("Pineapple field") is not named after Ananas/Pineapple but after a specific apple cultivar called [Rød Ananas/Red Pineapple](https://www.wikidata.org/wiki/Q44275015).
-  * [Fuglebakken, Vordingborg](https://www.openstreetmap.org/way/25472023) ("Bird hill") is not named after birds, but after a gardener named [Axel Fugl](https://www.wikidata.org/wiki/Q130548760)
+  * [Fuglebakken, Vordingborg](https://www.openstreetmap.org/way/25472023) ("Bird hill") is not named after birds but a gardener named [Axel Fugl](https://www.wikidata.org/wiki/Q130548760).
+  * [Gåsestræde, Svendborg](https://www.openstreetmap.org/way/119759269) ("Goose alley") is not named after geese but a clergyman named [Hans Gaas](https://www.wikidata.org/wiki/Q16206237).
 * Some roads have names based on historic data but due to changes they could be misinterpreted.
   * Roads with names such as Kirkevej, Skolevej, Stationsvej and so on might refer to earlier schools, churches and railway stations. School buildings have often changed purposes (public schools becoming gymnasiums, gymnasiums might merge, etc).
     * [Kirkevej, Dragør](https://www.openstreetmap.org/way/237227739) is just outside Dragør Kirke, but it was named before Dragør Kirke was built, and it in fact leads to [Store Magleby Kirke](https://www.wikidata.org/wiki/Q12003400).
@@ -108,14 +108,7 @@ A couple of examples:
 Check the [source list](Resources.md) for different locations in Denmark.
 
 ## Bugs
-Probably several (check Issues). Currently the most important:
-
-### Ways outside municipality boundaries
-Currently all ways are aggregated based on name and etymology and afterwards split based on intersecting municipality boundaries.
-
-However as Danish municipality boundaries by definition do not expand over coastlines some items will be lost, such as [Christian D. IV's Bro](https://www.openstreetmap.org/way/356060984) which spans a canal that is connected to the ocean.
-
-More info: Issue #8
+Probably several (check Issues).
 
 ## Other resources
 Similar projects exists, such as [Open Etymology Map](https://etymology.dsantini.it/) <sup>[GitHub](https://gitlab.com/openetymologymap/open-etymology-map/)</sup>.
