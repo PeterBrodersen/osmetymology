@@ -310,6 +310,7 @@ function getFeatureTypeIcon(featuretype) {
     'building': '🏠',
     'place': '🏙️',
     'park': '🌳',
+    'water': '🌊',
     'wood': '🌲',
     'place_of_worship': '🛐',
     'square': '🔳',
