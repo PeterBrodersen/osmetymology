@@ -58,6 +58,15 @@ function getMunicipalityStats() {
                 $('#municipalitystats tfoot').append(tfoothtml);
             }
             $("#municipalitystats").tablesorter();
+
+            // Highlight row if hash is present
+            if (window.location.hash.length > 1) {
+                let hash = decodeURIComponent(window.location.hash.substring(1));
+                hash = parseInt(hash);
+                if (hash) {
+                    $(`#municipalitystats tbody tr td[data-municipalitycode="${hash}"]`).parent().addClass('active');
+                }
+            }
         }
         );
 }
