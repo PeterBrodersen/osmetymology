@@ -1,6 +1,5 @@
 let map;
-let highlightWayId;
-let highlightWayPopup = false;
+let highlightWayId = false;
 document.addEventListener("DOMContentLoaded", async () => {
     let minZoom = 12;
     let maxZoom = 19;
@@ -153,9 +152,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function updateMapData() {
         // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously
         // remove the old results
+        let previousHighlightWayId = highlightWayId; // Store the current highlightWayId
         previousResults.remove();
         const nextResults = L.layerGroup().addTo(map);
         previousResults = nextResults;
+        highlightWayId = previousHighlightWayId; // Restore the highlightWayId
 
         let statisticsData = [];
 
@@ -169,9 +170,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const popupText = getPopupText(feature);
             let lineColor = getLineColorFromGender(feature);
+            let highlightColor = '#cccc00ff';
             let highlightFeature = (feature.properties["id"] == highlightWayId);
             if (highlightFeature) {
-                lineColor = '#cccc00ff';
+                lineColor = highlightColor;
             }
             let defaultStyle = {
                 color: lineColor,
@@ -199,7 +201,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 'mouseover': function (e) {
                     const layer = e.target;
                     layer.setStyle({
-                        color: lineColor,
                         weight: 9,
                         fillOpacity: 0.7,
                     });
@@ -207,13 +208,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 'mouseout': function (e) {
                     const layer = e.target;
-                    layer.setStyle(defaultStyle);
+                    layer.setStyle({ weight: 7, fillOpacity: 0.1 });
+                },
+                'popupopen': function (e) {
+                    highlightWayId = feature.properties["id"];
+                    e.target.setStyle({ color: highlightColor });
+                },
+                'popupclose': function (e) {
+                    highlightWayId = false;
+                    e.target.setStyle({ color: getLineColorFromGender(feature) });
                 }
             }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
                 .addTo(nextResults);
-            if (highlightFeature && highlightWayPopup) {
+            if (highlightFeature) {
                 mapFeature.openPopup();
-                highlightWayPopup = false; // should perhaps only be set if popup is closed?
             }
         }
         // Gender breakdown
@@ -255,7 +263,6 @@ function updateMapLink() {
 
 function panToWayId(latitude, longitude, wayId) {
     highlightWayId = wayId;
-    highlightWayPopup = true;
     map.panTo([latitude, longitude]);
 }
 
