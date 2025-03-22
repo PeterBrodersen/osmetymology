@@ -17,6 +17,7 @@ function getStats() {
         );
 }
 
+// Links bør være ordinære links til kommuner, fx #0101 - og så kan hashChanged tage sig af at vise data
 function getMunicipalityStats() {
     $.getJSON('/data/municipalities.json')
         .done((data) => {
@@ -27,7 +28,7 @@ function getMunicipalityStats() {
                     tbodyhtml += `
                     <tr>
                     <td class="numeric">${municipality.municipality_code}</td>
-                    <td data-municipalitycode="${municipality.municipality_code}"><a href="#" onclick="getSingleMunicipalityStats(parentElement.dataset.municipalitycode); return false;">${municipality.municipality_name}</a></td>
+                    <td data-municipalitycode="${municipality.municipality_code}"><a href="#${municipality.municipality_code.toString().padStart(4, '0')}">${municipality.municipality_name}</a></td>
                     <td class="numeric">${municipality.unique_human_female_topic}</td>
                     <td class="numeric">${municipality.unique_human_male_topic}</td>
                     <td class="numeric">${municipality.human_female_percentage.toFixed(0)}</td>
@@ -103,12 +104,6 @@ function getSingleMunicipalityStats(municipality_code) {
                     if (item.is_human) {
                         symbol += '<span title="Menneske">🧑</span>';
                     }
-                    if (item.gender == 'female') {
-                        symbol += '<span title="Kvinde">♀</span>';
-                    }
-                    if (item.gender == 'male') {
-                        symbol += '<span title="Mand">♂</span>';
-                    }
                     let ways = item.ways.replaceAll(';', '<br>');
                     // :TODO: Escape HTML
                     html += `
@@ -123,7 +118,7 @@ function getSingleMunicipalityStats(municipality_code) {
                 }
                 html += `</tbody>`;
                 $('#singlemunicipality').html(html);
-                location.hash = code;
+                // location.hash = code;
                 // scroll to table
                 $('html, body').animate({
                     scrollTop: $("#singlemunicipality").offset().top
