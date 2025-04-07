@@ -61,7 +61,7 @@ function getItemIds() {
         <<<EOD
         WITH split_content AS (
             SELECT trim(both ' ' FROM unnest(string_to_array("name:etymology:wikidata", ';'))) AS single_items
-            FROM osmetymology.ways_agg
+            FROM osmetymology.locations_agg
         )
         SELECT DISTINCT single_items FROM split_content WHERE single_items ~ '^Q\d+$'
         EOD,

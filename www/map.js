@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let statisticsData = [];
 
         // only fetch the relevant bbox subset of data
-        let iter = flatgeobuf.deserialize('/data/aggregate.fgb', mapBoundingBox(), false, true);
+        let iter = flatgeobuf.deserialize('/data/navne.fgb', mapBoundingBox(), false, true);
         for await (let feature of iter) {
 
             let hasWikidata = feature.properties["name:etymology:wikidata"];

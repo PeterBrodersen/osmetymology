@@ -8,9 +8,9 @@ $municipalityjsonfolder = '../www/data/municipalities/';
 
 print date("H:i:s") . ": Creating stats" . PHP_EOL;
 
-$totalroads = $dbh->query('SELECT COUNT(*) FROM osmetymology.ways_agg')->fetchColumn();
-$uniquenamedroads = $dbh->query('SELECT COUNT(DISTINCT name) FROM osmetymology.ways_agg')->fetchColumn();
-$uniqueetymologywikidata = $dbh->query('WITH wds AS (SELECT DISTINCT UNNEST(wikidatas) AS wikidata_item FROM osmetymology.ways_agg) SELECT COUNT(wikidata_item) FROM wds')->fetchColumn();
+$totalroads = $dbh->query('SELECT COUNT(*) FROM osmetymology.locations_agg')->fetchColumn();
+$uniquenamedroads = $dbh->query('SELECT COUNT(DISTINCT name) FROM osmetymology.locations_agg')->fetchColumn();
+$uniqueetymologywikidata = $dbh->query('WITH wds AS (SELECT DISTINCT UNNEST(wikidatas) AS wikidata_item FROM osmetymology.locations_agg) SELECT COUNT(wikidata_item) FROM wds')->fetchColumn();
 $localwikidataitems = $dbh->query('SELECT COUNT(*) FROM osmetymology.wikidata')->fetchColumn(); // including extra content such as "instance of" data
 $importfiletime = NULL;
 $importfiletimedate = NULL;
@@ -36,9 +36,9 @@ function getMunicipalityStats()
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT wa.municipality_code, wa.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.ways_agg wa
-			WHERE wa.featuretype IN('way','square')
+			SELECT l.municipality_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			FROM osmetymology.locations_agg l
+			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
 			expanded.municipality_code,
@@ -85,9 +85,9 @@ function getMunicipalityStats()
 	// total stats; need own query to remove duplicates
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT wa.municipality_code, wa.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.ways_agg wa
-			WHERE wa.featuretype IN('way','square')
+			SELECT l.municipality_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			FROM osmetymology.locations_agg l
+			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
 			COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_female_topic,
@@ -147,10 +147,10 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT wa."name", unnest(wikidatas) AS wd
-			FROM osmetymology.ways_agg wa
-			WHERE wa.featuretype IN('way','square')
-			AND wa.municipality_code = ?
+			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
+			FROM osmetymology.locations_agg l
+			WHERE l.featuretype IN('way','square')
+			AND l.municipality_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -190,17 +190,7 @@ foreach ($municipalitycodes as $municipalitycode) {
 
 print PHP_EOL . date("H:i:s") . ": Stats done!" . PHP_EOL;
 
-/*
-SELECT COUNT(*) FROM osmetymology.ways_agg
-SELECT COUNT(DISTINCT name) FROM osmetymology.ways_agg
-SELECT COUNT(DISTINCT "name:etymology:wikidata") FROM osmetymology.ways_agg
-SELECT COUNT(*) FROM osmetymology.wikidata
-SELECT EXTRACT(epoch from now())::INT) ); -- Should be file date for 'denmark-latest.osm.pbf
-
-
-INSERT INTO osmetymology.stats (label, value) VALUES ('totalroads', (SELECT COUNT(*) FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('uniquenamedroads', (SELECT COUNT(DISTINCT name) FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('uniqueetymologywikidata', (SELECT COUNT(DISTINCT "name:etymology:wikidata") FROM osmetymology.ways_agg) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('localwikidataitems', (SELECT COUNT(*) FROM osmetymology.wikidata) );
-INSERT INTO osmetymology.stats (label, value) VALUES ('importfinishtime', (SELECT EXTRACT(epoch from now())::INT) ); -- Should be file date for 'denmark-latest.osm.pbf'?
-*/
+print "Total roads: " . $totalroads . PHP_EOL;
+print "Unique named roads: " . $uniquenamedroads . PHP_EOL;
+print "Unique etymology wikidata: " . $uniqueetymologywikidata . PHP_EOL;
+print "Local wikidata items: " . $localwikidataitems . PHP_EOL;

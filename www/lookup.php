@@ -39,14 +39,14 @@ function convertPGArraysToPHPArray($result)
 function getColumns($coordinates = FALSE)
 {
 	$columns = [
-		'ow.id',
-		'ow.name AS streetname',
-		'array_to_json(ow.object_ids) AS object_ids',
-		'ow.object_ids[1] AS sampleobject_id',
-		'ow.featuretype',
-		'ow."name:etymology"',
-		'ow."name:etymology:wikidata"',
-		'ow."name:etymology:wikipedia"',
+		'l.id',
+		'l.name AS streetname',
+		'array_to_json(l.object_ids) AS object_ids',
+		'l.object_ids[1] AS sampleobject_id',
+		'l.featuretype',
+		'l."name:etymology"',
+		'l."name:etymology:wikidata"',
+		'l."name:etymology:wikipedia"',
 		'm.navn AS municipalityname',
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
@@ -58,10 +58,10 @@ function getColumns($coordinates = FALSE)
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
-		'array_to_json(ow.wikidatas) AS wikidatas',
+		'array_to_json(l.wikidatas) AS wikidatas',
 	];
 	if ($coordinates) {
-		$columns[] = "ow.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
+		$columns[] = "l.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
@@ -72,7 +72,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$columns = getColumns($coordinates);
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['ow.name, m.navn'];
+	$orderbylist = ['l.name, m.navn'];
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
@@ -89,9 +89,9 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
 	SELECT $columns
-	FROM osmetymology.ways_agg ow
-	INNER JOIN osmetymology.municipalities m on ow.municipality_code = m.kode
-	LEFT JOIN osmetymology.wikidata w ON ow."name:etymology:wikidata" = w.itemid
+	FROM osmetymology.locations_agg l
+	INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
+	LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
 	LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 	LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 	$where
@@ -124,10 +124,10 @@ function findWikidataLabel($searchitem)
 	}
 	$querystring = <<<EOD
 	SELECT * FROM (
-		SELECT DISTINCT ON (w.itemid) COUNT(wa.id) AS placecount, wl.label, w.name, w.description, w.itemid
+		SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, wl.label, w.name, w.description, w.itemid
 		FROM osmetymology.wikilabels wl
 		INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-		INNER JOIN osmetymology.ways_agg wa ON wa.wikidatas @> ARRAY[w.itemid]
+		INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
 		WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
 		GROUP BY wl.label, w.itemid, w.description, w.name
 	) t
@@ -207,10 +207,10 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT wa."name", unnest(wikidatas) AS wd
-			FROM osmetymology.ways_agg wa
-			WHERE wa.featuretype = 'way'
-			AND wa.municipality_code = ?
+			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
+			FROM osmetymology.locations_agg l
+			WHERE l.featuretype = 'way'
+			AND l.municipality_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -231,9 +231,9 @@ function getMunicipalityStats()
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT ow.municipality_code, ow.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.ways_agg ow
-			WHERE ow.featuretype = 'way'
+			SELECT l.municipality_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			FROM osmetymology.locations_agg l
+			WHERE l.featuretype = 'way'
 		)
 		SELECT
 			expanded.municipality_code,

@@ -69,24 +69,20 @@
 
     <div id="betaboilerplate">
         <p>
-            BETA: Dette er en tidlig udgave af vejnavne-projektet. Meget mere er på vej, blandt andet opslag på emner, kort, <a href="kommuner/">statistik</a>, m.m. Forvent fejl og ændringer.
+            Vejnavne-projektet bliver løbende opdateret. Se også undersiden for <a href="kommuner/">kønsfordeling på kommuneniveau</a>.
         </p>
         <p>
-            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. I løbet af
-            <a href="https://taginfo.geofabrik.de/europe:denmark/keys/name%3Aetymology%3Awikidata#chronology">det seneste år</a> har frivillige
+            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Her har frivillige
             bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
-            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter.
+            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter, og der
+            er en række <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Editing.md?tab=readme-ov-file#caveats">fælder</a> at være på
+            udkig efter.
         </p>
         <p>
-            Der mangler stadigvæk oplysninger for mange veje. Pt. er der oplysninger om knap 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 12.500 forskellige emner.
+            Ikke alle steder er registreret endnu. Pt. er der oplysninger om knap 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 13.000 forskellige emner.
         </p>
         <p>
-            Det kan være en udfordring at finde det korrekte ophav for et navn. Ananasvej i Aalborg Kommune er opkaldt efter Ananas, mens Ananasvej i Favrskov Kommune
-            er opkaldt efter æblesorten Rød Ananas. Og for det mest udbredte vejnavn i Danmark, Lærkevej, er 70 % opkaldt efter lærkefuglen, mens 30 % er opkaldt efter
-            lærketræet. <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Editing.md?tab=readme-ov-file#caveats">Tjek oversigten med typiske fælder.</a>
-        </p>
-        <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/aggregate.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
+            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
             Har du spørgsmålet til projektet, er du mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
         </p>
 

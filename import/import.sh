@@ -35,7 +35,7 @@ psql -f aggregate.sql
 php wikidataimport.php
 
 # Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
-FGBFILE="../www/data/aggregate.fgb"
+FGBFILE="../www/data/navne.fgb"
 CSVFILE="../www/data/navne.csv"
 if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"

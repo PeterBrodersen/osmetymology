@@ -321,6 +321,18 @@ function getFeatureTypeIcon(featuretype) {
     'sport': '🏟️',
     'power': '⚡',
     'castle': '🏰',
+    'aeroway': '✈️',
+    'zoo': '🦁',
+    'hospital': '🏥',
+    'university': '🎓',
+    'alcohol': '🍺',
+    'power': '⚡',
+    'harbour': '🛥️',
+    'playground': '🛝',
+    'cemetery': '🪦',
+    'prison': '👮',
+    'theme_park': '🎢',
+    'bakery': '🍞',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];
