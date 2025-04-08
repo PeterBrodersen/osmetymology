@@ -1,7 +1,7 @@
 {
     "data_format": 1,
-    "data_url": "https://raw.githubusercontent.com/PeterBrodersen/osmetymology/main/taginfo.json.md",
-    "data_updated": "20250408T160000Z",
+    "data_url": "https://raw.githubusercontent.com/PeterBrodersen/osmetymology/main/taginfo.json",
+    "data_updated": "20250408T160001Z",
     "project": {
         "name": "OSM Etymology in Denmark",
         "description": "Map and data for objects in Denmark, with gender breakdown by municipality using Wikidata",
