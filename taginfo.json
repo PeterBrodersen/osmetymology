@@ -1,0 +1,32 @@
+{
+    "data_format": 1,
+    "data_url": "https://raw.githubusercontent.com/PeterBrodersen/osmetymology/main/taginfo.json.md",
+    "data_updated": "20250408T160000Z",
+    "project": {
+        "name": "OSM Etymology in Denmark",
+        "description": "Map and data for objects in Denmark, with gender breakdown by municipality using Wikidata",
+        "project_url": "https://navne.findvej.dk/",
+        "doc_url": "https://github.com/PeterBrodersen/osmetymology/",
+        "icon_url": "https://navne.findvej.dk/media/dk_etymology_logo.png",
+        "contact_name": "Peter Brodersen",
+        "contact_email": "peter@ter.dk"
+    },
+    "tags": [
+        {
+            "key": "name",
+            "description": "Place name with etymological origin"
+        },
+        {
+            "key": "name:etymology",
+            "description": "Text description of etymological origin"
+        },
+        {
+            "key": "name:etymology:wikipedia",
+            "description": "Wikipedia link to etymological origin"
+        },
+        {
+            "key": "name:etymology:wikidata",
+            "description": "Wikidata object with details about etymological origin, used to fetch gender breakdown and other statistics"
+        }
+    ]
+}
