@@ -2,6 +2,11 @@
 // Import all existing Wikidata items to local table
 require("../www/connect.inc.php");
 
+$insertdb = $dbh->prepare('
+    INSERT INTO osmetymology.wikidata (itemid, name, description, labels, descriptions, claims, sitelinks, aliases)
+    VALUES (?,?,?,?,?,?,?,?)
+');
+
 function getBestLabel($labels)
 { // Run through languages and search for existing value; pick first existing
     $languages = ['da', 'en', 'mul', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
@@ -35,11 +40,6 @@ function createTables() {
     $dbh->query('CREATE UNIQUE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
     $dbh->query('CREATE INDEX wikidata_name_idx ON osmetymology.wikidata ("name")');    
 
-    $insertdb = $dbh->prepare('
-        INSERT INTO osmetymology.wikidata (itemid, name, description, labels, descriptions, claims, sitelinks, aliases)
-        VALUES (?,?,?,?,?,?,?,?)
-    ');
-
     $dbh->query('DROP TABLE IF EXISTS osmetymology.wikilabels');
     $dbh->query('
         CREATE TABLE osmetymology.wikilabels (
@@ -56,7 +56,6 @@ function createTables() {
 
 function getItemIds() {
     global $dbh;
-    // :TODO: Split entities
     $itemIds = $dbh->query(
         <<<EOD
         WITH split_content AS (
@@ -89,9 +88,20 @@ function getInstanceOfItems()
 
 function importItemIds($itemIds)
 {
-    global $insertdb;
+    global $insertdb, $dbh;
+    $itemsInserted = 0;
     $itemLimit = 50;
     $apiurlprefix = 'https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=';
+
+    // Validate item IDs
+    foreach ($itemIds as $itemId) {
+        if (!is_string($itemId) || !preg_match('/^Q\d+$/', $itemId)) {
+            die("Invalid item ID: $itemId. All items must be strings in the format Q followed by numbers." . PHP_EOL);
+        }
+    }
+
+    // Delete existing entries for the specified item IDs
+    $dbh->query("DELETE FROM osmetymology.wikidata WHERE itemId IN ('" . implode("','", $itemIds) . "')");
 
     $chunks = array_chunk($itemIds, $itemLimit);
 
@@ -101,27 +111,32 @@ function importItemIds($itemIds)
         $itemList = implode('|', $chunk);
         $url = $apiurlprefix . $itemList;
         $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
-        foreach ($jsonResult->entities as $entity) {
-            $pageid = $entity->id;
-            if (isset($entity->redirects->from)) {
-                $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
+        if (isset($jsonResult->entities)) {
+            foreach ($jsonResult->entities as $entity) {
+                $pageid = $entity->id;
+                if (isset($entity->redirects->from)) {
+                    $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
+                }
+                $name = getBestLabel($entity->labels);
+                $description = getBestLabel($entity->descriptions);
+                $labels = json_encode($entity->labels);
+                $descriptions = json_encode($entity->descriptions);
+                $claims = json_encode($entity->claims);
+                $sitelinks = json_encode($entity->sitelinks);
+                $aliases = json_encode($entity->aliases);
+                $insertdb->execute([$pageid, $name, $description, $labels, $descriptions, $claims, $sitelinks, $aliases]);
+                $itemsInserted++;
             }
-            $name = getBestLabel($entity->labels);
-            $description = getBestLabel($entity->descriptions);
-            $labels = json_encode($entity->labels);
-            $descriptions = json_encode($entity->descriptions);
-            $claims = json_encode($entity->claims);
-            $sitelinks = json_encode($entity->sitelinks);
-            $aliases = json_encode($entity->aliases);
-            $insertdb->execute([$pageid, $name, $description, $labels, $descriptions, $claims, $sitelinks, $aliases]);
         }
     }
     print PHP_EOL;
+    print "Inserted " . $itemsInserted . " items." . PHP_EOL;
     return true;
 }
 
 function insertLabels() {
     global $dbh;
+    $dbh->query('TRUNCATE osmetymology.wikilabels'); // Truncate table before inserting
     $dbh->query(
         <<<EOD
         INSERT INTO osmetymology.wikilabels (itemId, label, searchlabel)
@@ -132,17 +147,68 @@ function insertLabels() {
         SELECT itemid, value->>'value' AS label, osmetymology.toSearchString(value->>'value') as searchlabel
         FROM osmetymology.wikidata, jsonb_array_elements(aliases->'da')
         )
-    EOD);
+        EOD);
 }
 
-createTables();
-$itemIds = getItemIds();
-print date("H:i:s") . ": Initial import" . PHP_EOL;
-importItemIds($itemIds);
-print date("H:i:s") . ": Fetching 'Instance of' items" . PHP_EOL;
-$instanceofItems = getInstanceOfItems();
-print date("H:i:s") . ": Instance import" . PHP_EOL;
-importItemIds($instanceofItems);
-print date("H:i:s") . ": Insert labels" . PHP_EOL;
-insertLabels();
-print date("H:i:s") . ": Wikiimport done!" . PHP_EOL;
+function handleCleanImport() {
+    createTables();
+    $itemIds = getItemIds();
+    print date("H:i:s") . ": Initial import" . PHP_EOL;
+    importItemIds($itemIds);
+    print date("H:i:s") . ": Fetching 'Instance of' items" . PHP_EOL;
+    $instanceofItems = getInstanceOfItems();
+    print date("H:i:s") . ": Instance import" . PHP_EOL;
+    importItemIds($instanceofItems);
+    print date("H:i:s") . ": Insert labels" . PHP_EOL;
+    insertLabels();
+    print date("H:i:s") . ": Wikiimport done!" . PHP_EOL;
+}
+
+function handlePropertyItems($property) {
+    global $dbh;
+    $query = "
+    WITH items AS (
+        SELECT DISTINCT jsonb_array_elements(claims->'$property')->'mainsnak'->'datavalue'->'value'->>'id' AS id FROM osmetymology.wikidata
+    )
+    SELECT id FROM items WHERE id IS NOT NULL
+    ";
+    $itemIds = $dbh->query($query, PDO::FETCH_COLUMN, 0)->fetchAll();
+
+    if (!empty($itemIds)) {
+        importItemIds($itemIds);
+        insertLabels();
+    } else {
+        print "No items found for property $property." . PHP_EOL;
+    }
+}
+
+function handleAddItems($items) {
+    $itemIds = explode(',', $items);
+    foreach ($itemIds as $itemId) {
+        if (!preg_match('/^Q\d+$/', $itemId)) {
+            die("Invalid item ID: $itemId. All items must be in the format Q followed by numbers." . PHP_EOL);
+        }
+    }
+    importItemIds($itemIds);
+    insertLabels();
+}
+
+$options = getopt("", ["cleanimport", "propertyitems:", "additems:"]);
+
+if (isset($options['cleanimport'])) {
+    handleCleanImport();
+} elseif (isset($options['propertyitems'])) {
+    $property = $options['propertyitems'];
+    if (!preg_match('/^P\d+$/', $property)) {
+        die("Invalid property ID: $property. It must start with P followed by numbers." . PHP_EOL);
+    }
+    handlePropertyItems($property);
+} elseif (isset($options['additems'])) {
+    $items = $options['additems'];
+    if (empty($items)) {
+        die("No items provided for additems option." . PHP_EOL);
+    }
+    handleAddItems($items);
+} else {
+    print "Usage: php wikidataimport.php [--cleanimport] [--propertyitems=P12345] [--additems=Q12,Q1234]" . PHP_EOL;
+}

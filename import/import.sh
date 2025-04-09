@@ -32,7 +32,7 @@ ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmet
 psql -f aggregate.sql
 
 # Download and import all Wikidata items. Estimated time: 5-10 minutes.
-php wikidataimport.php
+php wikidataimport.php --cleanimport
 
 # Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
 FGBFILE="../www/data/navne.fgb"
