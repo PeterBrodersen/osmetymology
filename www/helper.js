@@ -48,14 +48,17 @@ $(function () {
     minLength: 2,
     delay: 100,
     select: function (event, ui) {
-      console.log("Selected: " + ui.item.value + " aka " + ui.item.itemid);
       doSearch(ui.item.itemid);
     }
   })
     .autocomplete("instance")._renderItem = function (ul, item) {
-      var showname = item.name;
-      if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim())) {
-        showname = item.name + ' (<em>' + item.label + '</em>)';
+      var showname = item.label;
+      var llabel = item.label.toLowerCase();
+      var lalias = item.alias.toLowerCase();
+      var lterm = this.term.toLowerCase().trim();
+      if (!llabel.startsWith(lalias) && !llabel.startsWith(lterm)) {
+      // if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim())) {
+        showname += ' (<em>' + item.alias + '</em>)';
       }
 
       let optionHTML = `<div class="autoitemblock" title="${item.label}">`;

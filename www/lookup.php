@@ -88,15 +88,15 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	}
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
-	SELECT $columns
-	FROM osmetymology.locations_agg l
-	INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
-	LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
-	LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-	LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-	$where
-	ORDER BY $orderby
-	LIMIT $limit
+		SELECT $columns
+		FROM osmetymology.locations_agg l
+		INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
+		LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
+		LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		$where
+		ORDER BY $orderby
+		LIMIT $limit
 	EOD;
 	return $querystring;
 }
@@ -122,18 +122,30 @@ function findWikidataLabel($searchitem)
 	if (strlen($searchitem) < 2) {
 		return false;
 	}
-	$querystring = <<<EOD
-	SELECT * FROM (
-		SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, wl.label, w.name, w.description, w.itemid
-		FROM osmetymology.wikilabels wl
-		INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-		INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
-		WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
-		GROUP BY wl.label, w.itemid, w.description, w.name
-	) t
-	ORDER BY placecount DESC, name, itemid
-	LIMIT 50
-	EOD;
+	if (preg_match('_^Q\d+$_i', $searchitem)) {
+		$searchitem = strtoupper($searchitem);
+		$querystring = <<<EOD
+			SELECT COUNT(l.id) AS placecount, w.name AS label, w.name AS alias, w.description, w.itemid
+			FROM osmetymology.wikidata w
+			INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
+			WHERE w.itemid = ?
+			GROUP BY w.itemid, w.description, w.name
+		EOD;
+	} else {
+		$querystring = <<<EOD
+			SELECT * FROM (
+				SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, w.name AS label, wl.label AS alias , w.description, w.itemid
+				FROM osmetymology.wikilabels wl
+				INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
+				INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
+				WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
+				GROUP BY wl.label, w.itemid, w.description, w.name
+			) t
+			ORDER BY placecount DESC, label, itemid
+			LIMIT 50
+		EOD;
+	}
+	$dbh->debug = true;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$searchitem]);
