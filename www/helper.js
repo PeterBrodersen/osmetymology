@@ -336,6 +336,7 @@ function getFeatureTypeIcon(featuretype) {
     'prison': '👮',
     'theme_park': '🎢',
     'bakery': '🍞',
+    'shop': '🛍️',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];
