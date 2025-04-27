@@ -337,6 +337,7 @@ function getFeatureTypeIcon(featuretype) {
     'theme_park': '🎢',
     'bakery': '🍞',
     'shop': '🛍️',
+    'kindergarten': '👶',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];

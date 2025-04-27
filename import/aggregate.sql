@@ -30,6 +30,7 @@ AS $$
 		WHEN tags->>'aeroway' IS NOT NULL THEN 'aeroway'
 		WHEN tags->>'tourism' = 'zoo' THEN 'zoo'
 		WHEN tags->>'amenity' = 'hospital' THEN 'hospital'
+		WHEN tags->>'amenity' = 'kindergarten' THEN 'kindergarten'
 		WHEN tags->>'power' IS NOT NULL THEN 'power'
 		WHEN tags->>'tourism' = 'theme_park' THEN 'theme_park'
 		WHEN tags->>'shop' = 'bakery' THEN 'bakery'
