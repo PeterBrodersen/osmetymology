@@ -21,7 +21,7 @@
         om flere vejnavne refererer til personen. Klik på et kommunenavn for at se personer i kommunen med veje tilknyttet.
     </p>
     <p>
-        Der er registreret ophav for ca. 35.000 veje i Danmark. Ikke alle veje er med endnu, og projektet er stadigvæk under udvikling, baseret på frivilligt arbejde.
+        Der er registreret ophav for knap 40.000 veje i Danmark. Ikke alle veje er med endnu, og projektet er stadigvæk under udvikling, baseret på frivilligt arbejde.
     </p>
     <p>
         Dato for datasæt: <span id="importfiletime"></span>
@@ -30,16 +30,18 @@
     <table id="municipalitystats" class="resulttable">
         <thead>
             <tr>
-                <th>Kommunekode</th>
-                <th>Kommune</th>
-                <th>Kvinder,<br>menneske</th>
-                <th>Mænd,<br>menneske</th>
-                <th>Kvinder (%)<br>menneske</th>
-                <th>Mænd (%)<br>menneske</th>
-                <th>Kvinder,<br>alle</th>
-                <th>Mænd,<br>alle</th>
-                <th>Kvinder (%)<br>alle</th>
-                <th>Mænd (%)<br>alle</th>
+                <th rowspan="2">Kommunekode</th>
+                <th rowspan="2">Kommune</th>
+                <th colspan="3">Menneske</th>
+                <th colspan="3">Alle</th>
+            </tr>
+            <tr>
+                <th>Kvinder</th>
+                <th>Mænd</th>
+                <th>Procentvis fordeling</th>
+                <th>Kvinder</th>
+                <th>Mænd</th>
+                <th>Procentvis fordeling</th>
             </tr>
         </thead>
         <tbody>
@@ -51,12 +53,10 @@
                 <th>Kommune</th>
                 <th>Kvinder,<br>menneske</th>
                 <th>Mænd,<br>menneske</th>
-                <th>Kvinder (%)<br>menneske</th>
-                <th>Mænd (%)<br>menneske</th>
+                <th>Procentvis fordeling,<br>menneske</th>
                 <th>Kvinder,<br>alle</th>
                 <th>Mænd,<br>alle</th>
-                <th>Kvinder (%)<br>alle</th>
-                <th>Mænd (%)<br>alle</th>
+                <th>Procentvis fordeling</th>
             </tr>
         </tfoot>
     </table>
@@ -76,7 +76,7 @@
             BETA: Dette er en tidlig udgave af vejnavne-projektet.
         </p>
         <p>
-            Ca. 35.000 veje i Danmark er registreret og katalogiseret. Dette udtræk henter kun veje og ikke fx bygninger, statuer, parker, m.m.
+            Knap 40.000 veje i Danmark er registreret og katalogiseret. Dette udtræk henter kun veje og ikke fx bygninger, statuer, parker, m.m.
         </p>
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Dette udtræk kan <a href="/data/municipalities.json">hentes som JSON-fil</a>. Har du spørgsmålet til projektet, er du mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.

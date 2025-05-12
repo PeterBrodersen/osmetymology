@@ -31,12 +31,14 @@ function getMunicipalityStats() {
                     <td data-municipalitycode="${municipality.municipality_code}"><a href="#${municipality.municipality_code.toString().padStart(4, '0')}">${municipality.municipality_name}</a></td>
                     <td class="numeric">${municipality.unique_human_female_topic}</td>
                     <td class="numeric">${municipality.unique_human_male_topic}</td>
-                    <td class="numeric">${municipality.human_female_percentage.toFixed(0)}</td>
-                    <td class="numeric">${municipality.human_male_percentage.toFixed(0)}</td>
+                    <td class="percentage-cell" data-female-percentage="${municipality.human_female_percentage}" data-male-percentage="${municipality.human_male_percentage}" style="--female-percentage:${municipality.human_female_percentage}; --male-percentage:${municipality.human_male_percentage};">
+                        ${municipality.human_female_percentage.toFixed(0)} / ${municipality.human_male_percentage.toFixed(0)}
+                    </td>
                     <td class="numeric">${municipality.unique_female_topic}</td>
                     <td class="numeric">${municipality.unique_male_topic}</td>
-                    <td class="numeric">${municipality.female_percentage.toFixed(0)}</td>
-                    <td class="numeric">${municipality.male_percentage.toFixed(0)}</td>
+                    <td class="percentage-cell" data-female-percentage="${municipality.female_percentage}" data-male-percentage="${municipality.male_percentage}" style="--female-percentage:${municipality.female_percentage}; --male-percentage:${municipality.male_percentage};">
+                        ${municipality.female_percentage.toFixed(0)} / ${municipality.male_percentage.toFixed(0)}
+                    </td>
                     </tr>
                     `;
                 }
@@ -47,12 +49,14 @@ function getMunicipalityStats() {
                     <th>Alle kommuner</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_female_topic}</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_male_topic}</th>
-                    <th class="numeric">${data.etymologystats.total.human_female_percentage.toFixed(0)}</th>
-                    <th class="numeric">${data.etymologystats.total.human_male_percentage.toFixed(0)}</th>
+                    <th class="percentage-cell" data-female-percentage="${data.etymologystats.total.human_female_percentage}" data-male-percentage="${data.etymologystats.total.human_male_percentage}" style="--female-percentage:${data.etymologystats.total.human_female_percentage}; --male-percentage:${data.etymologystats.total.human_male_percentage};">
+                        ${data.etymologystats.total.human_female_percentage.toFixed(0)} / ${data.etymologystats.total.human_male_percentage.toFixed(0)}
+                    </th>
                     <th class="numeric">${data.etymologystats.total.unique_female_topic}</th>
                     <th class="numeric">${data.etymologystats.total.unique_male_topic}</th>
-                    <th class="numeric">${data.etymologystats.total.female_percentage.toFixed(0)}</th>
-                    <th class="numeric">${data.etymologystats.total.male_percentage.toFixed(0)}</th>
+                    <th class="percentage-cell" data-female-percentage="${data.etymologystats.total.female_percentage}" data-male-percentage="${data.etymologystats.total.male_percentage}" style="--female-percentage:${data.etymologystats.total.female_percentage}; --male-percentage:${data.etymologystats.total.male_percentage};">
+                        ${data.etymologystats.total.female_percentage.toFixed(0)} / ${data.etymologystats.total.male_percentage.toFixed(0)}
+                    </th>
                     </tr>
                 `;
                 $('#municipalitystats tbody').append(tbodyhtml);
@@ -89,15 +93,15 @@ function getSingleMunicipalityStats(municipality_code) {
                 for (item of data.items) {
                     if (lastgender != item.gender) {
                         let label = '';
-                        let color = '';
+                        let genderClass = '';
                         if (item.gender == 'female') {
                             label = 'Kvinder';
-                            color = '#e99';
+                            genderClass = 'female-color';
                         } else {
                             label = 'Mænd';
-                            color = '#88e'
+                            genderClass = 'male-color';
                         }
-                        html += `<tr><th colspan="2" style="background-color: ${color}">${label}</th></tr>`
+                        html += `<tr><th colspan="2" class="${genderClass}">${label}</th></tr>`;
                         lastgender = item.gender;
                     }
                     let symbol = '';
@@ -105,7 +109,7 @@ function getSingleMunicipalityStats(municipality_code) {
                         symbol += '<span title="Menneske">🧑</span>';
                     }
                     let ways = item.ways.replaceAll(';', '<br>');
-                    // :TODO: Escape HTML
+                    // Escape HTML
                     html += `
                     <tr>
                     <td>${symbol} <a href="/#${item.wikidata_item}">${item.personname}</a><br><div class="persondetails">${item.description ?? ''}</div></td>
@@ -114,7 +118,7 @@ function getSingleMunicipalityStats(municipality_code) {
                     `;
                 }
                 if (data.items.length == 0) {
-                    html += `<tr><td colspan="2" style="font-style: italic">Ingen registrerede veje i kommunen er opkaldt efter personer</td></tr>`
+                    html += `<tr><td colspan="2" style="font-style: italic">Ingen registrerede veje i kommunen er opkaldt efter personer</td></tr>`;
                 }
                 html += `</tbody>`;
                 $('#singlemunicipality').html(html);

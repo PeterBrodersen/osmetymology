@@ -1,3 +1,8 @@
+:root {
+    --female-color: #e99;
+    --male-color: #88e;
+}
+
 h1,
 p,
 table,
@@ -226,4 +231,40 @@ div#userinput {
 
 div.clear {
     clear: both;
+}
+
+.percentage-cell {
+    position: relative;
+    background: linear-gradient(
+        to right,
+        var(--female-color) calc(var(--female-percentage, 0) * 1%),
+        var(--male-color) calc(var(--female-percentage, 0) * 1%)
+    );
+    color: black;
+    text-align: center;
+    font-weight: bold;
+}
+
+.percentage-cell::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: none;
+}
+
+.percentage-cell[data-female-percentage="0"][data-male-percentage="0"] {
+    background: none;
+}
+
+.female-color {
+    background-color: var(--female-color);
+}
+
+.male-color {
+    background-color: var(--male-color);
 }
