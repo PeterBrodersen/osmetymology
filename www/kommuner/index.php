@@ -32,8 +32,8 @@
             <tr>
                 <th rowspan="2">Kommunekode</th>
                 <th rowspan="2">Kommune</th>
-                <th colspan="3">Menneske</th>
-                <th colspan="3">Alle</th>
+                <th colspan="3">Mennesker, som har eksisteret</th>
+                <th colspan="3">Alle mennesker, også fiktive</th>
             </tr>
             <tr>
                 <th>Kvinder</th>

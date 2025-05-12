@@ -106,7 +106,7 @@ function getSingleMunicipalityStats(municipality_code) {
                     }
                     let symbol = '';
                     if (item.is_human) {
-                        symbol += '<span title="Menneske">🧑</span>';
+                        symbol += '<span title="Har eksisteret">🧑</span>';
                     }
                     let ways = item.ways.replaceAll(';', '<br>');
                     // Escape HTML
