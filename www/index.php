@@ -30,6 +30,9 @@
 <body>
     <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
 
+<div style="clear: both;">
+</div>
+
     <div id="userinput">
         <div id="placename"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
         <div id="itemname"><input required autofocus id="itemfind" placeholder="Slå emne op" accesskey="t"></div>
@@ -65,6 +68,19 @@
         </div>
 
     </div>
+<div class="drlink">
+	<p>
+	Besøgende fra DR P1 Morgen eller TV 2 News &amp; Co.? Velkommen til! Her er linket til <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
+	</p>
+	<p>
+		Eksempler:
+	</p>
+	<ul>
+		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.403470%2C10.385185&loc=55.401682%2C10.391736&loc=55.404484%2C10.394011&hl=da&alt=0">Odense</a></li>
+		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.667353%2C12.533405&loc=55.665580%2C12.529242&loc=55.665435%2C12.530379&hl=da&alt=0">Carlsberg Byen</a></li>
+	</ul>
+</div>
+
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">
@@ -79,7 +95,7 @@
             udkig efter.
         </p>
         <p>
-            Ikke alle steder er registreret endnu. Pt. er der oplysninger om knap 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 13.000 forskellige emner.
+            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 13.000 forskellige emner.
         </p>
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.

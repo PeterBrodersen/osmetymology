@@ -51,7 +51,7 @@ span#copylink a {
     text-decoration: none;
 }
 
-div#betaboilerplate {
+div#betaboilerplate, div.drlink {
     border: 3px dashed black;
     background-color: #ee5;
     border-radius: 30px;
