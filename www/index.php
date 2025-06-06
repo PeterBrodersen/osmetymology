@@ -78,6 +78,7 @@
 	<ul>
 		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.403470%2C10.385185&loc=55.401682%2C10.391736&loc=55.404484%2C10.394011&hl=da&alt=0">Odense</a></li>
 		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.667353%2C12.533405&loc=55.665580%2C12.529242&loc=55.665435%2C12.530379&hl=da&alt=0">Carlsberg Byen</a></li>
+        <li><a href="https://osrm.findvej.dk/nomales/?z=16&center=56.030328%2C12.600653&loc=56.030370%2C12.604601&loc=56.031740%2C12.605647&hl=da&alt=0">Helsingør</a></li>
 	</ul>
 	<p>
            Se også <a href="kommuner/">kønsfordeling på kommuneniveau</a>.
