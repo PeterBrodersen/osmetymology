@@ -4,6 +4,7 @@ Resources for getting information about the origin of Danish street names.
 | Location         | Resource | Type | Owner | Note |
 | ---------------- | -------- | ---- | ----- | ---- |
 | Allerød          | [Veje i Allerød Kommune](https://www.lafak.dk/veje) | Online | Lokalhistorisk Arkiv & Forening i Allerød Kommune | Site mentions origin of streets and towns, and describes local people |
+| Als              | [Alsiske Stednavne](https://bibliotek.dk/materiale/alsiske-stednavne_johannes-diederichsen/work-of:870970-basis:20808128?type=bog) | Book (1994) | Johannes Diederichsen | Very thorough |
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
@@ -14,6 +15,7 @@ Resources for getting information about the origin of Danish street names.
 | Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
+| Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
 | Fredericia       | [Gade- og vejnavne i Fredericia Kommune - og historien bag dem](https://bibliotek.dk/materiale/gade-og-vejnavne-i-fredericia-kommune-og-historien-bag-dem_morten-zierau/work-of:870970-basis:26678358?type=bog) | Book (2007) | Morten Zierau |
 | Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
@@ -29,9 +31,10 @@ Resources for getting information about the origin of Danish street names.
 | Hundested        | [Gade op og gade ned : gade- og vejnavne i Hundested og Lynæs samt den nærmeste omegn](https://bibliotek.dk/materiale/gade-op-og-gade-ned_svend-gade/work-of%3A159002-lokalbibl%3A126271891?type=artikel) | Article (2018) | Svend Gade | |
 | Hvidovre         | [Historien bag vejnavnet](https://forstadsmuseet.dk/historien-om/historien-bag-vejnavnet/) | Online | Forstadsmuseet | Many roads |
 | Ishøj            | [Ishøj kommunes vejnavne](https://bibliotek.dk/materiale/ishoej-kommunes-vejnavne_leif-nielsen-f-1938-/work-of%3A870970-basis%3A05496829) | Book (1979) | Leif Nielsen | [Also available online](https://ishoejlokalhistorisk.dk/wp-content/uploads/2020/04/Ish%C3%B8j-kommunes-vejnavne-1979.pdf) |
-| Kolding          | [KoldingWiki, Kategori: Gader og veje](https://koldingwiki.dk/index.php?title=Kategori:Gader_og_veje) | Online, Wiki | Kolding Stadsarkiv |
 | Kerteminde       | [Chr. Jyde, Vilhelmine og alle de andre : personerne bag gadenavne i Kerteminde](https://bibliotek.dk/materiale/chr-jyde-vilhelmine-og-alle-de-andre_rita-h-matzon/work-of:159003-lokalbibl:91425327?type=artikel) | Article (1988) | Rita H. Matzon | A few streets in this article; first in a series? |
 | Klitmøller       | [Klitmøller Vejnavne](https://bibliotek.dk/work/pid/870970-basis:24447898?scrollToEdition=true) | Book (2002) | Preben Holler, Hans Bach, Knud Mortensen | [Also available online](https://www.arkivthy.dk/images/pdf/Vejnavne.pdf) |
+| Kolding          | [KoldingWiki, Kategori: Gader og veje](https://koldingwiki.dk/index.php?title=Kategori:Gader_og_veje) | Online, Wiki | Kolding Stadsarkiv |
+| Korsør           | [Personerne bag vej- og gadenavne i Korsør syd](https://bibliotek.dk/materiale/personerne-bag-vej-og-gadenavne-i-korsoer-syd_karin-vedel/work-of:870970-basis:28523629?type=bog) | Book (2010) | Karin Vedel | |
 | København        | [Hvem var menneskene bag Ørestads vejnavne?](http://greir.dk/index.php/orestad/4629-hvem-var-menneskene-bag-orestads-vejnavne) | Online | Ørestad Avis | Focus on Ørestad |
 | København        | [Kend København](http://www.hovedstadshistorie.dk/) | Online | | Detailed information for many roads |
 | København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book (1999) | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
@@ -49,6 +52,7 @@ Resources for getting information about the origin of Danish street names.
 | Nakskov          | [Egeskov og ørneklo : en bog om Nakskov](https://bibliotek.dk/materiale/egeskov-og-oerneklo_carl-emil-hansen-f-1913-/work-of%3A870970-basis%3A06963927?type=bog) | Book (1989) | Carl Emil Hansen |
 | Nakskov          | [Hvorfor hedder de det?](https://bibliotek.dk/materiale/hvorfor-hedder-de-det-/work-of%3A800010-katalog%3A99122170238405763?type=bog) | Book (2000) | Det Gamle Trykkeri | Reference, describes many roads |
 | Nyborg           | [Gade op og gade ned: Nyborgs historie i gadeplan](https://bibliotek.dk/materiale/gade-op-og-gade-ned_john-maaloe-larsen/work-of:870970-basis:53657605?type=bog) | Book (2017) | John Maalø Larsen | Many roads, also historic roads |
+| Nykøbing S.      | [Gade- og vejnavnes oprindelse i Nykøbing og Rørvig](https://bibliotek.dk/materiale/gade-og-vejnavnes-oprindelse-i-nykoebing-og-roervig_ole-skaarup-f-1948-/work-of:870970-basis:06877974?type=bog) | Book (1989) | Ole Skaarup | |
 | Nysted           | [Tema: Stednavne](https://www.nysted-lokalhistorie.dk/tema-stednavne/) | Online | Nysted lokalhistoriske Arkiv |
 | Næstved          | [Byens gader fortæller en historie](https://www.sn.dk/naestved-kommune/byens-gader-fortaeller-en-historie/) | Online, article | Sjællandske Nyheder | Article about new signs in the municipality |
 | Odense           | [Adresser - vejnavne og husnumre](https://www.odense.dk/borger/trafik-og-veje/veje/adresser-vejnavne-og-husnumre) | Online | Odense Kommune | Overview |
@@ -75,6 +79,7 @@ Resources for getting information about the origin of Danish street names.
 | Svendborg        | [Gader og veje](https://www.svendborghistorie.dk/historier/erhverv/130-gader-og-veje/gader-og-veje-sp-131/) | Online | Museum Sydfyn | |
 | Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
+| Søllerød         | [Vejnavne i Søllerød Kommune](https://bibliotek.dk/work/work-of:870970-basis:40300872) | Book (1975) | Sofus Larsen, Gunnar Sandfeld | |
 | Sønderborg       | [Sønderborghistorier: Gader og veje](http://sonderborghistorier.dk/gader-og-veje/) | Online | Sten Boye Poulsen | More than 40 streets |
 | Tårnby           | [Steder og veje](https://lokalarkiv.taarnby.dk/tarnby-historier/steder-og-veje/) | Online | Tårnby Lokalarkiv | |
 | Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Tårnby Kommunes Lokalhistoriske Samling | |
@@ -93,5 +98,6 @@ Resources for getting information about the origin of Danish street names.
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
 | Aalborg          | [Historien bag de gamle gader i Aalborg anno 1949](https://bibliotek.dk/materiale/historien-bag-de-gamle-gader-i-aalborg-anno-1949_kr-vaernfelt/work-of:870970-basis:41212497?workId=work-of%3A870970-basis%3A41212497&type=bog) | Book (1949?) |
 | Aarhus           | [AarhusWiki](https://aarhuswiki.dk/wiki/Forside)| Online, Wiki | Aarhus Stadsarkiv | Some roads do not have Wiki entries yet |
-|                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
+|                  | [Alle de frække steder](https://bibliotek.dk/materiale/alle-de-fraekke-steder_claus-pettersson/work-of:870970-basis:28027397) | Book (2009) | Claus Pettersson, Jan Svarrer | Mostly just pictures of signs |
 |                  | [Dansk Gadenavneskik](https://slaegtsbibliotek.dk/2023/935413.pdf) | Online book (1970), PDF | Bent Jørgensen | All-round information about Danish street naming traditions |
+|                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
