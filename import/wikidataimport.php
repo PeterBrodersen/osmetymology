@@ -134,6 +134,12 @@ function importItemIds($itemIds)
     return true;
 }
 
+function createGINIndex() {
+    global $dbh;
+    $dbh->query('CREATE INDEX wikidata_claims_gin_idx ON osmetymology.wikidata USING gin(claims)');
+    return true;
+}
+
 function insertLabels() {
     global $dbh;
     $dbh->query('TRUNCATE osmetymology.wikilabels'); // Truncate table before inserting
@@ -159,6 +165,8 @@ function handleCleanImport() {
     $instanceofItems = getInstanceOfItems();
     print date("H:i:s") . ": Instance import" . PHP_EOL;
     importItemIds($instanceofItems);
+    print date("H:i:s") . ": Creating GIN index" . PHP_EOL;
+    createGINIndex();
     print date("H:i:s") . ": Insert labels" . PHP_EOL;
     insertLabels();
     print date("H:i:s") . ": Wikiimport done!" . PHP_EOL;
