@@ -17,6 +17,7 @@ Resources for getting information about the origin of Danish street names.
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
+| Fredensborg      | [Vejens historie](https://arkiv.dk/soeg?searchstring=Vejens+historie&page=0&valgtearkiverids=77) | Online articles | Arkiv.dk, Fredensborg Arkiverne | Collections of articles |
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
 | Fredericia       | [Gade- og vejnavne i Fredericia Kommune - og historien bag dem](https://bibliotek.dk/materiale/gade-og-vejnavne-i-fredericia-kommune-og-historien-bag-dem_morten-zierau/work-of:870970-basis:26678358?type=bog) | Book (2007) | Morten Zierau |
 | Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
