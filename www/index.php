@@ -70,7 +70,7 @@
     </div>
 <div class="drlink">
 	<p>
-	Besøgende fra DR eller TV 2? Velkommen til! Her er linket til <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
+	Besøgende fra Politiken? Velkommen til! Her er linket til <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
 	</p>
 	<p>
 		Eksempler:
