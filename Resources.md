@@ -83,6 +83,7 @@ Resources for getting information about the origin of Danish street names.
 | Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
 | Søllerød         | [Vejnavne i Søllerød Kommune](https://bibliotek.dk/work/work-of:870970-basis:40300872) | Book (1975) | Sofus Larsen, Gunnar Sandfeld | |
+| Søllerød         | [Vejnavne - fra Aggershvile Allé til Øverødvej](https://bibliotek.dk/materiale/vejnavne-fra-aggershvile-alle-til-oeveroedvej_caspar-christiansen/work-of%3A870970-basis%3A29172234?type=bog&tid=rfdzC17525191781721250935815) | Book (2011) | Caspar Christiansen, Martin Dahl | Very detailed |
 | Sønderborg       | [Sønderborghistorier: Gader og veje](http://sonderborghistorier.dk/gader-og-veje/) | Online | Sten Boye Poulsen | More than 40 streets |
 | Tårnby           | [Steder og veje](https://lokalarkiv.taarnby.dk/tarnby-historier/steder-og-veje/) | Online | Tårnby Lokalarkiv | |
 | Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Tårnby Kommunes Lokalhistoriske Samling | |
