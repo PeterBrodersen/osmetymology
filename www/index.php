@@ -70,7 +70,7 @@
     </div>
 <div class="drlink">
 	<p>
-	Besøgende fra ESPD? Velkommen til! Her er linket til <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
+	Velkommen til! Tjek også <a href="kommuner/">kønsfordeling på kommuneniveau</a> samt <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
 	</p>
 	<p>
 		Eksempler:
@@ -80,9 +80,6 @@
 		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.667353%2C12.533405&loc=55.665580%2C12.529242&loc=55.665435%2C12.530379&hl=da&alt=0">Carlsberg Byen</a></li>
         <li><a href="https://osrm.findvej.dk/nomales/?z=16&center=56.030328%2C12.600653&loc=56.030370%2C12.604601&loc=56.031740%2C12.605647&hl=da&alt=0">Helsingør</a></li>
 	</ul>
-	<p>
-           Se også <a href="kommuner/">kønsfordeling på kommuneniveau</a>.
-	</p>
 </div>
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
@@ -99,7 +96,7 @@
             udkig efter.
         </p>
         <p>
-            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 13.000 forskellige emner.
+            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 14.000 forskellige emner.
         </p>
         <p>
             Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
