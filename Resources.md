@@ -22,6 +22,7 @@ Resources for getting information about the origin of Danish street names.
 | Fredensborg      | [Vejens historie](https://arkiv.dk/soeg?searchstring=Vejens+historie&page=0&valgtearkiverids=77) | Online articles | Arkiv.dk, Fredensborg Arkiverne | Collections of articles |
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
 | Fredericia       | [Gade- og vejnavne i Fredericia Kommune - og historien bag dem](https://bibliotek.dk/materiale/gade-og-vejnavne-i-fredericia-kommune-og-historien-bag-dem_morten-zierau/work-of:870970-basis:26678358?type=bog) | Book (2007) | Morten Zierau |
+| Fredericia       | Kanalbyen: [Historiske stednavne](https://kanalbyen.dk/byudvikling/historiske-stednavne) | Online | Kanalbyen i Fredericia  | Places for Kanalbyen in Fredericia |
 | Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
 | Frederikshavn    | [Tilbageblik - før og nu : historier bag navnet i Frederikshavn](https://bibliotek.dk/materiale/tilbageblik-foer-og-nu_peter-bandholm/work-of%3A870970-basis%3A45209725?type=bog) | Book (2011) | Peter Bandholm, Erik S. Christensen | More stories and anecdotes than lists |
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
