@@ -2,6 +2,10 @@
 // Import all existing Wikidata items to local table
 require("../www/connect.inc.php");
 
+// Set User-Agent globally
+ini_set('user_agent', 'Findvej OSM Etymology (https://github.com/PeterBrodersen/osmetymology/)');
+
+// Prepare the insert statement for Wikidata items
 $insertdb = $dbh->prepare('
     INSERT INTO osmetymology.wikidata (itemid, name, description, labels, descriptions, claims, sitelinks, aliases)
     VALUES (?,?,?,?,?,?,?,?)
@@ -110,7 +114,32 @@ function importItemIds($itemIds)
         print "Chunk " . ($chunkid + 1) . " of " . (count($chunks)) . "\r";
         $itemList = implode('|', $chunk);
         $url = $apiurlprefix . $itemList;
-        $jsonResult = json_decode(file_get_contents($url)); // TODO: Error handling
+
+        $maxAttempts = 3;
+        $attempt = 0;
+        do {
+            $json = @file_get_contents($url);
+            $httpCode = 200;
+            if (isset($http_response_header) && is_array($http_response_header)) {
+                foreach ($http_response_header as $header) {
+                    if (preg_match('#^HTTP/\d+\.\d+\s+(\d+)#', $header, $matches)) {
+                        $httpCode = (int)$matches[1];
+                        break;
+                    }
+                }
+            }
+            if ($json === false || $httpCode >= 400) {
+                // Error: wait and retry
+                $attempt++;
+                if ($attempt < $maxAttempts) {
+                    sleep(5);
+                } else {
+                    print "\nError fetching $url (HTTP $httpCode). Skipping after $maxAttempts attempts.\n";
+                    break;
+                }
+            }
+        } while (($json === false || $httpCode >= 400) && $attempt < $maxAttempts);
+        $jsonResult = json_decode($json);
         if (isset($jsonResult->entities)) {
             foreach ($jsonResult->entities as $entity) {
                 $pageid = $entity->id;
