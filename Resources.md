@@ -15,7 +15,7 @@ Resources for getting information about the origin of Danish street names.
 | Egedal           | [Egedal Leksikon: Kategori: Gader, Veje og Broer](http://egedalleksikon.dk/index.php/Kategori:Gader,_Veje_og_Broer) | Online, Wiki | Egedal Arkiver og Museum | |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
-| Gladsaxe         | [Vejnavneregisteret](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/din-bydelshistorie/vejnavneregisteret) | Online | Gladsaxe Kommune |
+| Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
