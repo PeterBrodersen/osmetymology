@@ -12,6 +12,7 @@ Resources for getting information about the origin of Danish street names.
 | Bramming         | [Bramminginfo - Gadenavne](https://bramminginfo.dk/gadenavne.html) | Online | Bramminginfo, John Schwartz | |
 | Brande           | [Gadenavne og pladser i Brande by, med personnavne](https://www.brande.dk/sites/default/files/gadenavne_og_pladser_i_brande_by_med_personnavne_1.pdf) | Online, PDF | Brande.dk | |
 | Dragør           | [Gader og huse](http://www.dragoerhistorie.dk/gader-og-huse/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
+| Ebeltoft         | [På vej ‒ gader og veje i Ebeltoft](https://bibliotek.dk/work/pid/870970-basis:46728491?scrollToEdition=true) | Book (2018) | Else Marie Laigaard | |
 | Egedal           | [Egedal Leksikon: Kategori: Gader, Veje og Broer](http://egedalleksikon.dk/index.php/Kategori:Gader,_Veje_og_Broer) | Online, Wiki | Egedal Arkiver og Museum | |
 | Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
