@@ -6,6 +6,7 @@ Resources for getting information about the origin of Danish street names.
 | Allerød          | [Veje i Allerød Kommune](https://www.lafak.dk/veje) | Online | Lokalhistorisk Arkiv & Forening i Allerød Kommune | Site mentions origin of streets and towns, and describes local people |
 | Als              | [Alsiske Stednavne](https://bibliotek.dk/materiale/alsiske-stednavne_johannes-diederichsen/work-of:870970-basis:20808128?type=bog) | Book (1994) | Johannes Diederichsen | Very thorough |
 | Bjerringbro      | [Bjerringbro's gadenavne og deres ophav](https://bibliotek.dk/materiale/bjerringbro-s-gadenavne-og-deres-ophav_h-p-nielsen/work-of:870971-tsart:82560130?type=artikel) | Article (PDF) | H. P. Nielsen | |
+| Blokhus          | [Vejnavne i Blokhus](http://wikiblokhus.dk/index.php?title=Vejnavne_i_Blokhus) | Online, Wiki | Wiki Blokhus | |
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
