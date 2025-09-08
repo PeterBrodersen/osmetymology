@@ -30,6 +30,7 @@ Resources for getting information about the origin of Danish street names.
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Hadsund          | [Gade- og vejnavne i Hadsund](https://bibliotek.dk/materiale/gade-og-vejnavne-i-hadsund_birte-overgaard/work-of:870970-basis:135106445?type=bog) | Book (2022) | Birte Overgaard |
 | Hasseris         | [Om vejnavne i Hasseris](https://hasseris.dk/foreningen-hasseris-grundejerforening/medlemsomraade/hasseris-omraadet/vejnavne/) | Online | Hasseris Grundejer-forening | |
+| Hasseris         | [Lidt lys over vejnavne i Hasseris](https://slaegtsbibliotek.dk/2025/954131.pdf) | Online, book | Axel Stoustrup | |
 | Helsingør        | [Gader og veje i Helsingør Kommune - historisk og generelt](https://helsingorleksikon.dk/index.php/Gader_og_veje_i_Helsing%C3%B8r_Kommune_-_historisk_og_generelt) | Online, Wiki | Helsingør Kommunes Museer | 
 | Herning          | [Historier](https://www.herninghistorie.dk/historier/) | Online | Herning, Historiens Hus | A couple of streets |
 | Hillerød         | [Gader og veje i Hillerød Kommune](https://bibliotek.dk/materiale/gader-og-veje-i-hilleroed-kommune_eva-holm-nielsen/work-of%253A870970-basis%253A20137819) | Book (1992) | Eva Holm-Nielsen | Extensive list |
