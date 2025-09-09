@@ -24,7 +24,8 @@ function getBestLabel($labels)
     return $label;
 }
 
-function createTables() {
+function createTables()
+{
     global $dbh, $insertdb;
     $dbh->query('DROP TABLE IF EXISTS osmetymology.wikidata');
     $dbh->query('
@@ -40,9 +41,9 @@ function createTables() {
             aliases JSONB
         )
     ');
-    
+
     $dbh->query('CREATE UNIQUE INDEX wikidata_itemid_idx ON osmetymology.wikidata ("itemid")');
-    $dbh->query('CREATE INDEX wikidata_name_idx ON osmetymology.wikidata ("name")');    
+    $dbh->query('CREATE INDEX wikidata_name_idx ON osmetymology.wikidata ("name")');
 
     $dbh->query('DROP TABLE IF EXISTS osmetymology.wikilabels');
     $dbh->query('
@@ -58,7 +59,8 @@ function createTables() {
     return TRUE;
 }
 
-function getItemIds() {
+function getItemIds()
+{
     global $dbh;
     $itemIds = $dbh->query(
         <<<EOD
@@ -67,6 +69,32 @@ function getItemIds() {
             FROM osmetymology.locations_agg
         )
         SELECT DISTINCT single_items FROM split_content WHERE single_items ~ '^Q\d+$'
+        EOD,
+        PDO::FETCH_COLUMN,
+        0
+    )->fetchAll();
+    return $itemIds;
+}
+
+function getMissingItemIds()
+{
+    global $dbh;
+    $tableExists = $dbh->query("
+        SELECT to_regclass('osmetymology.wikidata') IS NOT NULL AS exists
+    ")->fetch(PDO::FETCH_ASSOC);
+    if (!$tableExists || !$tableExists['exists']) {
+        die("Error: Table osmetymology.wikidata does not exist." . PHP_EOL);
+    }
+    $itemIds = $dbh->query(
+        <<<EOD
+        WITH split_content AS (
+            SELECT trim(both ' ' FROM unnest(string_to_array("name:etymology:wikidata", ';'))) AS single_items
+            FROM osmetymology.locations_agg
+        )
+        SELECT DISTINCT single_items FROM split_content
+        LEFT JOIN osmetymology.wikidata ON single_items = wikidata.itemid
+        WHERE single_items ~ '^Q\d+$'
+        AND wikidata.itemid IS NULL
         EOD,
         PDO::FETCH_COLUMN,
         0
@@ -163,13 +191,15 @@ function importItemIds($itemIds)
     return true;
 }
 
-function createGINIndex() {
+function createGINIndex()
+{
     global $dbh;
     $dbh->query('CREATE INDEX wikidata_claims_gin_idx ON osmetymology.wikidata USING gin(claims)');
     return true;
 }
 
-function insertLabels() {
+function insertLabels()
+{
     global $dbh;
     $dbh->query('TRUNCATE osmetymology.wikilabels'); // Truncate table before inserting
     $dbh->query(
@@ -182,10 +212,25 @@ function insertLabels() {
         SELECT itemid, value->>'value' AS label, osmetymology.toSearchString(value->>'value') as searchlabel
         FROM osmetymology.wikidata, jsonb_array_elements(aliases->'da')
         )
-        EOD);
+        EOD
+    );
 }
 
-function handleCleanImport() {
+function handleAutoImport()
+{
+    global $dbh;
+    $tableExists = $dbh->query("
+        SELECT to_regclass('osmetymology.wikidata') IS NOT NULL AS exists
+    ")->fetch(PDO::FETCH_ASSOC);
+    if (!$tableExists || !$tableExists['exists']) {
+        handleCleanImport();
+    } else {
+        handleMissingItems();
+    }
+}
+
+function handleCleanImport()
+{
     createTables();
     $itemIds = getItemIds();
     print date("H:i:s") . ": Initial import" . PHP_EOL;
@@ -201,7 +246,16 @@ function handleCleanImport() {
     print date("H:i:s") . ": Wikiimport done!" . PHP_EOL;
 }
 
-function handlePropertyItems($property) {
+function handleMissingItems()
+{
+    $itemIds = getMissingItemIds();
+    print date("H:i:s") . ": Import missing items" . PHP_EOL;
+    importItemIds($itemIds);
+    insertLabels();
+}
+
+function handlePropertyItems($property)
+{
     global $dbh;
     $query = "
     WITH items AS (
@@ -219,7 +273,8 @@ function handlePropertyItems($property) {
     }
 }
 
-function handleAddItems($items) {
+function handleAddItems($items)
+{
     $itemIds = explode(',', $items);
     foreach ($itemIds as $itemId) {
         if (!preg_match('/^Q\d+$/', $itemId)) {
@@ -230,10 +285,14 @@ function handleAddItems($items) {
     insertLabels();
 }
 
-$options = getopt("", ["cleanimport", "propertyitems:", "additems:"]);
+$options = getopt("", ["auto", "cleanimport", "missingitems", "propertyitems:", "additems:"]);
 
-if (isset($options['cleanimport'])) {
+if (isset($options['auto'])) { // Clean import if no table, else missing items
+    handleAutoImport();
+} elseif (isset($options['cleanimport'])) {
     handleCleanImport();
+} elseif (isset($options['missingitems'])) {
+    handleMissingItems();
 } elseif (isset($options['propertyitems'])) {
     $property = $options['propertyitems'];
     if (!preg_match('/^P\d+$/', $property)) {
@@ -247,5 +306,5 @@ if (isset($options['cleanimport'])) {
     }
     handleAddItems($items);
 } else {
-    print "Usage: php wikidataimport.php [--cleanimport] [--propertyitems=P12345] [--additems=Q12,Q1234]" . PHP_EOL;
+    print "Usage: php wikidataimport.php [--auto] [--cleanimport] [--missingitems] [--propertyitems=P12345] [--additems=Q12,Q1234]" . PHP_EOL;
 }

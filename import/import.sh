@@ -31,8 +31,9 @@ ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmet
 # Aggregate, split by municipality boundaries. Estimated time: 2-4 minutes.
 psql -f aggregate.sql
 
-# Download and import all Wikidata items. Estimated time: 5-10 minutes.
-php wikidataimport.php --cleanimport
+# Download and import Wikidata items. Estimated time: 5-10 minutes for first import, otherwise only fetch missing items.
+# For a clean import of all items, use --cleanimport
+php wikidataimport.php --auto
 
 # Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
 FGBFILE="../www/data/navne.fgb"
