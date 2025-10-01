@@ -75,7 +75,7 @@ CREATE TABLE osmetymology.gendermap (
 );
 
 INSERT INTO osmetymology.gendermap (itemId, gender)
-VALUES ('Q6581072','female'), ('Q6581097','male'), ('Q1052281', 'female'), ('Q2449503', 'male');
+VALUES ('Q6581072','female'), ('Q6581097','male'), ('Q1052281', 'female'), ('Q2449503', 'male'), ('Q15145779', 'female'), ('Q15145778', 'male');
 
 -- Create aggregated table
 DROP TABLE IF EXISTS osmetymology.locations_agg;
