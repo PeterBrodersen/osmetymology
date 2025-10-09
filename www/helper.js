@@ -57,7 +57,7 @@ $(function () {
       var lalias = item.alias.toLowerCase();
       var lterm = this.term.toLowerCase().trim();
       if (!llabel.startsWith(lalias) && !llabel.startsWith(lterm)) {
-      // if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim())) {
+        // if (!item.name.toLowerCase().startsWith(this.term.toLowerCase().trim())) {
         showname += ' (<em>' + item.alias + '</em>)';
       }
 
@@ -269,6 +269,7 @@ function updateResultTable(data) {
       var wikidatalinkhtml = '';
       var wikidatadescriptionhtml = '';
       let wikidataId = row['name:etymology:wikidata'];
+      let nameEtymologyText = row['name:etymology'];
       let featureType = `<span title="${capitalizeFirstLetter(row['featuretype'])}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
       let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
       let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
@@ -276,6 +277,10 @@ function updateResultTable(data) {
         var wikidatalinkhtml = `<a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${row['wikilabel'] ?? '(under opdatering)'}</a> ` +
           `<sup><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a></sup>`;
         wikidataitems.push(wikidataId);
+        var wikidatadescription = row['wikidescription'];
+        if (nameEtymologyText) {
+          wikidatadescription += `<br><em>${nameEtymologyText}</em>`;
+        }
         var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${row['wikidescription'] ?? ''}</span>`;
       } else if (hasMultipleWikidataItems) {
         var wikidatalinkhtml = `Wikidata-emne: `;
@@ -284,11 +289,11 @@ function updateResultTable(data) {
           countItems++;
           wikidatalinkhtml += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
         }
-        if (row['name:etymology']) {
-          var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
+        if (nameEtymologyText) {
+          var wikidatadescriptionhtml = `<span><em>${nameEtymologyText}</em></span>`;
         }
-      } else if (row['name:etymology']) {
-        var wikidatadescriptionhtml = `<span>${row['name:etymology']}</span>`;
+      } else if (nameEtymologyText) {
+        var wikidatadescriptionhtml = `<span><em>${nameEtymologyText}</em></span>`;
       }
       // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
       //        E.g. create as jquery DOM and add text with .text()

@@ -104,8 +104,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             if (wikidatadescription) {
                 popupText += `<p>${wikidatadescription}</p>`;
-            } else if (etymologyText) {
-                popupText += `<p>${etymologyText}</p>`;
+            }
+            if (etymologyText) {
+                popupText += `<p><em>${etymologyText}</em></p>`;
             }
             // Wikidata and Wikipedia links
             popupText += `<p>`;
