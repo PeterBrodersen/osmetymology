@@ -281,7 +281,7 @@ function updateResultTable(data) {
         if (nameEtymologyText) {
           wikidatadescription += `<br><em>${nameEtymologyText}</em>`;
         }
-        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${wikidescription ?? ''}</span>`;
+        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${wikidatadescription ?? ''}</span>`;
       } else if (hasMultipleWikidataItems) {
         var wikidatalinkhtml = `Wikidata-emne: `;
         let countItems = 0;
