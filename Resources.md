@@ -19,6 +19,7 @@ Resources for getting information about the origin of Danish street names.
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
 | Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
+| Farum            | [Farums Veje: Hvem - Hvor](https://slaegtsbibliotek.dk/2023/935545.pdf) | Book (1998) | Gudrun Lund Meyer | |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
 | Fredensborg      | [Vejens historie](https://arkiv.dk/soeg?searchstring=Vejens+historie&page=0&valgtearkiverids=77) | Online articles | Arkiv.dk, Fredensborg Arkiverne | Collections of articles |
@@ -52,6 +53,7 @@ Resources for getting information about the origin of Danish street names.
 | København        | [Storbyens Stednavne](https://bibliotek.dk/materiale/storbyens-stednavne_bent-joergensen-f-1944-/work-of%3A870970-basis%3A22413112?type=bog) | Book (1999) | Bent Jørgensen | Extremely detailed; pretty much every road is mentioned |
 | København        | [Urbane navne - storbyens sproglige dimension](https://vbn.aau.dk/ws/files/549463328/Ph.d._2016_Sandst_Appendiks.pdf) | Online, PDF | Line Sandst | Thesis (2016) |
 | København        | [Om københavnske Gadenavne](https://bibliotek.dk/materiale/om-koebenhavnske-gadenavne_otto-mackeprang/work-of:870970-basis:44021099?workId=work-of%3A870970-basis%3A44021099&type=bog) | Book (1948) | Otto Mackeprang | Lots of streets mentioned, not in list form though |
+| København        | [Københavns Gadenavne](https://bibliotek.dk/materiale/koebenhavns-gadenavne_evan-bogan/work-of%3A870970-basis%3A20496894?type=bog&tid=0GYF81760217300127639535040) | Book (2003) | Evan Bogen | Spans well beyond Copenhagen |
 | Køge             | [Køge bys gader og veje](http://koegearkiverne.dk/wp-content/uploads/Kge-Bys-gader-og-veje.pdf) | Online book (1951) | Wilhelm von Antoniewitz | 
 | Køge             | [Historien bag navnet](https://koegearkiverne.dk/category/historien-bag-navnet) | Blog | Køge arkiverne |
 | Liseleje         | [Liselejefiskerne : fra overdrev til fiskerleje og sommerland](https://bibliotek.dk/materiale/liselejefiskerne_holger-j-hansen/work-of:870970-basis:25234979?workId=work-of%3A870970-basis%3A25234979&type=bog) | Book (2003) | Holger J. Hansen | List of old families, some assumed connected to streets in Liseleje |
