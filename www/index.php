@@ -96,11 +96,15 @@
             udkig efter.
         </p>
         <p>
-            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er opkaldt efter over 14.000 forskellige emner.
+            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er
+            opkaldt efter over 15.000 forskellige emner.
         </p>
         <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a> (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>.
-            Har du spørgsmålet til projektet, er du mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
+            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske
+            veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a>
+            (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er
+            <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>. Har du spørgsmålet til projektet, er du
+            mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
         </p>
 
         <p class="copyright">
