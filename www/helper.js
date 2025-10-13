@@ -278,7 +278,7 @@ function updateResultTable(data) {
           `<sup><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a></sup>`;
         wikidataitems.push(wikidataId);
         var wikidatadescription = row['wikidescription'];
-        if (nameEtymologyText && nameEtymologyText != $row['wikilabel']) {
+        if (nameEtymologyText && nameEtymologyText != row['wikilabel']) {
           wikidatadescription += `<br><em>${nameEtymologyText}</em>`;
         }
         var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${wikidatadescription ?? ''}</span>`;
