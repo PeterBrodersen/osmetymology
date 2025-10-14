@@ -108,8 +108,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (wikibirth) {
                         if (typeof wikibirth === 'string' && wikibirth.trim().endsWith('BC')) {
                             // Handle BC date string, e.g. "0600-01-01 BC"
-                            let year = wikibirth.match(/^(\d{1,4})/);
-                            birthdeathtext += (year ? year[1] : wikibirth) + ' f.Kr.';
+                            let yearMatch = wikibirth.match(/^0*(\d{1,4})/); // Remove leading zeroes
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' f.Kr.';
                         } else {
                             birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
                         }
@@ -117,8 +117,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     birthdeathtext += ' - ';
                     if (wikideath) {
                         if (typeof wikideath === 'string' && wikideath.trim().endsWith('BC')) {
-                            let year = wikideath.match(/^(\d{1,4})/);
-                            birthdeathtext += (year ? year[1] : wikideath) + ' f.Kr.';
+                            let yearMatch = wikideath.match(/^0*(\d{1,4})/); // Remove leading zeroes
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' f.Kr.';
                         } else {
                             birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
                         }
