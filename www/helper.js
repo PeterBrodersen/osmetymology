@@ -6,6 +6,10 @@ let languages = ['da', 'en', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
 let currentCount = 0;
 
 $(function () {
+  let namefindTimeout = null;
+  let namefindController = null;
+  let latestRequestId = 0;
+
   $("#namefind").on("keyup", () => {
     let inputname = $("#namefind").val();
     if (inputname == lastinputname) { // don't request for random key presses such as shift
@@ -13,16 +17,41 @@ $(function () {
     }
     lastinputname = inputname;
 
-    // if (inputname.length < 3) {
     if (!(/^(Q\d+|.{3,})$/).test(inputname)) {
       $("#result").html('');
       return;
     }
-    $("#copylink a").show().attr('href', '#' + inputname);
-    $(".resulttable").fadeTo("slow", 0.5);
-    $.getJSON("lookup.php", { search: inputname })
-      .fail((jqxhr, textStatus, error) => updateResultTableError(error))
-      .done((data) => updateResultTable(data));
+
+    // Debounce: clear previous timeout
+    if (namefindTimeout) clearTimeout(namefindTimeout);
+
+    namefindTimeout = setTimeout(() => {
+      // Abort previous request if still running
+      if (namefindController) {
+        namefindController.abort();
+      }
+      namefindController = new AbortController();
+      const requestId = ++latestRequestId;
+
+      $("#copylink a").show().attr('href', '#' + inputname);
+      $(".resulttable").fadeTo("slow", 0.5);
+
+      fetch(`lookup.php?search=${encodeURIComponent(inputname)}`, { signal: namefindController.signal })
+        .then(response => {
+          if (!response.ok) throw new Error(response.statusText);
+          return response.json();
+        })
+        .then(data => {
+          // Only process if this is the latest request
+          if (requestId === latestRequestId) {
+            updateResultTable(data);
+          }
+        })
+        .catch(error => {
+          if (error.name === 'AbortError') return;
+          updateResultTableError(error);
+        });
+    }, 300);
   });
 
   // $("#itemfind").on("keyup", () => {
