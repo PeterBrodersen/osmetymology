@@ -31,6 +31,7 @@ function convertPGArraysToPHPArray($result)
 	foreach ($result as $row) {
 		$row['object_ids'] = json_decode($row['object_ids']);
 		$row['wikidatas'] = json_decode($row['wikidatas']);
+		$row['wikidataset'] = json_decode($row['wikidataset']);
 		$cleanresult[] = $row;
 	}
 	return $cleanresult;
@@ -53,12 +54,14 @@ function getColumns($coordinates = FALSE)
 		'w2."name" AS wikiinstanceoflabel',
 		'w2.description AS wikiinstanceofdescription',
 		'gendermap.gender',
-		"to_date(w.claims#>'{P569,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
-		"to_date(w.claims#>'{P570,0}'->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
+		"to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
+		"to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
 		'array_to_json(l.wikidatas) AS wikidatas',
+		'wikidatas.wikidataset',
+		'wikidatas.wikilabel'
 	];
 	if ($coordinates) {
 		$columns[] = "l.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
@@ -92,8 +95,25 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		FROM osmetymology.locations_agg l
 		INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
 		LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
-		LEFT JOIN osmetymology.wikidata w2 ON w.claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN LATERAL(
+			SELECT jsonb_agg(jsonb_build_object(
+				'itemid', w.itemid,
+				'label', w.name,
+				'description', w.description,
+				'gender', gendermap.gender,
+				'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
+				'dateofdeath', to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
+				'wikipediatitleda', w.sitelinks->'dawiki'->>'title'
+			)) AS wikidataset,
+			string_agg(w.name, '; ') AS wikilabel
+			FROM osmetymology.wikidatamap map
+			INNER JOIN osmetymology.wikidata w ON map.wikidata_id = w.itemid
+			LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+			LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+			WHERE l.id = map.location_id
+		) AS wikidatas ON TRUE
 		$where
 		ORDER BY $orderby
 		LIMIT $limit
@@ -145,7 +165,6 @@ function findWikidataLabel($searchitem)
 			LIMIT 50
 		EOD;
 	}
-	$dbh->debug = true;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$searchitem]);
@@ -227,7 +246,7 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
 		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
-		INNER JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN osmetymology.gendermap ON w.claims->'P21->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description
 		ORDER BY gender, personname
 	EOD;
@@ -267,7 +286,7 @@ function getMunicipalityStats()
 		FROM expanded
 		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY expanded.municipality_code, m.navn
 		ORDER BY expanded.municipality_code
 	EOD;

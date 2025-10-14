@@ -107,10 +107,10 @@ function getInstanceOfItems()
     global $dbh;
     $instanceofItems = $dbh->query(
         <<<EOD
-        SELECT DISTINCT claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' AS instanceOfItemId
+        SELECT DISTINCT claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' AS instanceOfItemId
         FROM osmetymology.wikidata w
-        WHERE claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' IS NOT NULL
-        AND claims#>'{P31,0}'->'mainsnak'->'datavalue'->'value'->>'id' NOT IN (SELECT itemid FROM osmetymology.wikidata)
+        WHERE claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' IS NOT NULL
+        AND claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' NOT IN (SELECT itemid FROM osmetymology.wikidata)
         EOD,
         PDO::FETCH_COLUMN,
         0

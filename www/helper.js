@@ -267,37 +267,33 @@ function updateResultTable(data) {
       // }
       var municipalityname = row['municipalityname'] ?? '';
       var wikidatalinkhtml = '';
-      var wikidatadescriptionhtml = '';
-      let wikidataId = row['name:etymology:wikidata'];
+      var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];
       let featureType = `<span title="${capitalizeFirstLetter(row['featuretype'])}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
-      let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
-      let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
-      if (hasSingleWikidataItem) {
-        var wikidatalinkhtml = `<a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${row['wikilabel'] ?? '(under opdatering)'}</a> ` +
-          `<sup><a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a></sup>`;
-        wikidataitems.push(wikidataId);
-        var wikidatadescription = row['wikidescription'];
-        if (nameEtymologyText && nameEtymologyText != row['wikilabel']) {
-          wikidatadescription += `<br><em>${nameEtymologyText}</em>`;
+      let topics = [];
+      let descriptions = [];
+      if (wikidataset.length > 0) {
+        for (let item of wikidataset) {
+          var wikidatalinkhtml = `<a href="#${item.itemid}" onclick="doSearch('${item.itemid}'); return false;" title="Find alle steder opkaldt efter dette emne">${item.label ?? '(under opdatering)'}</a> ` +
+            `<span class="topicwikidata"><a href="${wikidataurlprefix}${item.itemid}" class="wikidataname" data-wikidata="${item.itemid}">[Wikidata]</a></span>`;
+          topics.push(wikidatalinkhtml);
+          descriptions.push(item.description);
         }
-        var wikidatadescriptionhtml = `<span class="wikidatadescription" data-wikidata="${wikidataId}">${wikidatadescription ?? ''}</span>`;
-      } else if (hasMultipleWikidataItems) {
-        var wikidatalinkhtml = `Wikidata-emne: `;
-        let countItems = 0;
-        for (let wikidataSingleId of wikidataId.split(/\s*;\s*/)) {
-          countItems++;
-          wikidatalinkhtml += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
-        }
-        if (nameEtymologyText) {
-          var wikidatadescriptionhtml = `<span><em>${nameEtymologyText}</em></span>`;
-        }
-      } else if (nameEtymologyText) {
-        var wikidatadescriptionhtml = `<span><em>${nameEtymologyText}</em></span>`;
       }
+      if (nameEtymologyText && nameEtymologyText != row['wikilabel']) {
+        let extraDescription = '';
+        if (wikidataset.length > 0) {
+          extraDescription += '<br>';
+        }
+        extraDescription += `<em>${nameEtymologyText}</em>`;
+        descriptions.push(extraDescription);
+      }
+
       // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
       //        E.g. create as jquery DOM and add text with .text()
-      newtable.append(`<tr><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${wikidatalinkhtml}</td><td>${wikidatadescriptionhtml}</td></tr>`);
+      let topichtml = topics.join('<br>')
+      let descriptionhtml = descriptions.join('<br>')
+      newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     // updateWikidataLabels(wikidataitems);

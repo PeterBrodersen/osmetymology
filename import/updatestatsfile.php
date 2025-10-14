@@ -70,7 +70,7 @@ function getMunicipalityStats()
 		FROM expanded
 		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY expanded.municipality_code, m.navn
 		ORDER BY expanded.municipality_code
 	EOD;
@@ -116,7 +116,7 @@ function getMunicipalityStats()
 			) AS male_percentage
 		FROM expanded
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -155,7 +155,7 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
 		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
-		INNER JOIN osmetymology.gendermap ON w.claims#>'{P21,0}'->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description, wikidata_item, is_human
 		ORDER BY gender, is_human DESC, personname
 	EOD;

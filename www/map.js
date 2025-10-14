@@ -71,64 +71,65 @@ document.addEventListener("DOMContentLoaded", async () => {
             relation: 'https://mapcomplete.org/etymology.html#relation/'
         }
         let placename = feature.properties["streetname"] ?? '(uden navn)';
+        let etymologyText = feature.properties["name:etymology"];
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
+        let wikidataset = feature.properties["wikidataset"];
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         let wikipediadaurlprefix = 'https://da.wikipedia.org/w/index.php?title=';
-        if (feature.properties["name:etymology:wikidata"]) {
-            let etymologyText = feature.properties["name:etymology"];
-            let wikidataId = feature.properties["name:etymology:wikidata"];
-            let wikidatalabel = feature.properties["wikidata_label"];
-            let wikibirth = feature.properties["wikidata_dateofbirth"];
-            let wikideath = feature.properties["wikidata_dateofdeath"];
+        if (wikidataset) {
+            let sections = [];
             let dateoptions = {
                 // day: 'numeric',
                 // month: 'short',
                 year: 'numeric'
             }
-            let wikipediatitleda = feature.properties["wikidata_wikipediatitleda"];
-            let wikidatadescription = capitalizeFirstLetter(feature.properties["wikidata_description"] ?? '');
-            let hasSingleWikidataItem = /^(Q\d+)$/.test(wikidataId);
-            let hasMultipleWikidataItems = /^(Q\d+\s*(;\s*Q\d+)+)$/.test(wikidataId);
-            popupText += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
-            if (wikibirth || wikideath) {
-                let birthdeathtext = '(';
-                if (wikibirth) {
-                    birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+            let wikilabel = feature.properties["wikilabel"];
+            if (typeof wikidataset === 'string') {
+                try {
+                    wikidataset = JSON.parse(wikidataset);
+                } catch (e) {
+                    wikidataset = [];
                 }
-                birthdeathtext += ' - ';
-                if (wikideath) {
-                    birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
-                }
-                birthdeathtext += ')';
-                popupText += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
             }
-            if (wikidatadescription) {
-                popupText += `<p>${wikidatadescription}</p>`;
-            }
-            if (etymologyText && etymologyText != wikidatalabel) {
+            if (etymologyText && etymologyText != wikilabel) {
                 popupText += `<p><em>${etymologyText}</em></p>`;
             }
-            // Wikidata and Wikipedia links
-            popupText += `<p>`;
-            if (wikipediatitleda) {
-                popupText += `<a href="${wikipediadaurlprefix}${encodeURI(wikipediatitleda)}">Wikipedia-artikel</a> - `;
-            }
-            if (hasSingleWikidataItem) {
-                popupText += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
-            } else if (hasMultipleWikidataItems) {
-                popupText += `Wikidata-emne: `;
-                let countItems = 0;
-                for (let wikidataSingleId of wikidataId.split(/\s*;\s*/)) {
-                    countItems++;
-                    popupText += `<a href="${wikidataurlprefix}${wikidataSingleId}" class="wikidataname" data-wikidata="${wikidataSingleId}">[${countItems}]</a> `;
+            for (item of wikidataset) {
+                var sectiontext = '';
+                let wikidataId = item["itemid"];
+                let wikidatalabel = item["label"];
+                let wikibirth = item["dateofbirth"];
+                let wikideath = item["dateofdeath"];
+                let wikipediatitleda = item["wikipediatitleda"];
+                let wikidatadescription = capitalizeFirstLetter(item["description"] ?? '');
+                sectiontext += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
+                if (wikibirth || wikideath) {
+                    let birthdeathtext = '(';
+                    if (wikibirth) {
+                        birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+                    }
+                    birthdeathtext += ' - ';
+                    if (wikideath) {
+                        birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
+                    }
+                    birthdeathtext += ')';
+                    sectiontext += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
                 }
+                if (wikidatadescription) {
+                    sectiontext += `<p>${wikidatadescription}</p>`;
+                }
+                // Wikidata and Wikipedia links
+                sectiontext += `<p>`;
+                if (wikipediatitleda) {
+                    sectiontext += `<a href="${wikipediadaurlprefix}${encodeURI(wikipediatitleda)}">Wikipedia-artikel</a> - `;
+                }
+                sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
+                sectiontext += `</p>`;
+                sectiontext += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find alle steder opkaldt efter dette emne</a></p>`;
+                sections.push(sectiontext);
             }
-            popupText += `</p>`;
-            if (hasSingleWikidataItem) {
-                popupText += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find alle steder opkaldt efter dette emne</a></p>`
-            }
-        } else if (feature.properties["name:etymology"]) {
-            let etymologyText = feature.properties["name:etymology"];
+            popupText += sections.map(section => `<div>${section}</div>`).join('\n');
+        } else if (etymologyText) {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
         let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);

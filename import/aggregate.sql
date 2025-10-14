@@ -134,3 +134,17 @@ CREATE INDEX locations_agg_wikidatas_idx ON osmetymology.locations_agg USING gin
 
 DROP INDEX IF EXISTS osmetymology.municipalities_kode_idx;
 CREATE INDEX municipalities_kode_idx ON osmetymology.municipalities ("kode");
+
+-- Create map from locations to Wikidata items
+DROP TABLE IF EXISTS osmetymology.wikidatamap;
+CREATE TABLE osmetymology.wikidatamap AS
+SELECT
+	id AS location_id,
+	unnest(wikidatas) AS wikidata_id
+FROM
+	osmetymology.locations_agg
+WHERE
+	wikidatas IS NOT NULL AND array_length(wikidatas, 1) > 0;
+
+CREATE INDEX wikidatamap_wikidata_id_idx ON osmetymology.wikidatamap (wikidata_id);
+CREATE INDEX wikidatamap_location_id_idx ON osmetymology.wikidatamap (location_id);
