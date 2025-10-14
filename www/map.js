@@ -106,11 +106,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (wikibirth || wikideath) {
                     let birthdeathtext = '(';
                     if (wikibirth) {
-                        birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+                        if (typeof wikibirth === 'string' && wikibirth.trim().endsWith('BC')) {
+                            // Handle BC date string, e.g. "0600-01-01 BC"
+                            let year = wikibirth.match(/^(\d{1,4})/);
+                            birthdeathtext += (year ? year[1] : wikibirth) + ' f.Kr.';
+                        } else {
+                            birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+                        }
                     }
                     birthdeathtext += ' - ';
                     if (wikideath) {
-                        birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
+                        if (typeof wikideath === 'string' && wikideath.trim().endsWith('BC')) {
+                            let year = wikideath.match(/^(\d{1,4})/);
+                            birthdeathtext += (year ? year[1] : wikideath) + ' f.Kr.';
+                        } else {
+                            birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
+                        }
                     }
                     birthdeathtext += ')';
                     sectiontext += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
