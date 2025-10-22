@@ -60,6 +60,7 @@ Resources for getting information about the origin of Danish street names.
 | Liseleje         | [Liselejes Historie](https://liselejeqr.dk/) | Online | | Only a few locations |
 | Lyngby           | [Vejnavne i Lyngby-Taarbæk Kommune](https://slaegtsbibliotek.dk/923295.pdf) | Online book (1992), PDF | Peter Wahl | Very detailed |
 | Lyngby           | [Lyngby-Bogen 2022](https://slaegtsbibliotek.dk/2024/938601.pdf) | Online book (2022), PDF | Historisk-topografisk Selskab for Lyngby-Taarbæk Kommune | Very detailed |
+| Løkken           | [Løkken Lokalhistoriske Arkiv](https://www.loekkenhistorie.dk/) | Online | Løkken Lokalhistoriske Arkiv | A couple of roads |
 | Løkken-Vrå       | [Noget om vejnavne i Løkken-Vrå Kommune](https://bibliotek.dk/materiale/noget-om-gade-og-vejnavne-i-loekken-vraa-kommune_frits-uhrenholdt/work-of:870970-basis:10073456?type=bog) | Book (1989) | Frits Uhrenholdt | |
 | Middelfart       | [Middelfarts veje](https://bibliotek.dk/materiale/middelfarts-veje_karen-lisbeth-vognsen/work-of%3A870970-basis%3A24738078?type=bog) | Book (2019) | Karen-Lisbeth Vognsen | Good overview |
 | Nakskov          | [Gade og vejnavne i Nakskov](https://arkiv.dk/vis/740167) | Book | Nakskov lokalhistoriske Arkiv | Not sure where the resource is available... |
@@ -119,6 +120,7 @@ Resources for getting information about the origin of Danish street names.
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
 | Aalborg          | [Historien bag de gamle gader i Aalborg anno 1949](https://bibliotek.dk/materiale/historien-bag-de-gamle-gader-i-aalborg-anno-1949_kr-vaernfelt/work-of:870970-basis:41212497?workId=work-of%3A870970-basis%3A41212497&type=bog) | Book (1949?) |
 | Aarhus           | [AarhusWiki](https://aarhuswiki.dk/wiki/Forside)| Online, Wiki | Aarhus Stadsarkiv | Some roads do not have Wiki entries yet |
+| Aarhus           | [Aarhusianske gadenavne](https://bibliotek.dk/materiale/aarhusianske-gadenavne_leif-dehnits-f-1945-/work-of%3A870970-basis%3A45972127?type=bog&tid=MFsFr17610981922992428587187) | Book (2018) | Very detailed |
 |                  | [Alle de frække steder](https://bibliotek.dk/materiale/alle-de-fraekke-steder_claus-pettersson/work-of:870970-basis:28027397) | Book (2009) | Claus Pettersson, Jan Svarrer | Mostly just pictures of signs |
 |                  | [Dansk Gadenavneskik](https://slaegtsbibliotek.dk/2023/935413.pdf) | Online book (1970), PDF | Bent Jørgensen | All-round information about Danish street naming traditions |
 |                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
