@@ -147,7 +147,8 @@ function findWikidataLabel($searchitem)
 		$querystring = <<<EOD
 			SELECT COUNT(l.id) AS placecount, w.name AS label, w.name AS alias, w.description, w.itemid
 			FROM osmetymology.wikidata w
-			INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
+			INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
+			INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
 			WHERE w.itemid = ?
 			GROUP BY w.itemid, w.description, w.name
 		EOD;
@@ -156,8 +157,9 @@ function findWikidataLabel($searchitem)
 			SELECT * FROM (
 				SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, w.name AS label, wl.label AS alias , w.description, w.itemid
 				FROM osmetymology.wikilabels wl
-				INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid 
-				INNER JOIN osmetymology.locations_agg l ON l.wikidatas @> ARRAY[w.itemid]
+				INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid
+				INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
+				INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
 				WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
 				GROUP BY wl.label, w.itemid, w.description, w.name
 			) t
