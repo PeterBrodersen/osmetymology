@@ -84,6 +84,7 @@ Resources for getting information about the origin of Danish street names.
 | Randers          | [Vejnavne i Randers Kommune](https://bibliotek.dk/materiale/vejnavne-i-randers-kommune_peter-bondesen-f-1946-/work-of%3A870970-basis%3A06271022?type=bog) | Book (1985) | Peter Bondesen | Very detailed |
 | Ribe             | [Vores gade](https://web.archive.org/web/20230603211303/http://rba.esbjergkommune.dk/ribes-historie/vores-gade.aspx)| Online (Internet Archive) | Ribe Byhistoriske Arkiv | Only a few roads |
 | Ribe             | [Kategori: Gader](https://ribewiki.dk/da/Kategori:Gader) | Online, Wiki | Thomas Dahlstrøm Nielsen | |
+| Ribe             | [Ribes gader - og historien bag dem](https://bibliotek.dk/materiale/ribes-gader-og-historien-bag-dem_soeren-mulvad/work-of%3A870970-basis%3A10207169?type=bog&tid=mU_rw1767646918533184637595) | Book | Søren Mulvad | [Also available online](https://slaegtsbibliotek.dk/2024/946690.pdf) |
 | Ringsted         | [RingstedWiki, Kategori: Gader og veje](http://wiki.ringstedhistorie.dk/index.php/Kategori:Gader_%26_Veje) | Online, Wiki | Ringsted Museum og Arkiv |
 | Roskilde         | [Roskildes gader](https://roskildesudvikling.dk/FORSIDE/Gader%20og%20str%C3%A6der/) | Online | | Only a few roads |
 | Roskilde         | [Gader og stræder - i Roskilde Kommune](https://bibliotek.dk/materiale/gader-og-straeder-i-roskilde-kommune_lotte-fang/work-of%3A870970-basis%3A22349600?type=bog) | Book (2015) | Lotte Fang | Extremely detailed |
