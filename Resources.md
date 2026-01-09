@@ -19,6 +19,7 @@ Resources for getting information about the origin of Danish street names.
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
 | Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
+| Greve            | [Et gammelt kort](https://slaegtsbibliotek.dk/934861.pdf) | Online, book (1995) | Greve Lokalhistoriske Forening |
 | Farum            | [Farums Veje: Hvem - Hvor](https://slaegtsbibliotek.dk/2023/935545.pdf) | Book (1998) | Gudrun Lund Meyer | |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
