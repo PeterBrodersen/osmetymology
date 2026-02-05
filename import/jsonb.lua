@@ -58,7 +58,9 @@ end
 
 -- We are only interested in objects with name and some kind of etymology
 function no_usable_data(tags)
-    return tags.name == nil or ( tags["name:etymology"] == nil and tags["name:etymology:wikipedia"] == nil and tags["name:etymology:wikidata"] == nil )
+    -- return tags.name == nil or ( tags["name:etymology"] == nil and tags["name:etymology:wikipedia"] == nil and tags["name:etymology:wikidata"] == nil )
+    return false -- always false, we want to process everything
+
 end
 
 -- Assume input object is not a point
