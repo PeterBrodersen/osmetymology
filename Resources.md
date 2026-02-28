@@ -114,6 +114,7 @@ Resources for getting information about the origin of Danish street names.
 | Vanløse          | [Forsvundne vejnavne og veje i Vanløse](http://vanloese.dk/om-vanloese/vejenes-historie/forsvundne-vejnavne/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
 | Vanløse          | [Vanløsebasen](http://www.vanløse.dk/) | Online |
+| Vejby-Tibirke    | [Vejby-Tibirke Årbog 1975-76](https://slaegtsbibliotek.dk/921993.pdf) | Online book (1975), PDF | Vejby-Tibirke Selskabet | Street names from page 53 |
 | Vejle            | [VejleWiki](http://vejlewiki.dk/) | Online, Wiki | Vejle Stadsarkiv |
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
 | Vesthimmerland   | [Historier og steder](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder) | Online | Kulturarvstjenesten Vesthimmerland | Contains information for a few roads in [Aars](https://www.vesthimmerlandsmuseum.dk/Kulturarvstjenesten/Historier-og-steder/Gadeskilte/Gadeskilte-Aars), [Løgstør](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-loegstoer), [Farsø](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-farsoe), and [Aalestrup](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-aalestrup) |
