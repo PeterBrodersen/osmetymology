@@ -6,29 +6,26 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
-# :TODO: Switch to cURL for conditional requests - no need to fetch large files again
-# 
-# curl -o 'denmark-latest.osm.pbf' -z 'denmark-latest.osm.pbf' 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf'
-# https://download.geofabrik.de/europe/denmark-latest.osm.pbf
+PBFFILE='ile-de-france-latest.osm.pbf' 
+SCHEMA='paris_osmetymology'
 
-# Get Denmark OSM file (~400-450 MB) and Danish municipalities with geometry (~115 MB)
-wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
-wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
-#wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
+# Get Île-de-France OSM file (~300 MB)
+#wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
+wget 'https://download.geofabrik.de/europe/france/ile-de-france-latest.osm.pbf' -O $PBFFILE
 
-if [ ! -s "denmark-latest.osm.pbf" ]; then
-    echo "Error: Couldn't download denmark-latest.osm.pbf"
+if [ ! -s "$PBFFILE" ]; then
+    echo "Error: Couldn't download $PBFFILE"
     exit 1
 fi
 
-# Main import. Estimated time: 10-20 minutes
-psql -c 'CREATE SCHEMA IF NOT EXISTS osmetymology'
-osm2pgsql --schema osmetymology -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
+# Main import. Estimated time: 5 minutes
+psql -c "CREATE SCHEMA IF NOT EXISTS $SCHEMA"
+osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PBFFILE
 
-# Import municipalities. Takes about a second.
-ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+# Import arrondissements. Takes about a second.
+ogr2ogr PG:dbname="${PGDATABASE:?}" arrondissements.fgb -lco SCHEMA=$SCHEMA -nln "$SCHEMA.arrondissements" -overwrite
 
-# Aggregate, split by municipality boundaries. Estimated time: 2-4 minutes.
+# Aggregate, split by arrondissement boundaries. Estimated time: A couple of seconds.
 psql -f aggregate.sql
 
 # Download and import Wikidata items. Estimated time: 5-10 minutes for first import, otherwise only fetch missing items.
@@ -36,19 +33,19 @@ psql -f aggregate.sql
 php wikidataimport.php --auto
 
 # Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
-FGBFILE="../www/data/navne.fgb"
-CSVFILE="../www/data/navne.csv"
+FGBFILE="../www/data/noms.fgb"
+CSVFILE="../www/data/noms.csv"
 if [ -f "$FGBFILE" ] ; then
     rm -- "$FGBFILE"
 fi
 if [ -f "$CSVFILE" ] ; then
     rm -- "$CSVFILE"
 fi
-ogr2ogr -progress "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Stednavne'
+ogr2ogr -progress "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Noms de lieux'
 ogr2ogr -progress "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
 php updatestatsfile.php
 
 # Backup stats file with import date
 DATE=$(date +%F)
 cp ../www/data/stats.json ../www/data/old/stats_${DATE:?}.json
-cp ../www/data/municipalities.json ../www/data/old/municipalities_${DATE:?}.json
+cp ../www/data/arrondissements.json ../www/data/old/arrondissements_${DATE:?}.json

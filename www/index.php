@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        Hvad er danske vejnavne og steder opkaldt efter?
+        What are places in Paris named after?
     </title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
@@ -28,14 +28,14 @@
 </head>
 
 <body>
-    <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
+    <h1>What are streets and places in Paris named after?</h1>
 
-<div style="clear: both;">
-</div>
+    <div style="clear: both;">
+    </div>
 
     <div id="userinput">
-        <div id="placename"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
-        <div id="itemname"><input required autofocus id="itemfind" placeholder="Slå emne op" accesskey="t"></div>
+        <div id="placename"><input required autofocus id="namefind" placeholder="Search street name" accesskey="f"> <span id="copylink"><a href="#">[copy link 🔗]</a></span></div>
+        <div id="itemname"><input required autofocus id="itemfind" placeholder="Search topic" accesskey="t"></div>
     </div>
 
     <div id="result">
@@ -45,12 +45,12 @@
         <table class="resulttable">
             <thead>
                 <tr class="tableheader">
-                    <th>Kort</th>
+                    <th>Map</th>
                     <th>Type</th>
-                    <th>Stednavn</th>
-                    <th>Kommune</th>
-                    <th>Emne</th>
-                    <th>Beskrivelse</th>
+                    <th>Name</th>
+                    <th>Arrondissement</th>
+                    <th>Topic</th>
+                    <th>Description</th>
                 </tr>
             </thead>
         </table>
@@ -58,65 +58,48 @@
 
     <div id="maplinks">
         <div>
-            <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a> <span class="location-loader" style="display:none;"></span>
+            <a href="#" id="getposition">[➹ find places near you]</a> <span class="location-loader" style="display:none;"></span>
         </div>
         <div>
-            <a href="#" id="showplacesinmapview">[list alle steder i kortudsnit]</a><br>
+            <a href="#" id="showplacesinmapview">[list all places in map view]</a><br>
         </div>
         <div>
-            <a href="#" id="copylinktomap">[kopiér link til kortudsnit 🔗]</a><br>
+            <a href="#" id="copylinktomap">[copy link to map view 🔗]</a><br>
         </div>
 
     </div>
-<div class="drlink">
-	<p>
-	Velkommen til! Tjek også <a href="kommuner/">kønsfordeling på kommuneniveau</a> samt <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
-	</p>
-	<p>
-		Eksempler:
-	</p>
-	<ul>
-		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.403470%2C10.385185&loc=55.401682%2C10.391736&loc=55.404484%2C10.394011&hl=da&alt=0">Odense</a></li>
-		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.667353%2C12.533405&loc=55.665580%2C12.529242&loc=55.665435%2C12.530379&hl=da&alt=0">Carlsberg Byen</a></li>
-        <li><a href="https://osrm.findvej.dk/nomales/?z=16&center=56.030328%2C12.600653&loc=56.030370%2C12.604601&loc=56.031740%2C12.605647&hl=da&alt=0">Helsingør</a></li>
-	</ul>
-</div>
+    <div class="drlink">
+        <p>
+            Check out <a href="arrondissements/">gender distribution per arrondissement</a>.
+        </p>
+    </div>
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">
         <p>
-            Vejnavne-projektet bliver løbende opdateret. Se også undersiden for <a href="kommuner/">kønsfordeling på kommuneniveau</a>.
+            The data source is the voluntary mapping project <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
         </p>
         <p>
-            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Her har frivillige
-            bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
-            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter, og der
-            er en række <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Editing.md?tab=readme-ov-file#caveats">fælder</a> at være på
-            udkig efter.
+            Not all places are registered yet. Currently, there are over 40,000 Parisian roads with information about their etymology, which is
+            named after over 15,000 different topics.
         </p>
         <p>
-            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er
-            opkaldt efter over 15.000 forskellige emner.
-        </p>
-        <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske
-            veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a>
-            (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er
-            <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>. Har du spørgsmålet til projektet, er du
-            mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
+            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Parisian roads with information in a <a href="/data/noms.csv">comma-separated file</a> and in <a href="/data/noms.fgb">FlatGeobuf format (for GIS users)</a>
+            The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/paris">available on GitHub</a>. If you have questions about the project, you are
+            more than welcome to <a href="mailto:peter@ter.dk">send an email</a>.
         </p>
 
         <p class="copyright">
-            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a> og er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href="https://www.wikidata.org/">Wikidata</a> og er frigivet under <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 licens</a>.
+            Map data is sourced from <a href="https://www.openstreetmap.org/">OpenStreetMap</a> and is licensed under the <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href="https://www.wikidata.org/">Wikidata</a> and is licensed under the <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 License</a>.
         </p>
 
         <p class="stats">
-            Indhold i databasen:<br>
-            Antal steder: <span id="totalroads"></span><br>
-            Antal unikt navngivne steder: <span id="uniquenamedroads"></span><br>
-            Antal unikke emner, steder er opkaldt efter: <span id="uniqueetymologywikidata"></span><br>
-            Dato for datasæt: <span id="importfiletime"></span>
+            Content in the database:<br>
+            Number of places: <span id="totalroads"></span><br>
+            Number of uniquely named places: <span id="uniquenamedroads"></span><br>
+            Number of unique topics, places are named after: <span id="uniqueetymologywikidata"></span><br>
+            Date of dataset: <span id="importfiletime"></span>
         </p>
     </div>
 </body>

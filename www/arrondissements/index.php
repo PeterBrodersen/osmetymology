@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        Oversigt og statistik for kønsfordeling for vejnavne i kommuner
+        Overview and statistics for gender distribution of street names in arrondissements
     </title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js" integrity="sha512-O/JP2r8BG27p5NOtVhwqsSokAwEP5RwYgvEzU9G6AfNjLYqyt2QT8jqU1XrXCiezS50Qp1i3ZtCQWkHZIRulGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -15,33 +15,32 @@
 </head>
 
 <body>
-    <h1>Statistik for kønsfordeling for vejnavne i kommuner</h1>
+    <h1>Statistics for gender distribution of street names in arrondissements</h1>
     <p>
-        Statistik fra <a href="/">Navneprojektet</a> for kønsfordeling på veje i kommunen. Hver person tælles kun med én gang inden for en kommune, også selv
-        om flere vejnavne refererer til personen. Klik på et kommunenavn for at se personer i kommunen med veje tilknyttet.
+        Statistics from the <a href="/">Name Project</a> for gender distribution on streets in the arrondissement. Each person is counted only once within an arrondissement, even if multiple street names refer to the same person. Click on an arrondissement name to see the people in the arrondissement with streets associated.
     </p>
     <p>
-        Der er registreret ophav for over 40.000 veje i Danmark. Ikke alle veje er med endnu, og projektet er stadigvæk under udvikling, baseret på frivilligt arbejde.
+        More than 5.000 streets in Paris have registered etymology. Not all streets are included yet, and the project is still under development, based on voluntary work.
     </p>
     <p>
-        Dato for datasæt: <span id="importfiletime"></span>
+        Date for data set: <span id="importfiletime"></span>
     </p>
 
     <table id="municipalitystats" class="resulttable">
         <thead>
             <tr>
-                <th rowspan="2">Kommunekode</th>
-                <th rowspan="2">Kommune</th>
-                <th colspan="3">Mennesker, som har eksisteret</th>
-                <th colspan="3">Alle mennesker, også fiktive</th>
+                <th rowspan="2">Arrondissement</th>
+                <th rowspan="2">Name</th>
+                <th colspan="3">Humans that have existed</th>
+                <th colspan="3">All humans, including fictional</th>
             </tr>
             <tr>
-                <th>Kvinder</th>
-                <th>Mænd</th>
-                <th>Procentvis fordeling</th>
-                <th>Kvinder</th>
-                <th>Mænd</th>
-                <th>Procentvis fordeling</th>
+                <th>Women</th>
+                <th>Men</th>
+                <th>Percentage distribution</th>
+                <th>Women</th>
+                <th>Men</th>
+                <th>Percentage distribution</th>
             </tr>
         </thead>
         <tbody>
@@ -49,14 +48,14 @@
         </tbody>
         <tfoot>
             <tr>
-                <th>Kommunekode</th>
-                <th>Kommune</th>
-                <th>Kvinder,<br>menneske</th>
-                <th>Mænd,<br>menneske</th>
-                <th>Procentvis fordeling,<br>menneske</th>
-                <th>Kvinder,<br>alle</th>
-                <th>Mænd,<br>alle</th>
-                <th>Procentvis fordeling</th>
+                <th>Arrondissement</th>
+                <th>Name</th>
+                <th>Women,<br>humans</th>
+                <th>Men,<br>humans</th>
+                <th>Percentage distribution,<br>humans</th>
+                <th>Women,<br>all</th>
+                <th>Men,<br>all</th>
+                <th>Percentage distribution</th>
             </tr>
         </tfoot>
     </table>
@@ -67,22 +66,21 @@
     <div class="clear"></div>
 
     <p>
-        Tallene for <b>Alle kommuner</b> er lavere end summen for de enkelte kommuner, idet dubletter (samme personer, som optræder
-        i flere kommuner) kun bliver talt med én gang.
+        The sum for all arrondissements is higher than the total for <b>All arrondissements</b>, as duplicates (same people appearing in multiple arrondissements) are only counted once in the total.
     </p>
 
     <div id="betaboilerplate">
         <p>
-            Over 40.000 veje i Danmark er registreret og katalogiseret. Dette udtræk henter kun veje og ikke fx bygninger, statuer, parker, m.m.
+            Over 5,000 streets in Paris are registrered. This extract only fetches roads and not e.g. buildings
+            statues, parks, etc.
         </p>
         <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Dette udtræk for kommuner kan <a href="/data/municipalities.json">hentes som JSON-fil</a>. Har du spørgsmålet til projektet, er du mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
+            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. This extract for arrondissements can be <a href="/data/arrondissements.json">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href="mailto:peter@ter.dk">send an email</a>.
         </p>
         <p class="copyright">
-            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a> og er frigivet under
-            <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>.
-            Metadata er hentet fra <a href="https://www.wikidata.org/">Wikidata</a> og er frigivet under
-            <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 licens</a>.
+            Map data is sourced from <a href="https://www.openstreetmap.org/">OpenStreetMap</a> and is licensed under the
+            <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href="https://www.wikidata.org/">Wikidata</a> and is licensed under the
+            <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 License</a>.
         </p>
     </div>
 
