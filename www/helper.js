@@ -127,7 +127,7 @@ $(function () {
   });
 
   $("#getposition").on("click", () => { // :TODO: Indicate a location search is going on
-    $("#result").html('Finder din position - et øjeblik ...');
+    $("#result").html('Acquiring your position - hang on...');
     // map.locate({ enableHighAccuracy: true });
     map.locate();
   });
@@ -294,7 +294,7 @@ function updateResultTable(data) {
       // if (row['sampleway_id']) {
       //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
       // }
-      var municipalityname = row['municipalityname'] ?? '';
+      var arrondissementname = row['arrondissementname'] ?? '';
       var wikidatalinkhtml = '';
       var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];
@@ -322,7 +322,7 @@ function updateResultTable(data) {
       //        E.g. create as jquery DOM and add text with .text()
       let topichtml = topics.join('<br>')
       let descriptionhtml = descriptions.join('<br>')
-      newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${municipalityname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
+      newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${arrondissementname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     // updateWikidataLabels(wikidataitems);
@@ -382,5 +382,5 @@ function getFeatureTypeIcon(featuretype) {
 
 function updateResultTableError(error) {
   console.log(error);
-  $("#result").html('Fejl: ' + error);
+  $("#result").html('Error: ' + error);
 }

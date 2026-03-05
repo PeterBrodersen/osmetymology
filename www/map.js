@@ -22,23 +22,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         minZoom,
         maxZoom
     });
-    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([55.6794, 12.5740], 15);
+    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([48.855, 2.348], 15);
 
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
 
     var baseMaps = {
         "OpenStreetMap": osmLayer,
-        "Luftfoto": wmsOrtoLayer,
         "Spinal Map": Thunderforest_SpinalMap,
     }
     var geocoderOptions = {
         geocoder: new L.Control.Geocoder.nominatim({
             geocodingQueryParams: {
-                "countrycodes": "dk"
+                "countrycodes": "fr"
             }
         }),
-        placeholder: 'Søg efter sted i Danmark'
+        placeholder: 'Search for place in France'
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);
@@ -70,12 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             polygon: 'https://mapcomplete.org/etymology.html#way/',
             relation: 'https://mapcomplete.org/etymology.html#relation/'
         }
-        let placename = feature.properties["streetname"] ?? '(uden navn)';
+        let placename = feature.properties["streetname"] ?? '(no name)';
         let etymologyText = feature.properties["name:etymology"];
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
         let wikidataset = feature.properties["wikidataset"];
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
-        let wikipediadaurlprefix = 'https://da.wikipedia.org/w/index.php?title=';
+        let wikipediaenurlprefix = 'https://en.wikipedia.org/w/index.php?title=';
         if (wikidataset) {
             let sections = [];
             let dateoptions = {
@@ -100,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let wikidatalabel = item["label"];
                 let wikibirth = item["dateofbirth"];
                 let wikideath = item["dateofdeath"];
-                let wikipediatitleda = item["wikipediatitleda"];
+                let wikipediatitleen = item["wikipediatitleen"];
                 let wikidatadescription = capitalizeFirstLetter(item["description"] ?? '');
                 sectiontext += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
                 if (wikibirth || wikideath) {
@@ -109,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         if (typeof wikibirth === 'string' && wikibirth.trim().endsWith('BC')) {
                             // Handle BC date string, e.g. "0600-01-01 BC"
                             let yearMatch = wikibirth.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' f.Kr.';
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' BC';
                         } else {
                             birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
                         }
@@ -118,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (wikideath) {
                         if (typeof wikideath === 'string' && wikideath.trim().endsWith('BC')) {
                             let yearMatch = wikideath.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' f.Kr.';
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' BC';
                         } else {
                             birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
                         }
@@ -131,12 +130,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 // Wikidata and Wikipedia links
                 sectiontext += `<p>`;
-                if (wikipediatitleda) {
-                    sectiontext += `<a href="${wikipediadaurlprefix}${encodeURI(wikipediatitleda)}">Wikipedia-artikel</a> - `;
+                if (wikipediatitleen) {
+                    sectiontext += `<a href="${wikipediaenurlprefix}${encodeURI(wikipediatitleen)}">Wikipedia article</a> - `;
                 }
-                sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata-emne</a>`;
+                sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata item</a>`;
                 sectiontext += `</p>`;
-                sectiontext += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find alle steder opkaldt efter dette emne</a></p>`;
+                sectiontext += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find all places named after this topic</a></p>`;
                 sections.push(sectiontext);
             }
             popupText += sections.map(section => `<div>${section}</div>`).join('\n');
@@ -145,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
         let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
-        popupText += `<div><a href="${osmurl}" title="Se stedet på OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Ret stedet på MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
+        popupText += `<div><a href="${osmurl}" title="See the place on OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Edit the place on MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
         return popupText;
     }
 
@@ -174,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let statisticsData = [];
 
         // only fetch the relevant bbox subset of data
-        let iter = flatgeobuf.deserialize('/data/navne.fgb', mapBoundingBox(), false, true);
+        let iter = flatgeobuf.deserialize('/data/noms.fgb', mapBoundingBox(), false, true);
         for await (let feature of iter) {
 
             let hasWikidata = feature.properties["name:etymology:wikidata"];
@@ -257,14 +256,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         map.panTo(data.latlng);
         const radius = data.accuracy / 2;
         const locationMarker = L.marker(data.latlng).addTo(map)
-            .bindPopup(`Du er inden for ${Math.round(radius).toLocaleString()} meter af dette punkt`).openPopup();
+            .bindPopup(`You are within ${Math.round(radius).toLocaleString()} meters of this point`).openPopup();
         const locationCircle = L.circle(data.latlng, radius).addTo(map);
         $.getJSON("lookup.php", { coordinates })
             .fail((jqxhr, textStatus, error) => updateResultTableError(error))
             .done((data) => updateResultTable(data));
     });
     map.on('locationerror', (e) => {
-        $("#result").html('Kan ikke finde din position: ' + e.message);
+        $("#result").html('Cannot find your position: ' + e.message);
         console.log(e);
     });
 });

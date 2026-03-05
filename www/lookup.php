@@ -8,7 +8,7 @@ $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
-$municipalitycode = (int) ($_GET['municipalitycode'] ?? 0);
+$arrondissementcode = (int) ($_GET['arrondissementcode'] ?? 0);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -48,7 +48,7 @@ function getColumns($coordinates = FALSE)
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		'm.navn AS municipalityname',
+		"m.c_ar || ' (' || m.l_aroff || ')' AS arrondissementname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
@@ -56,7 +56,7 @@ function getColumns($coordinates = FALSE)
 		'gendermap.gender',
 		"to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
 		"to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
-		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
+		"w.sitelinks->'enwiki'->>'title' AS wikipediatitleen",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
 		'array_to_json(l.wikidatas) AS wikidatas',
@@ -75,9 +75,9 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$columns = getColumns($coordinates);
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['l.name, m.navn'];
+	$orderbylist = ['l.name, m.l_aroff'];
 	if ($type == 'searchnamelike') {
-		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
+		$where = "WHERE searchname LIKE " . DBSCHEMA . ".toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
 		$where = 'WHERE wikidatas @> ARRAY[?]';
 	} elseif ($type == 'nearest') {
@@ -90,13 +90,14 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		// :TODO: add order by distance from center of bbox
 	}
 	$orderby = implode(', ', $orderbylist);
+	$dbschema = DBSCHEMA;
 	$querystring = <<<EOD
 		SELECT $columns
-		FROM osmetymology.locations_agg l
-		INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
-		LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
-		LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		FROM $dbschema.locations_agg l
+		INNER JOIN $dbschema.arrondissements m on l.arrondissement_code = m.c_ar
+		LEFT JOIN $dbschema.wikidata w ON l."name:etymology:wikidata" = w.itemid
+		LEFT JOIN $dbschema.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+		LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		LEFT JOIN LATERAL(
 			SELECT jsonb_agg(jsonb_build_object(
 				'itemid', w.itemid,
@@ -105,13 +106,13 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 				'gender', gendermap.gender,
 				'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
 				'dateofdeath', to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
-				'wikipediatitleda', w.sitelinks->'dawiki'->>'title'
+				'wikipediatitleda', w.sitelinks->'enwiki'->>'title'
 			)) AS wikidataset,
 			string_agg(w.name, '; ') AS wikilabel
-			FROM osmetymology.wikidatamap map
-			INNER JOIN osmetymology.wikidata w ON map.wikidata_id = w.itemid
-			LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-			LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+			FROM $dbschema.wikidatamap map
+			INNER JOIN $dbschema.wikidata w ON map.wikidata_id = w.itemid
+			LEFT JOIN $dbschema.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+			LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 			WHERE l.id = map.location_id
 		) AS wikidatas ON TRUE
 		$where
@@ -139,6 +140,7 @@ function findPlaceName($searchname)
 function findWikidataLabel($searchitem)
 {
 	global $dbh;
+	$dbschema = DBSCHEMA;
 	if (strlen($searchitem) < 2) {
 		return false;
 	}
@@ -146,9 +148,9 @@ function findWikidataLabel($searchitem)
 		$searchitem = strtoupper($searchitem);
 		$querystring = <<<EOD
 			SELECT COUNT(l.id) AS placecount, w.name AS label, w.name AS alias, w.description, w.itemid
-			FROM osmetymology.wikidata w
-			INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
-			INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
+			FROM $dbschema.wikidata w
+			INNER JOIN $dbschema.wikidatamap map ON w.itemid = map.wikidata_id
+			INNER JOIN $dbschema.locations_agg l ON map.location_id = l.id
 			WHERE w.itemid = ?
 			GROUP BY w.itemid, w.description, w.name
 		EOD;
@@ -156,11 +158,11 @@ function findWikidataLabel($searchitem)
 		$querystring = <<<EOD
 			SELECT * FROM (
 				SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, w.name AS label, wl.label AS alias , w.description, w.itemid
-				FROM osmetymology.wikilabels wl
-				INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid
-				INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
-				INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
-				WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
+				FROM $dbschema.wikilabels wl
+				INNER JOIN $dbschema.wikidata w ON wl.itemid = w.itemid
+				INNER JOIN $dbschema.wikidatamap map ON w.itemid = map.wikidata_id
+				INNER JOIN $dbschema.locations_agg l ON map.location_id = l.id
+				WHERE wl.searchlabel LIKE $dbschema.toSearchString(?) || '%'
 				GROUP BY wl.label, w.itemid, w.description, w.name
 			) t
 			ORDER BY placecount DESC, label, itemid
@@ -219,20 +221,19 @@ function findNearestPlacesFromBBOX($bboxstring)
 function getStats()
 {
 	global $dbh;
-	$querystring = "SELECT label, value FROM osmetymology.stats";
+	$querystring = "SELECT label, value FROM " . DBSCHEMA . ".stats";
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_KEY_PAIR);
 	$result = $q->fetchAll();
 	return $result;
 }
 
-function getSingleMunicipalityWayPersons($municipalitycode)
+function getSingleArrondissementWayPersons($arrondissementcode)
 {
 	global $dbh;
-	$municipalitycode = '0' . $municipalitycode;
-	$q = $dbh->prepare("SELECT kode AS municipality_code, navn AS municipality_name, regionsnavn AS region_name FROM osmetymology.municipalities WHERE kode = ?");
+	$q = $dbh->prepare("SELECT c_ar AS arrondissement_code, navn AS arrondissement_nameFROM " . DBSCHEMA . ".arrondissements WHERE c_ar = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$municipalitycode]);
+	$q->execute([$arrondissementcode]);
 	$result = $q->fetch();
 	if (!$result) {
 		return [];
@@ -243,7 +244,7 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
 			FROM osmetymology.locations_agg l
 			WHERE l.featuretype = 'way'
-			AND l.municipality_code = ?
+			AND l.arrondissement_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -254,23 +255,23 @@ function getSingleMunicipalityWayPersons($municipalitycode)
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$municipalitycode]);
+	$q->execute([$arrondissementcode]);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
 
-function getMunicipalityStats()
+function getMunicipalityStats() // :TODO: Change to arrondissement stats
 {
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.municipality_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.arrondissement_code, l.name, UNNEST(wikidatas) AS wikidata_id
 			FROM osmetymology.locations_agg l
 			WHERE l.featuretype = 'way'
 		)
 		SELECT
-			expanded.municipality_code,
-			m.navn AS municipality_name,
+			expanded.arrondissement_code,
+			m.l_aroff AS arrondissement_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -286,11 +287,11 @@ function getMunicipalityStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
+		INNER JOIN osmetymology.arrondissements m on expanded.arrondissement_code = m.c_ar
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.municipality_code, m.navn
-		ORDER BY expanded.municipality_code
+		GROUP BY expanded.arrondissement_code, m.l_aroff
+		ORDER BY expanded.arrondissement_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -319,8 +320,8 @@ if ($searchname) {
 	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
-} elseif ($municipalitycode) {
-	$result = getSingleMunicipalityWayPersons($municipalitycode);
+} elseif ($arrondissementcode) {
+	$result = getSingleArrondissementWayPersons($arrondissementcode);
 } elseif ($request == 'municipalitystats') {
 	$result = getMunicipalityStats();
 }

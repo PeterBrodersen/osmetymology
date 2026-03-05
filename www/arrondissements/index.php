@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js" integrity="sha512-O/JP2r8BG27p5NOtVhwqsSokAwEP5RwYgvEzU9G6AfNjLYqyt2QT8jqU1XrXCiezS50Qp1i3ZtCQWkHZIRulGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='/style.css' rel='stylesheet' />
-    <script src="/kommuner/helper.js"></script>
+    <script src="/arrondissements/helper.js"></script>
     <meta property="og:image" content="https://navne.findvej.dk/media/l%C3%A6rkevej.png" />
     <meta property="og:image:width" content="1000" />
     <meta property="og:image:height" content="800" />
@@ -26,7 +26,7 @@
         Date for data set: <span id="importfiletime"></span>
     </p>
 
-    <table id="municipalitystats" class="resulttable">
+    <table id="arrondissementstats" class="resulttable">
         <thead>
             <tr>
                 <th rowspan="2">Arrondissement</th>
@@ -60,7 +60,7 @@
         </tfoot>
     </table>
 
-    <table class="resulttable" id="singlemunicipality">
+    <table class="resulttable" id="singlearrondissement">
     </table>
 
     <div class="clear"></div>

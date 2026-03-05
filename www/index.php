@@ -81,8 +81,7 @@
             The data source is the voluntary mapping project <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
         </p>
         <p>
-            Not all places are registered yet. Currently, there are over 40,000 Parisian roads with information about their etymology, which is
-            named after over 15,000 different topics.
+            Not all places are registered yet. Currently, there are about 5,000 Parisian roads with information about their etymology, which are named after over 3,000 different topics.
         </p>
         <p>
             The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Parisian roads with information in a <a href="/data/noms.csv">comma-separated file</a> and in <a href="/data/noms.fgb">FlatGeobuf format (for GIS users)</a>

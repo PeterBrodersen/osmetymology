@@ -10,7 +10,7 @@ PBFFILE='ile-de-france-latest.osm.pbf'
 SCHEMA='paris_osmetymology'
 
 # Get Île-de-France OSM file (~300 MB)
-#wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.txt
+wget 'https://download.geofabrik.de/europe/france/ile-de-france-updates/state.txt' -O state.txt
 wget 'https://download.geofabrik.de/europe/france/ile-de-france-latest.osm.pbf' -O $PBFFILE
 
 if [ ! -s "$PBFFILE" ]; then
