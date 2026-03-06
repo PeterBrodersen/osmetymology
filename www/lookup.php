@@ -106,7 +106,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 				'gender', gendermap.gender,
 				'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
 				'dateofdeath', to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
-				'wikipediatitleda', w.sitelinks->'enwiki'->>'title'
+				'wikipediatitleen', w.sitelinks->'enwiki'->>'title'
 			)) AS wikidataset,
 			string_agg(w.name, '; ') AS wikilabel
 			FROM $dbschema.wikidatamap map
