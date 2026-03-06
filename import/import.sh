@@ -6,7 +6,8 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
-PBFFILE='ile-de-france-latest.osm.pbf' 
+PBFFILE='ile-de-france-latest.osm.pbf'
+PARISFILE='paris.osm.pbf'
 SCHEMA='paris_osmetymology'
 
 # Get Île-de-France OSM file (~300 MB)
@@ -18,9 +19,12 @@ if [ ! -s "$PBFFILE" ]; then
     exit 1
 fi
 
-# Main import. Estimated time: 5 minutes
+# Clip to Paris' arrondissements only (~35 MB)
+osmium extract --polygon=arrondissements_border.geojson --overwrite -o $PARISFILE $PBFFILE
+
+# Main import. Estimated time: 20 seconds; uses about 400 MB due to relation parsing
 psql -c "CREATE SCHEMA IF NOT EXISTS $SCHEMA"
-osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PBFFILE
+osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PARISFILE
 
 # Import arrondissements. Takes about a second.
 ogr2ogr PG:dbname="${PGDATABASE:?}" arrondissements.fgb -lco SCHEMA=$SCHEMA -nln "$SCHEMA.arrondissements" -overwrite
