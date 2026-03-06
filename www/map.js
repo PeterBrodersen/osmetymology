@@ -94,7 +94,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 popupText += `<p><em>${etymologyText}</em></p>`;
             }
             for (item of wikidataset) {
-                console.table(item);
                 var sectiontext = '';
                 let wikidataId = item["itemid"];
                 let wikidatalabel = item["label"];
