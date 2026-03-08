@@ -328,7 +328,7 @@ function updateResultTable(data) {
     // updateWikidataLabels(wikidataitems);
     $("#result").html(newtable);
   } else {
-    $("#result").html('Intet resultat!');
+    $("#result").html('No registered places found!');
   }
 }
 

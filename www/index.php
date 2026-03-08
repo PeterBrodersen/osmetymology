@@ -70,8 +70,12 @@
     </div>
     <div class="drlink">
         <p>
-            Check out <a href="arrondissements/">gender distribution per arrondissement</a>.
-        </p>
+            Also check out:
+	</p>
+	<ul>
+		<li><a href="arrondissements/">Gender distribution per arrondissement</a></li>
+		<li><a href="https://osrm.findvej.dk/paris/">Route planner that avoids roads named after men</a> (<a href="https://osrm.findvej.dk/paris/?z=13&center=48.842722%2C2.372320&loc=48.823939%2C2.330303&loc=48.819228%2C2.329402&hl=fr&alt=0">Example</a>)</li>
+        </ul>
     </div>
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
