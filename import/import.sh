@@ -19,8 +19,11 @@ if [ ! -s "$PBFFILE" ]; then
     exit 1
 fi
 
-# Clip to Paris' arrondissements only (~35 MB)
-osmium extract --polygon=arrondissements_border.geojson --overwrite -o $PARISFILE $PBFFILE
+# Clip to Paris' arrondissements only (~35 MB). Fall back to full file if extraction fails.
+if ! osmium extract --polygon=arrondissements_border.geojson --overwrite -o "$PARISFILE" "$PBFFILE"; then
+    echo "Warning: osmium extract failed. Falling back to $PBFFILE" 1>&2
+    PARISFILE="$PBFFILE"
+fi
 
 # Main import. Estimated time: 20 seconds; uses about 400 MB due to relation parsing
 psql -c "CREATE SCHEMA IF NOT EXISTS $SCHEMA"
