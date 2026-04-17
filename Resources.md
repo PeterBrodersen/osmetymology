@@ -15,11 +15,6 @@ Resources for getting information about the origin of Danish street names.
 | Dragør           | [Gader og huse](http://www.dragoerhistorie.dk/gader-og-huse/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
 | Ebeltoft         | [På vej ‒ gader og veje i Ebeltoft](https://bibliotek.dk/work/pid/870970-basis:46728491?scrollToEdition=true) | Book (2018) | Else Marie Laigaard | |
 | Egedal           | [Egedal Leksikon: Kategori: Gader, Veje og Broer](http://egedalleksikon.dk/index.php/Kategori:Gader,_Veje_og_Broer) | Online, Wiki | Egedal Arkiver og Museum | |
-| Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
-| Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
-| Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
-| Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
-| Greve            | [Et gammelt kort](https://slaegtsbibliotek.dk/934861.pdf) | Online, book (1995) | Greve Lokalhistoriske Forening |
 | Farum            | [Farums Veje: Hvem - Hvor](https://slaegtsbibliotek.dk/2023/935545.pdf) | Book (1998) | Gudrun Lund Meyer | |
 | Faxe             | [Vejnavne før og nu og deres historie](https://arkiv.dk/vis/333412) | Book? | Faxe Kommunes Arkiver | Not sure where the resource is available... |
 | Felsted          | [Stednavne i Felsted Sogn](https://bibliotek.dk/materiale/stednavne-i-felsted-sogn_h-c-staugaard/work-of:870971-tsart:83589868) | Online Article | H.C. Staugaard | |
@@ -27,8 +22,14 @@ Resources for getting information about the origin of Danish street names.
 | Fredericia       | [Lokalhistorie fra Fredericia og omegn samt Strib](http://fredericiashistorie.dk/) | Online | Erik F. Rønnebech | Cumbersome web site navigation |
 | Fredericia       | [Gade- og vejnavne i Fredericia Kommune - og historien bag dem](https://bibliotek.dk/materiale/gade-og-vejnavne-i-fredericia-kommune-og-historien-bag-dem_morten-zierau/work-of:870970-basis:26678358?type=bog) | Book (2007) | Morten Zierau |
 | Fredericia       | Kanalbyen: [Historiske stednavne](https://kanalbyen.dk/byudvikling/historiske-stednavne) | Online | Kanalbyen i Fredericia  | Places for Kanalbyen in Fredericia |
+| Frederiksberg    | Dengang: Gader og veje på Frederiksberg ([A-J](https://dengang.dk/gader-og-veje-paa-frederiksberg-a-j/), [K-Å](https://dengang.dk/flere-gader-og-veje-paa-frederiksberg/)) | Online | Uwe Brodersen |
 | Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
 | Frederikshavn    | [Tilbageblik - før og nu : historier bag navnet i Frederikshavn](https://bibliotek.dk/materiale/tilbageblik-foer-og-nu_peter-bandholm/work-of%3A870970-basis%3A45209725?type=bog) | Book (2011) | Peter Bandholm, Erik S. Christensen | More stories and anecdotes than lists |
+| Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
+| Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
+| Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
+| Greve            | [Et gammelt kort](https://slaegtsbibliotek.dk/934861.pdf) | Online, book (1995) | Greve Lokalhistoriske Forening |
+| Gylling          | [Lokalhistorisk Arkiv for Gylling og Omegn](https://gyllingarkiv.dk/) | Online | Lokalhistorisk Arkiv for Gylling og Omegn | |
 | Haderslev        | [HaderslevWiki](http://haderslevwiki.dk/index.php/Forside) | Online, Wiki | Historisk Arkiv for Haderslev Kommune |
 | Hadsund          | [Gade- og vejnavne i Hadsund](https://bibliotek.dk/materiale/gade-og-vejnavne-i-hadsund_birte-overgaard/work-of:870970-basis:135106445?type=bog) | Book (2022) | Birte Overgaard |
 | Hasseris         | [Om vejnavne i Hasseris](https://hasseris.dk/foreningen-hasseris-grundejerforening/medlemsomraade/hasseris-omraadet/vejnavne/) | Online | Hasseris Grundejer-forening | |
