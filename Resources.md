@@ -10,6 +10,7 @@ Resources for getting information about the origin of Danish street names.
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
 | Bornholm         | [Bornholms Stednavne](https://bornholmske-samlinger.dk/wp-content/uploads/2014/10/BornholmsStednavne.pdf) | Online book (1955), PDF | Stednavneudvalget | Scanned book, [further information](https://bornholmske-samlinger.dk/stednavne-paa-bornholm/) |
 | Bornholm         | [Hvorfor hedder det sådan? : 117 mærkelige stednavne på Bornholm](https://bibliotek.dk/materiale/hvorfor-hedder-det-saadan-_erling-haagensen/work-of%3A870970-basis%3A24880958?type=bog) | Book (2010) | Erling Haagensen | More locations than streets |
+| Brahetrolleborg Sogn | [By-, sted- og vejnavne i Brahetrolleborg sogn](https://bibliotek.dk/materiale/by-sted-og-vejnavne-i-brahetrolleborg-sogn_finn-kyhn/work-of%3A159003-lokalbibl%3A33389892?tid=rY1Tz17766887037532715143204&type=artikel) | Article (2008) | Finn Kyhn | |
 | Bramming         | [Bramminginfo - Gadenavne](https://bramminginfo.dk/gadenavne.html) | Online | Bramminginfo, John Schwartz | |
 | Brande           | [Gadenavne og pladser i Brande by, med personnavne](https://www.brande.dk/sites/default/files/gadenavne_og_pladser_i_brande_by_med_personnavne_1.pdf) | Online, PDF | Brande.dk | |
 | Dragør           | [Gader og huse](http://www.dragoerhistorie.dk/gader-og-huse/) | Online | Historisk Arkiv Dragør | Detailed information for many roads |
