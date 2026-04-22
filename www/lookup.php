@@ -8,7 +8,7 @@ $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
-$arrondissementcode = (int) ($_GET['arrondissementcode'] ?? 0);
+$boroughcode = (int) ($_GET['boroughcode'] ?? 0);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -48,7 +48,7 @@ function getColumns($coordinates = FALSE)
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		"m.c_ar || ' (' || m.l_aroff || ')' AS arrondissementname",
+		"m.name AS boroughname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
@@ -75,7 +75,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$columns = getColumns($coordinates);
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['l.name, m.l_aroff'];
+	$orderbylist = ['l.name, m.name'];
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE " . DBSCHEMA . ".toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
@@ -94,7 +94,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$querystring = <<<EOD
 		SELECT $columns
 		FROM $dbschema.locations_agg l
-		INNER JOIN $dbschema.arrondissements m on l.arrondissement_code = m.c_ar
+		INNER JOIN $dbschema.boroughs m on l.borough_code = m.ogc_fid
 		LEFT JOIN $dbschema.wikidata w ON l."name:etymology:wikidata" = w.itemid
 		LEFT JOIN $dbschema.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 		LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -228,12 +228,12 @@ function getStats()
 	return $result;
 }
 
-function getSingleArrondissementWayPersons($arrondissementcode)
+function getSingleBoroughWayPersons($boroughcode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT c_ar AS arrondissement_code, navn AS arrondissement_nameFROM " . DBSCHEMA . ".arrondissements WHERE c_ar = ?");
+	$q = $dbh->prepare("SELECT ogc_fid AS borough_code, navn AS borough_nameFROM " . DBSCHEMA . ".boroughs WHERE ogc_fid = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$arrondissementcode]);
+	$q->execute([$boroughcode]);
 	$result = $q->fetch();
 	if (!$result) {
 		return [];
@@ -244,7 +244,7 @@ function getSingleArrondissementWayPersons($arrondissementcode)
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
 			FROM osmetymology.locations_agg l
 			WHERE l.featuretype = 'way'
-			AND l.arrondissement_code = ?
+			AND l.borough_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -255,23 +255,23 @@ function getSingleArrondissementWayPersons($arrondissementcode)
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$arrondissementcode]);
+	$q->execute([$boroughcode]);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
 
-function getMunicipalityStats() // :TODO: Change to arrondissement stats
+function getMunicipalityStats() // :TODO: Change to borough stats
 {
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.arrondissement_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.borough_code, l.name, UNNEST(wikidatas) AS wikidata_id
 			FROM osmetymology.locations_agg l
 			WHERE l.featuretype = 'way'
 		)
 		SELECT
-			expanded.arrondissement_code,
-			m.l_aroff AS arrondissement_name,
+			expanded.borough_code,
+			m.name AS borough_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -287,11 +287,11 @@ function getMunicipalityStats() // :TODO: Change to arrondissement stats
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN osmetymology.arrondissements m on expanded.arrondissement_code = m.c_ar
+		INNER JOIN osmetymology.boroughs m on expanded.borough_code = m.ogc_fid
 		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.arrondissement_code, m.l_aroff
-		ORDER BY expanded.arrondissement_code
+		GROUP BY expanded.borough_code, m.name
+		ORDER BY expanded.borough_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -320,8 +320,8 @@ if ($searchname) {
 	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
-} elseif ($arrondissementcode) {
-	$result = getSingleArrondissementWayPersons($arrondissementcode);
+} elseif ($boroughcode) {
+	$result = getSingleBoroughWayPersons($boroughcode);
 } elseif ($request == 'municipalitystats') {
 	$result = getMunicipalityStats();
 }

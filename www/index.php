@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        What are places in Paris named after?
+        What are places in London named after?
     </title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <h1>What are streets and places in Paris named after?</h1>
+    <h1>What are streets and places in London named after?</h1>
 
     <div style="clear: both;">
     </div>
@@ -48,7 +48,7 @@
                     <th>Map</th>
                     <th>Type</th>
                     <th>Name</th>
-                    <th>Arrondissement</th>
+                    <th>Borough</th>
                     <th>Topic</th>
                     <th>Description</th>
                 </tr>
@@ -73,8 +73,10 @@
             Also check out:
 	</p>
 	<ul>
-		<li><a href="arrondissements/">Gender distribution per arrondissement</a></li>
-		<li><a href="https://osrm.findvej.dk/paris/">Route planner that avoids roads named after men</a> (<a href="https://osrm.findvej.dk/paris/?z=13&center=48.842722%2C2.372320&loc=48.823939%2C2.330303&loc=48.819228%2C2.329402&hl=fr&alt=0">Example</a>)</li>
+		<li><a href="boroughs/">Gender distribution per borough</a></li>
+<!--
+		<li><a href="https://osrm.findvej.dk/london/">Route planner that avoids roads named after men</a> (<a href="https://osrm.findvej.dk/london/?z=13&center=48.842722%2C2.372320&loc=48.823939%2C2.330303&loc=48.819228%2C2.329402&hl=fr&alt=0">Example</a>)</li>
+-->
         </ul>
     </div>
 
@@ -85,11 +87,11 @@
             The data source is the voluntary mapping project <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
         </p>
         <p>
-            Not all places are registered yet. Currently, there are about 5,000 Parisian roads with information about their etymology, which are named after over 3,000 different topics.
+            Not all places are registered yet. Currently, there are about 100 Londonian roads with information about their etymology, which are named after 100 different topics.
         </p>
         <p>
-            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Parisian roads with information in a <a href="/data/noms.csv">comma-separated file</a> and in <a href="/data/noms.fgb">FlatGeobuf format (for GIS users)</a>
-            The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/paris">available on GitHub</a>. If you have questions about the project, you are
+            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Londonian roads with information in a <a href="/data/names.csv">comma-separated file</a> and in <a href="/data/names.fgb">FlatGeobuf format (for GIS users)</a>
+            The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/london">available on GitHub</a>. If you have questions about the project, you are
             more than welcome to <a href="mailto:peter@ter.dk">send an email</a>.
         </p>
 

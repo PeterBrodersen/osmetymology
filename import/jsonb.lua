@@ -19,7 +19,7 @@ tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
     { column = 'geom',                     type = 'point' }, -- will be something like `GEOMETRY(Point, 4326)` in SQL
-}, { schema = 'paris_osmetymology' })
+}, { schema = 'london_osmetymology' })
 
 tables.ways = osm2pgsql.define_way_table('osm_ways', {
     { column = 'name',                     type = 'text' },
@@ -29,7 +29,7 @@ tables.ways = osm2pgsql.define_way_table('osm_ways', {
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
     { column = 'geom',                     type = 'linestring' },
-}, { schema = 'paris_osmetymology' })
+}, { schema = 'london_osmetymology' })
 
 tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
     { column = 'name',                     type = 'text' },
@@ -39,7 +39,7 @@ tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
     { column = 'geom',                     type = 'geometry' },
-}, { schema = 'paris_osmetymology' })
+}, { schema = 'london_osmetymology' })
 
 -- Debug output: Show definition of tables
 for name, dtable in pairs(tables) do

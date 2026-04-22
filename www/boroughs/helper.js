@@ -1,7 +1,7 @@
 $(function () {
     window.onhashchange = hashChanged;
     getStats();
-    getArrondissementStats();
+    getBoroughStats();
     if (window.location.hash.length > 1) {
         hashChanged();
     }
@@ -17,26 +17,26 @@ function getStats() {
         );
 }
 
-function getArrondissementStats() {
-    $.getJSON('/data/arrondissements.json')
+function getBoroughStats() {
+    $.getJSON('/data/boroughs.json')
         .done((data) => {
             if (data) {
                 let tbodyhtml = '';
 
-                for (arrondissement of data.etymologystats.arrondissements) {
+                for (borough of data.etymologystats.boroughs) {
                     tbodyhtml += `
                     <tr>
-                    <td class="numeric">${arrondissement.arrondissement_code}</td>
-                    <td data-arrondissementcode="${arrondissement.arrondissement_code}"><a href="#${arrondissement.arrondissement_code}">${arrondissement.arrondissement_name}</a></td>
-                    <td class="numeric">${arrondissement.unique_human_female_topic}</td>
-                    <td class="numeric">${arrondissement.unique_human_male_topic}</td>
-                    <td class="percentage-cell" data-female-percentage="${arrondissement.human_female_percentage}" data-male-percentage="${arrondissement.human_male_percentage}" style="--female-percentage:${arrondissement.human_female_percentage}; --male-percentage:${arrondissement.human_male_percentage};">
-                        ${arrondissement.human_female_percentage.toFixed(0)} / ${arrondissement.human_male_percentage.toFixed(0)}
+                    <td class="numeric">${borough.borough_code}</td>
+                    <td data-boroughcode="${borough.borough_code}"><a href="#${borough.borough_code}">${borough.borough_name}</a></td>
+                    <td class="numeric">${borough.unique_human_female_topic}</td>
+                    <td class="numeric">${borough.unique_human_male_topic}</td>
+                    <td class="percentage-cell" data-female-percentage="${borough.human_female_percentage}" data-male-percentage="${borough.human_male_percentage}" style="--female-percentage:${borough.human_female_percentage}; --male-percentage:${borough.human_male_percentage};">
+                        ${borough.human_female_percentage.toFixed(0)} / ${borough.human_male_percentage.toFixed(0)}
                     </td>
-                    <td class="numeric">${arrondissement.unique_female_topic}</td>
-                    <td class="numeric">${arrondissement.unique_male_topic}</td>
-                    <td class="percentage-cell" data-female-percentage="${arrondissement.female_percentage}" data-male-percentage="${arrondissement.male_percentage}" style="--female-percentage:${arrondissement.female_percentage}; --male-percentage:${arrondissement.male_percentage};">
-                        ${arrondissement.female_percentage.toFixed(0)} / ${arrondissement.male_percentage.toFixed(0)}
+                    <td class="numeric">${borough.unique_female_topic}</td>
+                    <td class="numeric">${borough.unique_male_topic}</td>
+                    <td class="percentage-cell" data-female-percentage="${borough.female_percentage}" data-male-percentage="${borough.male_percentage}" style="--female-percentage:${borough.female_percentage}; --male-percentage:${borough.male_percentage};">
+                        ${borough.female_percentage.toFixed(0)} / ${borough.male_percentage.toFixed(0)}
                     </td>
                     </tr>
                     `;
@@ -45,7 +45,7 @@ function getArrondissementStats() {
                 let tfoothtml = `
                     <tr>
                     <th></th>
-                    <th>All arrondissements</th>
+                    <th>All boroughs</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_female_topic}</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_male_topic}</th>
                     <th class="percentage-cell" data-female-percentage="${data.etymologystats.total.human_female_percentage}" data-male-percentage="${data.etymologystats.total.human_male_percentage}" style="--female-percentage:${data.etymologystats.total.human_female_percentage}; --male-percentage:${data.etymologystats.total.human_male_percentage};">
@@ -58,36 +58,36 @@ function getArrondissementStats() {
                     </th>
                     </tr>
                 `;
-                $('#arrondissementstats tbody').append(tbodyhtml);
-                $('#arrondissementstats tfoot').append(tfoothtml);
+                $('#boroughstats tbody').append(tbodyhtml);
+                $('#boroughstats tfoot').append(tfoothtml);
             }
-            $("#arrondissementstats").tablesorter();
+            $("#boroughstats").tablesorter();
 
             // Highlight row if hash is present
             if (window.location.hash.length > 1) {
                 let hash = decodeURIComponent(window.location.hash.substring(1));
                 hash = parseInt(hash);
                 if (hash) {
-                    $(`#arrondissementstats tbody tr td[data-arrondissementcode="${hash}"]`).parent().addClass('active');
+                    $(`#boroughstats tbody tr td[data-boroughcode="${hash}"]`).parent().addClass('active');
                 }
             }
         }
         );
 }
 
-function getSingleArrondissementStats(arrondissement_code) {
+function getSingleBoroughStats(borough_code) {
     // Remove highlight from previously clicked row
-    $('#arrondissementstats tbody tr').removeClass('active');
+    $('#boroughstats tbody tr').removeClass('active');
 
     // Highlight the clicked row
-    $(`#arrondissementstats tbody tr td[data-arrondissementcode="${arrondissement_code}"]`).parent().addClass('active');
+    $(`#boroughstats tbody tr td[data-boroughcode="${borough_code}"]`).parent().addClass('active');
 
-    let code = arrondissement_code;
-    let jsonurl = `/data/arrondissements/${code}.json`;
+    let code = borough_code;
+    let jsonurl = `/data/boroughs/${code}.json`;
     $.getJSON(jsonurl)
         .done((data) => {
             if (data) {
-                let html = `<thead><tr><th colspan="2">${data.arrondissement_name}</th></tr></thead><tbody>`;
+                let html = `<thead><tr><th colspan="2">${data.borough_name}</th></tr></thead><tbody>`;
                 let lastgender = '';
                 for (item of data.items) {
                     if (lastgender != item.gender) {
@@ -117,14 +117,14 @@ function getSingleArrondissementStats(arrondissement_code) {
                     `;
                 }
                 if (data.items.length == 0) {
-                    html += `<tr><td colspan="2" style="font-style: italic">No registered roads in the arrondissement are named after people</td></tr>`;
+                    html += `<tr><td colspan="2" style="font-style: italic">No registered roads in the borough are named after people</td></tr>`;
                 }
                 html += `</tbody>`;
-                $('#singlearrondissement').html(html);
+                $('#singleborough').html(html);
                 // location.hash = code;
                 // scroll to table
                 $('html, body').animate({
-                    scrollTop: $("#singlearrondissement").offset().top
+                    scrollTop: $("#singleborough").offset().top
                 }, 500);
             }
         }
@@ -135,10 +135,10 @@ function hashChanged() {
     let hash = decodeURIComponent(window.location.hash.substring(1));
     hash = parseInt(hash);
     if (hash) {
-        getSingleArrondissementStats(hash);
+        getSingleBoroughStats(hash);
         return true;
     } else {
-        $('#singlearrondissement').html('');
+        $('#singleborough').html('');
         return false;
     }
 }

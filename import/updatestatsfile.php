@@ -3,8 +3,8 @@
 require("../www/connect.inc.php");
 $statefile = 'state.txt';
 $statsjsonfile = '../www/data/stats.json';
-$arrondissementjsonfile = '../www/data/arrondissements.json';
-$arrondissementjsonfolder = '../www/data/arrondissements/';
+$boroughjsonfile = '../www/data/boroughs.json';
+$boroughjsonfolder = '../www/data/boroughs/';
 
 print date("H:i:s") . ": Creating stats" . PHP_EOL;
 
@@ -31,19 +31,19 @@ $stats = [
 ];
 file_put_contents($statsjsonfile, json_encode($stats));
 
-function getArrondissementStats()
+function getBoroughStats()
 {
 	global $dbh;
 	$dbschema = DBSCHEMA; // for use in query string; can't be used directly in heredoc
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.arrondissement_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.borough_code, l.name, UNNEST(wikidatas) AS wikidata_id
 			FROM $dbschema.locations_agg l
 			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
-			expanded.arrondissement_code,
-			m.l_aroff AS arrondissement_name,
+			expanded.borough_code,
+			m.name AS borough_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_male_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
@@ -69,11 +69,11 @@ function getArrondissementStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN $dbschema.arrondissements m on expanded.arrondissement_code = m.c_ar
+		INNER JOIN $dbschema.boroughs m on expanded.borough_code = m.ogc_fid
 		INNER JOIN $dbschema.wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.arrondissement_code, m.l_aroff
-		ORDER BY expanded.arrondissement_code
+		GROUP BY expanded.borough_code, m.name
+		ORDER BY expanded.borough_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -87,7 +87,7 @@ function getArrondissementStats()
 	// total stats; need own query to remove duplicates
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.arrondissement_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.borough_code, l.name, UNNEST(wikidatas) AS wikidata_id
 			FROM $dbschema.locations_agg l
 			WHERE l.featuretype IN('way','square')
 		)
@@ -125,7 +125,7 @@ function getArrondissementStats()
 	$resulttotal = $q->fetch();
 	$resulttotal = array_map('strtofloat', $resulttotal); // hack due to PDO returning floats as string; fixed in PHP 8.4: https://github.com/devnexen/php-src/commit/c176f3d21688b0c7cc10f8afe31c17ca9adaed16
 
-	$result = ['etymologystats' => ['total' => $resulttotal, 'arrondissements' => $resultclean]];
+	$result = ['etymologystats' => ['total' => $resulttotal, 'boroughs' => $resultclean]];
 	return $result;
 }
 
@@ -135,12 +135,12 @@ function strtofloat($scalar)
 }
 
 
-function getSingleArrondissementWayPersons($arrondissementcode)
+function getSingleBoroughWayPersons($boroughcode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT c_ar AS arrondissement_code, l_aroff AS arrondissement_name FROM " . DBSCHEMA . ".arrondissements WHERE c_ar = ?");
+	$q = $dbh->prepare("SELECT ogc_fid AS borough_code, name AS borough_name FROM " . DBSCHEMA . ".boroughs WHERE ogc_fid = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$arrondissementcode]);
+	$q->execute([$boroughcode]);
 	$result = $q->fetch();
 	if (!$result) {
 		return [];
@@ -153,7 +153,7 @@ function getSingleArrondissementWayPersons($arrondissementcode)
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
 			FROM $dbschema.locations_agg l
 			WHERE l.featuretype IN('way','square')
-			AND l.arrondissement_code = ?
+			AND l.borough_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -164,31 +164,31 @@ function getSingleArrondissementWayPersons($arrondissementcode)
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$arrondissementcode]);
+	$q->execute([$boroughcode]);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
 
-function getArrondissementCodes()
+function getBoroughCodes()
 {
 	global $dbh;
-	$result = $dbh->query("SELECT c_ar FROM " . DBSCHEMA . ".arrondissements ORDER BY c_ar")->fetchAll(PDO::FETCH_COLUMN);
+	$result = $dbh->query("SELECT ogc_fid FROM " . DBSCHEMA . ".boroughs ORDER BY ogc_fid")->fetchAll(PDO::FETCH_COLUMN);
 	return $result;
 }
 
-$arrondissementstats = getArrondissementStats();
-$arrondissementstats['importjob'] = $stats;
-file_put_contents($arrondissementjsonfile, json_encode($arrondissementstats));
+$boroughstats = getBoroughStats();
+$boroughstats['importjob'] = $stats;
+file_put_contents($boroughjsonfile, json_encode($boroughstats));
 
-print date("H:i:s") . ": Creating arrondissement stats" . PHP_EOL;
+print date("H:i:s") . ": Creating borough stats" . PHP_EOL;
 $acount = 0;
-$arrondissementcodes = getArrondissementCodes();
-foreach ($arrondissementcodes as $arrondissementcode) {
+$boroughcodes = getBoroughCodes();
+foreach ($boroughcodes as $boroughcode) {
 	$acount++;
-	$data = getSingleArrondissementWayPersons($arrondissementcode);
-	$jsonpath = $arrondissementjsonfolder . $arrondissementcode . '.json';
+	$data = getSingleBoroughWayPersons($boroughcode);
+	$jsonpath = $boroughjsonfolder . $boroughcode . '.json';
 	file_put_contents($jsonpath, json_encode($data));
-	print $acount . ' / ' . count($arrondissementcodes) . ' arrondissements' . "\r";
+	print $acount . ' / ' . count($boroughcodes) . ' boroughs' . "\r";
 }
 
 print PHP_EOL . date("H:i:s") . ": Stats done!" . PHP_EOL;

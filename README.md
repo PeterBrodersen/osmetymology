@@ -1,7 +1,7 @@
 # OSM Etymology
-Etymology map based on OpenStreetMap and Wikidata. Branch for France.
+Etymology map based on OpenStreetMap and Wikidata. Branch for London.
 
-A live version of the project can be found at **https://noms.findvej.dk/**
+A live version of the project can be found at **https://london.etymology.findvej.dk/**
 
 ## Overview
 OpenStreetMap is a freely available map resource. Wikidata is a freely available structured data resource.

@@ -208,30 +208,30 @@ div#userinput {
     font-size: 0.9rem;
 }
 
-#arrondissementstats {
+#boroughs {
     float: left;
     margin-right: 3em;
 }
 
-#arrondissementstats thead tr {
+#boroughstats thead tr {
     cursor: pointer;
 }
 
-#singlearrondissement {
+#singleborough {
     float: left;
 }
 
-#arrondissementstats tfoot tr {
+#boroughstats tfoot tr {
     border-top: solid 2px black;
     border-bottom: solid 2px black;
     text-align: left;
 }
 
-#arrondissementstats tbody tr:hover {
+#boroughstats tbody tr:hover {
     background-color: #f0f0f0;
 }
 
-#arrondissementstats tbody tr.active {
+#boroughstats tbody tr.active {
     background-color: #d0e0f0;
 }
 

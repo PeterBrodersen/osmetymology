@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         minZoom,
         maxZoom
     });
-    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([48.855, 2.348], 15);
+    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([51.5, -0.12], 15);
 
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
@@ -34,10 +34,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     var geocoderOptions = {
         geocoder: new L.Control.Geocoder.nominatim({
             geocodingQueryParams: {
-                "countrycodes": "fr"
+                "countrycodes": "gb"
             }
         }),
-        placeholder: 'Search for place in France'
+        placeholder: 'Search for place in England'
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let statisticsData = [];
 
         // only fetch the relevant bbox subset of data
-        let iter = flatgeobuf.deserialize('/data/noms.fgb', mapBoundingBox(), false, true);
+        let iter = flatgeobuf.deserialize('/data/names.fgb', mapBoundingBox(), false, true);
         for await (let feature of iter) {
 
             let hasWikidata = feature.properties["name:etymology:wikidata"];

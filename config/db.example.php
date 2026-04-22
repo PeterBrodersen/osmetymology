@@ -5,5 +5,5 @@ define("DBPORT", "5432");
 define("DBNAME", "mydbname");
 define("DBUSER", "myuser");
 define("DBPASS", "mypassword");
-define("DBSCHEMA", "paris_osmetymology");
+define("DBSCHEMA", "london_osmetymology");
 ?>
