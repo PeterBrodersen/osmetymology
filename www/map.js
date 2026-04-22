@@ -1,19 +1,12 @@
 let map;
 let highlightWayId = false;
 document.addEventListener("DOMContentLoaded", async () => {
-    let minZoom = 12;
+    let minZoom = 11;
     let maxZoom = 19;
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom,
         maxZoom,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-
-    var wmsOrtoLayer = L.tileLayer.wms('https://api.dataforsyningen.dk/orto_foraar_DAF?service=WMS&token=5d6c5118e3f2ab00b8b2aa21e9140087&', {
-        layers: 'orto_foraar_12_5',
-        attribution: 'Indeholder data fra Styrelsen for Dataforsyning og Infrastruktur, Ortofoto Forår, WMS-tjeneste',
-        minZoom,
-        maxZoom
     });
 
     var Thunderforest_SpinalMap = L.tileLayer('https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=35178872612640c0abf67975149afa20', {
@@ -22,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         minZoom,
         maxZoom
     });
-    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([51.5, -0.12], 15);
+    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([51.5, 0], 11);
 
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
