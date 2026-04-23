@@ -114,9 +114,9 @@ Resources for getting information about the origin of Danish street names.
 | Tårnby           | Stednavne i Tårnby Kommune [I](https://lokalarkiv.taarnby.dk/media/jtihxir4/gd-1998-7-web.pdf) [II](https://lokalarkiv.taarnby.dk/media/jmoamtmw/gd-1998-10-web.pdf) | Online (1998), PDF | Tårnby Kommunes Lokalhistoriske Samling | |
 | Taastrup         | [Runeparkens historie](https://www.runeparken.dk/historie) | Online | Ib Sandahl, Taastrup Avis | Fire veje i Runeparken |
 | Tønder           | [Gader og veje i Tønder](https://dengang.dk/gader-og-veje-i-toender/) | Online | Uwe Brodersen | |
-| Vanløse          | [Forsvundne vejnavne og veje i Vanløse](http://vanloese.dk/om-vanloese/vejenes-historie/forsvundne-vejnavne/) | Online |
+| Vanløse          | [Vejenes Historie](https://bibliotek.dk/materiale/vejenes-historie/work-of:870970-basis:20568151?type=bog) | Book (1993) | Vanløse Lokalhistoriske Forening | [Also available online](https://vanloese.dk/historie/vejenes-historie/) |
+| Vanløse          | [Vanløsebasen](https://vanloese.dk/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
-| Vanløse          | [Vanløsebasen](http://www.vanløse.dk/) | Online |
 | Vejby-Tibirke    | [Vejby-Tibirke Årbog 1975-76](https://slaegtsbibliotek.dk/921993.pdf) | Online book (1975), PDF | Vejby-Tibirke Selskabet | Street names from page 53 |
 | Vejle            | [VejleWiki](http://vejlewiki.dk/) | Online, Wiki | Vejle Stadsarkiv |
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
