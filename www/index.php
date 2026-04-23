@@ -87,7 +87,7 @@
             The data source is the voluntary mapping project <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
         </p>
         <p>
-            Not all places are registered yet. Currently, there are about 100 Londonian roads with information about their etymology, which are named after 100 different topics.
+            Not all places are registered yet. Currently, there are about 300 Londonian roads with information about their etymology, which are named after 200 different topics.
         </p>
         <p>
             The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Londonian roads with information in a <a href="/data/names.csv">comma-separated file</a> and in <a href="/data/names.fgb">FlatGeobuf format (for GIS users)</a>

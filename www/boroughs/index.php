@@ -71,7 +71,7 @@
 
     <div id="betaboilerplate">
         <p>
-            About 100 streets in London are registrered. This extract only fetches roads and not e.g. buildings
+            About 300 streets in London are registrered. This extract only fetches roads and not e.g. buildings
             statues, parks, etc.
         </p>
         <p>
