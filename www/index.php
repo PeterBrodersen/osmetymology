@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        What are places in London named after?
+        What are places in Greater London named after?
     </title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <h1>What are streets and places in London named after?</h1>
+    <h1>What are streets and places in Greater London named after?</h1>
 
     <div style="clear: both;">
     </div>
@@ -84,14 +84,10 @@
 
     <div id="betaboilerplate">
         <p>
-            The data source is the voluntary mapping project <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
-        </p>
-        <p>
-            Not all places are registered yet. Currently, there are about 300 Londonian roads with information about their etymology, which are named after 200 different topics.
-        </p>
-        <p>
-            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. You can download all Londonian roads with information in a <a href="/data/names.csv">comma-separated file</a> and in <a href="/data/names.fgb">FlatGeobuf format (for GIS users)</a>
-            The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/london">available on GitHub</a>. If you have questions about the project, you are
+            You can download all registered Londonian roads with information in a <a href="/data/names.csv">comma-separated file</a> and in <a href="/data/names.fgb">FlatGeobuf format (for GIS users)</a>. Not all places are registered yet.
+	</p>
+	<p>
+            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/london">available on GitHub</a>. If you have questions about the project, you are
             more than welcome to <a href="mailto:peter@ter.dk">send an email</a>.
         </p>
 
