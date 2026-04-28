@@ -6,6 +6,9 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
+PBFFILE='denmark-latest.osm.pbf'
+SCHEMA='osmetymology'
+
 # :TODO: Switch to cURL for conditional requests - no need to fetch large files again
 # 
 # curl -o 'denmark-latest.osm.pbf' -z 'denmark-latest.osm.pbf' 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf'
@@ -16,17 +19,17 @@ wget 'https://download.geofabrik.de/europe/denmark-updates/state.txt' -O state.t
 wget 'https://download.geofabrik.de/europe/denmark-latest.osm.pbf' -O denmark-latest.osm.pbf
 #wget 'https://api.dataforsyningen.dk/kommuner?format=geojson' -O kommuner.geojson
 
-if [ ! -s "denmark-latest.osm.pbf" ]; then
-    echo "Error: Couldn't download denmark-latest.osm.pbf"
+if [ ! -s "$PBFFILE" ]; then
+    echo "Error: Couldn't download $PBFFILE"
     exit 1
 fi
 
-# Main import. Estimated time: 10-20 minutes
-psql -c 'CREATE SCHEMA IF NOT EXISTS osmetymology'
-osm2pgsql --schema osmetymology -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s denmark-latest.osm.pbf
+# Main import. Estimated time: 10 minutes
+psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
+osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S jsonb.lua --drop -s ${PBFFILE:?}
 
 # Import municipalities. Takes about a second.
-ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=osmetymology -nln 'osmetymology.municipalities' -overwrite
+ogr2ogr PG:dbname="${PGDATABASE:?}" kommuner_buffer_merged.fgb -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.municipalities" -overwrite
 
 # Aggregate, split by municipality boundaries. Estimated time: 2-4 minutes.
 psql -f aggregate.sql
@@ -35,7 +38,7 @@ psql -f aggregate.sql
 # For a clean import of all items, use --cleanimport
 php wikidataimport.php --auto
 
-# Create aggregated FlatGeobuf file for web usage. Estimated time: 1-2 minutes.
+# Create aggregated FlatGeobuf file for web usage. Estimated time: 2-4 minutes.
 FGBFILE="../www/data/navne.fgb"
 CSVFILE="../www/data/navne.csv"
 if [ -f "$FGBFILE" ] ; then
