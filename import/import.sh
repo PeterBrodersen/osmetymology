@@ -19,11 +19,11 @@ if [ ! -s "$PBFFILE" ]; then
 fi
 
 # Main import. Estimated time: 2 minutes
-psql -c "CREATE SCHEMA IF NOT EXISTS $SCHEMA"
-osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PBFFILE
+psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
+osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S jsonb.lua --drop -s ${PBFFILE:?}
 
 # Import boroughs. Takes about a second.
-ogr2ogr PG:dbname="${PGDATABASE:?}" boroughs.fgb -lco SCHEMA=$SCHEMA -nln "$SCHEMA.boroughs" -overwrite
+ogr2ogr PG:dbname="${PGDATABASE:?}" boroughs.fgb -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.boroughs" -overwrite
 
 # Aggregate, split by borough boundaries. Estimated time: A couple of seconds.
 psql -f aggregate.sql
@@ -41,7 +41,7 @@ fi
 if [ -f "$CSVFILE" ] ; then
     rm -- "$CSVFILE"
 fi
-ogr2ogr -progress "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Name origin of places'
+ogr2ogr -progress "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Etymology for places'
 ogr2ogr -progress "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
 php updatestatsfile.php
 
