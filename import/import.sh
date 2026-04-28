@@ -26,7 +26,7 @@ if ! osmium extract --polygon=arrondissements_border.geojson --overwrite -o "$PA
 fi
 
 # Main import. Estimated time: 20 seconds; uses about 400 MB due to relation parsing
-psql -c "CREATE SCHEMA IF NOT EXISTS $SCHEMA"
+psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
 osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PARISFILE
 
 # Import arrondissements. Takes about a second.

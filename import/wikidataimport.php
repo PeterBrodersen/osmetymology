@@ -13,7 +13,7 @@ $insertdb = $dbh->prepare('
 
 function getBestLabel($labels)
 { // Run through languages and search for existing value; pick first existing
-    $languages = ['en', 'fr', 'mul', 'da', 'sv', 'nb', 'de', 'es', 'fi', 'is'];
+    $languages = ['fr', 'en', 'mul', 'da', 'sv', 'nb', 'de', 'es', 'fi', 'is'];
     $label = NULL;
     foreach ($languages as $language) {
         if (isset($labels->$language)) {
