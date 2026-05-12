@@ -20,7 +20,7 @@
         Statistics from the <a href="/">Name Project</a> for gender distribution on streets in the arrondissement. Each person is counted only once within an arrondissement, even if multiple street names refer to the same person. Click on an arrondissement name to see the people in the arrondissement with streets associated.
     </p>
     <p>
-        More than 5.000 streets in Paris have registered etymology. Not all streets are included yet, and the project is still under development, based on voluntary work.
+        More than 5,000 streets in Paris have registered etymology. Not all streets are included yet, and the project is still under development, based on voluntary work.
     </p>
     <p>
         Date for data set: <span id="importfiletime"></span>
