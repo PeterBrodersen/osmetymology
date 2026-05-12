@@ -20,7 +20,7 @@
         Statistics from the <a href="/">Name Project</a> for gender distribution on streets in the boroughs. Each person is counted only once within an borough, even if multiple street names refer to the same person. Click on an borough name to see the people in the borough with streets associated.
     </p>
     <p>
-        More than 5.000 streets in London have registered etymology. Not all streets are included yet, and the project is still under development, based on voluntary work.
+        About 800 streets in London have registered etymology. Not all streets are included yet, and the project is still under development, based on voluntary work.
     </p>
     <p>
         Date for data set: <span id="importfiletime"></span>
@@ -71,7 +71,7 @@
 
     <div id="betaboilerplate">
         <p>
-            About 300 streets in London are registrered. This extract only fetches roads and not e.g. buildings
+            About 800 streets in London are registrered. This extract only fetches roads and not e.g. buildings
             statues, parks, etc.
         </p>
         <p>
