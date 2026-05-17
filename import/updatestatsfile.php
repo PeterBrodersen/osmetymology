@@ -42,7 +42,7 @@ function getAreaStats()
 		)
 		SELECT
 			expanded.area_code,
-			m.name AS area_name,
+			a.area_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_male_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
@@ -68,10 +68,10 @@ function getAreaStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN areas m on expanded.area_code = m.ogc_fid
+		INNER JOIN areas a ON expanded.area_code = a.area_id
 		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.area_code, m.name
+		GROUP BY expanded.area_code, a.area_name
 		ORDER BY expanded.area_code
 	EOD;
 	$q = $dbh->query($querystring);
@@ -136,7 +136,7 @@ function strtofloat($scalar)
 function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT ogc_fid AS area_code, name AS area_name FROM areas WHERE ogc_fid = ?");
+	$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$areacode]);
 	$result = $q->fetch();
@@ -168,7 +168,7 @@ function getSingleAreaWayPersons($areacode)
 function getAreaCodes()
 {
 	global $dbh;
-	$result = $dbh->query("SELECT ogc_fid FROM areas ORDER BY ogc_fid")->fetchAll(PDO::FETCH_COLUMN);
+	$result = $dbh->query("SELECT area_id FROM areas ORDER BY area_id")->fetchAll(PDO::FETCH_COLUMN);
 	return $result;
 }
 

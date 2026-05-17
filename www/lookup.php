@@ -48,7 +48,7 @@ function getColumns($coordinates = FALSE)
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		"m.name AS areaname",
+		"a.area_name AS areaname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
@@ -75,7 +75,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$columns = getColumns($coordinates);
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['l.name, m.name'];
+	$orderbylist = ['l.name, a.area_name'];
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
@@ -93,7 +93,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$querystring = <<<EOD
 		SELECT $columns
 		FROM locations_agg l
-		INNER JOIN areas m on l.area_code = m.ogc_fid
+		INNER JOIN areas a on l.area_code = a.area_id
 		LEFT JOIN wikidata w ON l."name:etymology:wikidata" = w.itemid
 		LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -229,7 +229,7 @@ function getStats()
 function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT ogc_fid AS area_code, navn AS area_nameFROM areas WHERE ogc_fid = ?");
+	$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute([$areacode]);
 	$result = $q->fetch();
@@ -269,7 +269,7 @@ function getAreaStats()
 		)
 		SELECT
 			expanded.area_code,
-			m.name AS area_name,
+			a.area_name
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -285,10 +285,10 @@ function getAreaStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN areas m on expanded.area_code = m.ogc_fid
+		INNER JOIN areas a on expanded.area_code = a.area_id
 		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.area_code, m.name
+		GROUP BY expanded.area_code, a.area_name
 		ORDER BY expanded.area_code
 	EOD;
 	$q = $dbh->query($querystring);

@@ -6,5 +6,7 @@ URL_PBFFILE='https://download.geofabrik.de/europe/united-kingdom/england/greater
 PBFFILE=$(basename $URL_PBFFILE)
 SCHEMA='place_osmetymology'
 
-# AREAFILE should be a prepared GIS file with area id as field 'area_id', and area name as field 'area_name'.
-AREAFILE=local/areas.fgb
+# AREAFILE should be a path to a GIS file in folder "local". Specify the file's field names for id and name
+AREAFILE=areas.fgb
+AREAFILE_ID=area_id
+AREAFILE_NAME=area_name

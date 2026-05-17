@@ -5,10 +5,19 @@
 . settings.sh
 export PGOPTIONS="-c search_path=${SCHEMA:?},public"
 
+AREAFILE_FULLPATH="../local/${AREAFILE:?}"
+
 if [ -z "${PGDATABASE:-}" ]; then
     echo "Error: Set variable PGDATABASE in environment" 1>&2
     exit 1
 fi
+
+
+if [ ! -s "$PBFFILE" ]; then
+    echo "Error: Couldn't download $PBFFILE"
+    exit 1
+fi
+
 
 # Get OSM file
 wget ${URL_STATEFILE:?} -O state.txt
@@ -24,7 +33,7 @@ psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
 osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s ${PBFFILE:?}
 
 # Import areas.
-ogr2ogr PG:dbname="${PGDATABASE:?}" areas.fgb -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.areas" -overwrite
+ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.areas" -overwrite
 
 # Aggregate, split by area boundaries.
 # :TODO: Allow for import without areas, then aggregate without area boundaries.
