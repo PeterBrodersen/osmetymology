@@ -34,6 +34,10 @@ osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S nameimport.lua --
 
 # Import areas.
 ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.areas" -overwrite
+# Rename fields
+psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_ID:?} TO area_id"
+psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_NAME:?} TO area_name"
+
 
 # Aggregate, split by area boundaries.
 # :TODO: Allow for import without areas, then aggregate without area boundaries.
