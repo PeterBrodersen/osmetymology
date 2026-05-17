@@ -12,13 +12,6 @@ if [ -z "${PGDATABASE:-}" ]; then
     exit 1
 fi
 
-
-if [ ! -s "$PBFFILE" ]; then
-    echo "Error: Couldn't download $PBFFILE"
-    exit 1
-fi
-
-
 # Get OSM file
 wget ${URL_STATEFILE:?} -O state.txt
 wget ${URL_PBFFILE:?} -O $PBFFILE
