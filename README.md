@@ -22,8 +22,6 @@ This is the generic template for country or city imports.
 * * `SCHEMA`: database schema
 * * `URL_STATEFILE` and `URL_PBFFILE`: URLs to resources at [GeoFabrik download](https://download.geofabrik.de/).
 * * `AREAFILE`: prepared FlatGeobuf file for partitioning place, with area id as field 'id', area name as field 'name'.
-* Edit `import/nameimport.lua`:
-* * Change schema value in `tables.points`, `tables.ways`, and `tables.polygons` to own schema.
 * Copy [config/db.example.php](config/db.example.php) to `config/db.php` and update the variables with your database credentials and schema.
 
 For web usage:

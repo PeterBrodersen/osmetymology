@@ -11,7 +11,6 @@ local tables = {}
 -- Store pending ways without usable data (only highways to save memory)
 local pending_ways = {}
 
--- :TODO: Read schema from external file
 tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name',                     type = 'text' },
     { column = 'name:etymology',           type = 'text' },
