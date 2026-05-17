@@ -83,7 +83,7 @@ There are multiple options for figuring out the origin of a street name, such as
 ## Bugs
 Probably several (check Issues).
 
-* Map is currently hardcoded to London in [www/map.js](www/map.js). Some editable JSON file should probably exist for this.
+* Map settings (start location, zoom level boundaries, geocoder country bias) is currently hardcoded to London in [www/map.js](www/map.js). A local JSON file should probably exist for this.
 * Areas should be optional, not requiring an area GIS file.
 
 ## Other resources
