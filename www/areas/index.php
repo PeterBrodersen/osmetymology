@@ -26,7 +26,7 @@
     <table id="areastats" class="resulttable">
         <thead>
             <tr>
-                <th rowspan="2">Areas</th>
+                <th rowspan="2">Area</th>
                 <th rowspan="2">Name</th>
                 <th colspan="3">Humans that have existed</th>
                 <th colspan="3">All humans, including fictional</th>
