@@ -9,26 +9,33 @@ OpenStreetMap is a freely available map resource. Wikidata is a freely available
 OpenStreetMap uses tags such as [`name:etymology:wikidata`](https://wiki.openstreetmap.org/wiki/Key:name:etymology:wikidata) to link to Wikidata items. Using these items it is possible to show maps based on different topics such as country, gender, profession and so on. Check out [an example from Open Etymology Map](https://etymology.dsantini.it/#10.3907,55.3966,14.8,occupation,pmtiles_all,stamen_toner,etymology) showing a map of Odense grouped by occupation.
 
 ## Install
-This is the generic template for country or city imports. You will have to specify the correct URL for the country or area that you want to import, e.g. from [GeoFabrik](https://download.geofabrik.de/), in the [import script](import/import.sh).
+This is the generic template for country or city imports.
 
 ### Requirements
 * Postgres database
 * PHP installation
 * `osm2pgsql`
 * `ogr2ogr`, typically found in `gdal-bin`.
+### Setup
+
+* Copy [import/settings.example.sh](import/settings.example.sh) to `import/settings.sh` and update variables:
+* * `SCHEMA`: database schema
+* * `URL_STATEFILE` and `URL_PBFFILE`: URLs to resources at [GeoFabrik download](https://download.geofabrik.de/).
+* * `AREAFILE`: prepared FlatGeobuf file for partitioning place, with area id as field 'id', area name as field 'name'.
+* Edit `import/nameimport.lua`:
+* * Change schema value in `tables.points`, `tables.ways`, and `tables.polygons` to own schema.
+* Copy [config/db.example.php](config/db.example.php) to `config/db.php` and update the variables with your database credentials and schema.
+
+For web usage:
+* Point your web server to the `www` folder.
+
 ### Installation
 1. Set the `PGDATABASE` variable to the name of your database.
-2. Create a schema called `osmetymology` in your Postgres database.
-3. Run the [import script](import/import.sh). This takes about half an hour.
+2. Run the [import script](import/import.sh).
 
 This will generate the aggregated GIS table as well as supporting FlatGeobuf file (for web usage) and CSV file (for simple overview).
 
 The import script can simply be run again to retrieve updated data. GeoFabrik usually updates around daily.
-
-For web usage:
-
-4. Copy [config/db.example.php](config/db.example.php) to `config/db.php` and update the variables with your database credentials.
-5. Point your web server to the `www` folder.
 
 All done!
 

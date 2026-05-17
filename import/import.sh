@@ -21,7 +21,7 @@ fi
 
 # Main import.
 psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
-osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S jsonb.lua --drop -s ${PBFFILE:?}
+osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s ${PBFFILE:?}
 
 # Import areas.
 ogr2ogr PG:dbname="${PGDATABASE:?}" areas.fgb -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.areas" -overwrite
