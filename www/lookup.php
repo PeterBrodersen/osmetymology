@@ -8,7 +8,7 @@ $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
-$boroughcode = (int) ($_GET['boroughcode'] ?? 0);
+$areacode = (int) ($_GET['areacode'] ?? 0);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -48,7 +48,7 @@ function getColumns($coordinates = FALSE)
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		"m.name AS boroughname",
+		"m.name AS areaname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
@@ -77,7 +77,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$limit = 1000;
 	$orderbylist = ['l.name, m.name'];
 	if ($type == 'searchnamelike') {
-		$where = "WHERE searchname LIKE " . DBSCHEMA . ".toSearchString(?) || '%'";
+		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
 		$where = 'WHERE wikidatas @> ARRAY[?]';
 	} elseif ($type == 'nearest') {
@@ -90,14 +90,13 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		// :TODO: add order by distance from center of bbox
 	}
 	$orderby = implode(', ', $orderbylist);
-	$dbschema = DBSCHEMA;
 	$querystring = <<<EOD
 		SELECT $columns
-		FROM $dbschema.locations_agg l
-		INNER JOIN $dbschema.boroughs m on l.borough_code = m.ogc_fid
-		LEFT JOIN $dbschema.wikidata w ON l."name:etymology:wikidata" = w.itemid
-		LEFT JOIN $dbschema.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-		LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		FROM locations_agg l
+		INNER JOIN areas m on l.area_code = m.ogc_fid
+		LEFT JOIN wikidata w ON l."name:etymology:wikidata" = w.itemid
+		LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		LEFT JOIN LATERAL(
 			SELECT jsonb_agg(jsonb_build_object(
 				'itemid', w.itemid,
@@ -109,10 +108,10 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 				'wikipediatitleen', w.sitelinks->'enwiki'->>'title'
 			)) AS wikidataset,
 			string_agg(w.name, '; ') AS wikilabel
-			FROM $dbschema.wikidatamap map
-			INNER JOIN $dbschema.wikidata w ON map.wikidata_id = w.itemid
-			LEFT JOIN $dbschema.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-			LEFT JOIN $dbschema.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+			FROM wikidatamap map
+			INNER JOIN wikidata w ON map.wikidata_id = w.itemid
+			LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+			LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 			WHERE l.id = map.location_id
 		) AS wikidatas ON TRUE
 		$where
@@ -140,7 +139,6 @@ function findPlaceName($searchname)
 function findWikidataLabel($searchitem)
 {
 	global $dbh;
-	$dbschema = DBSCHEMA;
 	if (strlen($searchitem) < 2) {
 		return false;
 	}
@@ -148,9 +146,9 @@ function findWikidataLabel($searchitem)
 		$searchitem = strtoupper($searchitem);
 		$querystring = <<<EOD
 			SELECT COUNT(l.id) AS placecount, w.name AS label, w.name AS alias, w.description, w.itemid
-			FROM $dbschema.wikidata w
-			INNER JOIN $dbschema.wikidatamap map ON w.itemid = map.wikidata_id
-			INNER JOIN $dbschema.locations_agg l ON map.location_id = l.id
+			FROM wikidata w
+			INNER JOIN wikidatamap map ON w.itemid = map.wikidata_id
+			INNER JOIN locations_agg l ON map.location_id = l.id
 			WHERE w.itemid = ?
 			GROUP BY w.itemid, w.description, w.name
 		EOD;
@@ -158,11 +156,11 @@ function findWikidataLabel($searchitem)
 		$querystring = <<<EOD
 			SELECT * FROM (
 				SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, w.name AS label, wl.label AS alias , w.description, w.itemid
-				FROM $dbschema.wikilabels wl
-				INNER JOIN $dbschema.wikidata w ON wl.itemid = w.itemid
-				INNER JOIN $dbschema.wikidatamap map ON w.itemid = map.wikidata_id
-				INNER JOIN $dbschema.locations_agg l ON map.location_id = l.id
-				WHERE wl.searchlabel LIKE $dbschema.toSearchString(?) || '%'
+				FROM wikilabels wl
+				INNER JOIN wikidata w ON wl.itemid = w.itemid
+				INNER JOIN wikidatamap map ON w.itemid = map.wikidata_id
+				INNER JOIN locations_agg l ON map.location_id = l.id
+				WHERE wl.searchlabel LIKE toSearchString(?) || '%'
 				GROUP BY wl.label, w.itemid, w.description, w.name
 			) t
 			ORDER BY placecount DESC, label, itemid
@@ -221,19 +219,19 @@ function findNearestPlacesFromBBOX($bboxstring)
 function getStats()
 {
 	global $dbh;
-	$querystring = "SELECT label, value FROM " . DBSCHEMA . ".stats";
+	$querystring = "SELECT label, value FROM stats";
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_KEY_PAIR);
 	$result = $q->fetchAll();
 	return $result;
 }
 
-function getSingleBoroughWayPersons($boroughcode)
+function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT ogc_fid AS borough_code, navn AS borough_nameFROM " . DBSCHEMA . ".boroughs WHERE ogc_fid = ?");
+	$q = $dbh->prepare("SELECT ogc_fid AS area_code, navn AS area_nameFROM areas WHERE ogc_fid = ?");
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$boroughcode]);
+	$q->execute([$areacode]);
 	$result = $q->fetch();
 	if (!$result) {
 		return [];
@@ -242,36 +240,36 @@ function getSingleBoroughWayPersons($boroughcode)
 	$querystring = <<<EOD
 		WITH expanded AS (
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
-			FROM osmetymology.locations_agg l
+			FROM locations_agg l
 			WHERE l.featuretype = 'way'
-			AND l.borough_code = ?
+			AND l.area_code = ?
 		)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
-		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
-		INNER JOIN osmetymology.gendermap ON w.claims->'P21->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN wikidata w ON expanded.wd = w.itemid
+		INNER JOIN gendermap ON w.claims->'P21->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description
 		ORDER BY gender, personname
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$boroughcode]);
+	$q->execute([$areacode]);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
 
-function getMunicipalityStats() // :TODO: Change to borough stats
+function getAreaStats()
 {
 	global $dbh;
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.borough_code, l.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.locations_agg l
+			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			FROM locations_agg l
 			WHERE l.featuretype = 'way'
 		)
 		SELECT
-			expanded.borough_code,
-			m.name AS borough_name,
+			expanded.area_code,
+			m.name AS area_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -287,11 +285,11 @@ function getMunicipalityStats() // :TODO: Change to borough stats
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN osmetymology.boroughs m on expanded.borough_code = m.ogc_fid
-		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.borough_code, m.name
-		ORDER BY expanded.borough_code
+		INNER JOIN areas m on expanded.area_code = m.ogc_fid
+		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
+		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		GROUP BY expanded.area_code, m.name
+		ORDER BY expanded.area_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -320,10 +318,10 @@ if ($searchname) {
 	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
-} elseif ($boroughcode) {
-	$result = getSingleBoroughWayPersons($boroughcode);
-} elseif ($request == 'municipalitystats') {
-	$result = getMunicipalityStats();
+} elseif ($areacode) {
+	$result = getSingleAreaWayPersons($areacode);
+} elseif ($request == 'areastats') {
+	$result = getAreaStats();
 }
 
 print json_encode($result);

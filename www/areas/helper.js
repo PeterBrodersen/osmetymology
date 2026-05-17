@@ -1,7 +1,7 @@
 $(function () {
     window.onhashchange = hashChanged;
     getStats();
-    getBoroughStats();
+    getAreaStats();
     if (window.location.hash.length > 1) {
         hashChanged();
     }
@@ -17,26 +17,26 @@ function getStats() {
         );
 }
 
-function getBoroughStats() {
-    $.getJSON('/data/boroughs.json')
+function getAreaStats() {
+    $.getJSON('/data/areas.json')
         .done((data) => {
             if (data) {
                 let tbodyhtml = '';
 
-                for (borough of data.etymologystats.boroughs) {
+                for (area of data.etymologystats.areas) {
                     tbodyhtml += `
                     <tr>
-                    <td class="numeric">${borough.borough_code}</td>
-                    <td data-boroughcode="${borough.borough_code}"><a href="#${borough.borough_code}">${borough.borough_name}</a></td>
-                    <td class="numeric">${borough.unique_human_female_topic}</td>
-                    <td class="numeric">${borough.unique_human_male_topic}</td>
-                    <td class="percentage-cell" data-female-percentage="${borough.human_female_percentage}" data-male-percentage="${borough.human_male_percentage}" style="--female-percentage:${borough.human_female_percentage}; --male-percentage:${borough.human_male_percentage};">
-                        ${borough.human_female_percentage.toFixed(0)} / ${borough.human_male_percentage.toFixed(0)}
+                    <td class="numeric">${area.area_code}</td>
+                    <td data-areacode="${area.area_code}"><a href="#${area.area_code}">${area.area_name}</a></td>
+                    <td class="numeric">${area.unique_human_female_topic}</td>
+                    <td class="numeric">${area.unique_human_male_topic}</td>
+                    <td class="percentage-cell" data-female-percentage="${area.human_female_percentage}" data-male-percentage="${area.human_male_percentage}" style="--female-percentage:${area.human_female_percentage}; --male-percentage:${area.human_male_percentage};">
+                        ${area.human_female_percentage.toFixed(0)} / ${area.human_male_percentage.toFixed(0)}
                     </td>
-                    <td class="numeric">${borough.unique_female_topic}</td>
-                    <td class="numeric">${borough.unique_male_topic}</td>
-                    <td class="percentage-cell" data-female-percentage="${borough.female_percentage}" data-male-percentage="${borough.male_percentage}" style="--female-percentage:${borough.female_percentage}; --male-percentage:${borough.male_percentage};">
-                        ${borough.female_percentage.toFixed(0)} / ${borough.male_percentage.toFixed(0)}
+                    <td class="numeric">${area.unique_female_topic}</td>
+                    <td class="numeric">${area.unique_male_topic}</td>
+                    <td class="percentage-cell" data-female-percentage="${area.female_percentage}" data-male-percentage="${area.male_percentage}" style="--female-percentage:${area.female_percentage}; --male-percentage:${area.male_percentage};">
+                        ${area.female_percentage.toFixed(0)} / ${area.male_percentage.toFixed(0)}
                     </td>
                     </tr>
                     `;
@@ -45,7 +45,7 @@ function getBoroughStats() {
                 let tfoothtml = `
                     <tr>
                     <th></th>
-                    <th>All boroughs</th>
+                    <th>All areas</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_female_topic}</th>
                     <th class="numeric">${data.etymologystats.total.unique_human_male_topic}</th>
                     <th class="percentage-cell" data-female-percentage="${data.etymologystats.total.human_female_percentage}" data-male-percentage="${data.etymologystats.total.human_male_percentage}" style="--female-percentage:${data.etymologystats.total.human_female_percentage}; --male-percentage:${data.etymologystats.total.human_male_percentage};">
@@ -58,36 +58,36 @@ function getBoroughStats() {
                     </th>
                     </tr>
                 `;
-                $('#boroughstats tbody').append(tbodyhtml);
-                $('#boroughstats tfoot').append(tfoothtml);
+                $('#areastats tbody').append(tbodyhtml);
+                $('#areastats tfoot').append(tfoothtml);
             }
-            $("#boroughstats").tablesorter();
+            $("#areastats").tablesorter();
 
             // Highlight row if hash is present
             if (window.location.hash.length > 1) {
                 let hash = decodeURIComponent(window.location.hash.substring(1));
                 hash = parseInt(hash);
                 if (hash) {
-                    $(`#boroughstats tbody tr td[data-boroughcode="${hash}"]`).parent().addClass('active');
+                    $(`#areastats tbody tr td[data-areacode="${hash}"]`).parent().addClass('active');
                 }
             }
         }
         );
 }
 
-function getSingleBoroughStats(borough_code) {
+function getSingleAreaStats(area_code) {
     // Remove highlight from previously clicked row
-    $('#boroughstats tbody tr').removeClass('active');
+    $('#areastats tbody tr').removeClass('active');
 
     // Highlight the clicked row
-    $(`#boroughstats tbody tr td[data-boroughcode="${borough_code}"]`).parent().addClass('active');
+    $(`#areastats tbody tr td[data-areacode="${area_code}"]`).parent().addClass('active');
 
-    let code = borough_code;
-    let jsonurl = `/data/boroughs/${code}.json`;
+    let code = area_code;
+    let jsonurl = `/data/areas/${code}.json`;
     $.getJSON(jsonurl)
         .done((data) => {
             if (data) {
-                let html = `<thead><tr><th colspan="2">${data.borough_name}</th></tr></thead><tbody>`;
+                let html = `<thead><tr><th colspan="2">${data.area_name}</th></tr></thead><tbody>`;
                 let lastgender = '';
                 for (item of data.items) {
                     if (lastgender != item.gender) {
@@ -117,14 +117,14 @@ function getSingleBoroughStats(borough_code) {
                     `;
                 }
                 if (data.items.length == 0) {
-                    html += `<tr><td colspan="2" style="font-style: italic">No registered roads in the borough are named after people</td></tr>`;
+                    html += `<tr><td colspan="2" style="font-style: italic">No registered roads in the area are named after people</td></tr>`;
                 }
                 html += `</tbody>`;
-                $('#singleborough').html(html);
+                $('#singlearea').html(html);
                 // location.hash = code;
                 // scroll to table
                 $('html, body').animate({
-                    scrollTop: $("#singleborough").offset().top
+                    scrollTop: $("#singlearea").offset().top
                 }, 500);
             }
         }
@@ -135,10 +135,10 @@ function hashChanged() {
     let hash = decodeURIComponent(window.location.hash.substring(1));
     hash = parseInt(hash);
     if (hash) {
-        getSingleBoroughStats(hash);
+        getSingleAreaStats(hash);
         return true;
     } else {
-        $('#singleborough').html('');
+        $('#singlearea').html('');
         return false;
     }
 }

@@ -2,7 +2,7 @@ let requestCount = 0;
 let lastinputname = '';
 let lastinputlabel = '';
 let wikidata = {};
-let languages = ['da', 'en', 'sv', 'nb', 'de', 'es', 'fr', 'fi', 'is'];
+let languages = ['en', 'fr', 'da', 'sv', 'nb', 'de', 'es', 'fi', 'is', 'mul'];
 let currentCount = 0;
 
 $(function () {
@@ -294,7 +294,7 @@ function updateResultTable(data) {
       // if (row['sampleway_id']) {
       //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
       // }
-      var boroughname = row['boroughname'] ?? '';
+      var areaname = row['areaname'] ?? '';
       var wikidatalinkhtml = '';
       var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];
@@ -322,7 +322,7 @@ function updateResultTable(data) {
       //        E.g. create as jquery DOM and add text with .text()
       let topichtml = topics.join('<br>')
       let descriptionhtml = descriptions.join('<br>')
-      newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${boroughname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
+      newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${areaname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     // updateWikidataLabels(wikidataitems);
