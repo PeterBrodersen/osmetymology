@@ -16,12 +16,14 @@ This is the generic template for country or city imports.
 * PHP installation
 * `osm2pgsql`
 * `ogr2ogr`, typically found in `gdal-bin`.
-### Setup
 
-* Copy [import/settings.example.sh](import/settings.example.sh) to `import/settings.sh` and update variables:
-* * `SCHEMA`: database schema
-* * `URL_STATEFILE` and `URL_PBFFILE`: URLs to resources at [GeoFabrik download](https://download.geofabrik.de/).
-* * `AREAFILE`: prepared FlatGeobuf file for partitioning place, with area id as field 'id', area name as field 'name'.
+### Setup
+* Copy [import/settings.example.sh](import/settings.example.sh) to `import/settings.sh` and change variables:
+    * `SCHEMA`: Local database schema. Will be created if it does not exist.
+    * `URL_STATEFILE` and `URL_PBFFILE`: URLs to resources at e.g. [GeoFabrik download](https://download.geofabrik.de/) for OSM file.
+    * `AREAFILE`: prepared FlatGeobuf file for partitioning place, with area id as field 'id', area name as field 'name'.
+    * `AREAFILE_ID`: Column ID for area. Must be a number. `ogc_fid` would work as a default id.
+    * `AREAFILE_NAME`: Column name for area.
 * Copy [config/db.example.php](config/db.example.php) to `config/db.php` and update the variables with your database credentials and schema.
 
 For web usage:
@@ -81,7 +83,8 @@ There are multiple options for figuring out the origin of a street name, such as
 ## Bugs
 Probably several (check Issues).
 
-Furthermore the code should be more generalized as well as making areas optional.
+* Map is currently hardcoded to London in [www/map.js](www/map.js). Some editable JSON file should probably exist for this.
+* Areas should be optional, not requiring an area GIS file.
 
 ## Other resources
 Similar projects exists, such as [Open Etymology Map](https://etymology.dsantini.it/) <sup>[GitHub](https://gitlab.com/openetymologymap/open-etymology-map/)</sup>.
