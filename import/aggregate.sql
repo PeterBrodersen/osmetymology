@@ -102,7 +102,7 @@ CREATE TABLE locations_agg (
 -- Several points should probably still be aggregated together (e.g. two bus stops across each other with the same name)
 INSERT INTO locations_agg (name, searchname, geomtype, featuretype, area_code, object_ids, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", wikidatas, geom)
 (
-	SELECT op.name, toSearchString(op.name), 'point', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), a.wkb_geometry)
+	SELECT op.name, toSearchString(op.name), 'point', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(op.node_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), a.wkb_geometry)
 	FROM osm_points op
 	INNER JOIN areas a ON ST_Transform(op.geom,4326) && a.wkb_geometry AND ST_Intersects(ST_Transform(op.geom,4326), a.wkb_geometry)
 	WHERE op.name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
@@ -110,14 +110,14 @@ INSERT INTO locations_agg (name, searchname, geomtype, featuretype, area_code, o
 )
 UNION
 (
-	SELECT ow.name, toSearchString(ow.name), 'line', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), a.wkb_geometry)
+	SELECT ow.name, toSearchString(ow.name), 'line', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(ow.way_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Collect(geom), 4326), a.wkb_geometry)
 	FROM osm_ways ow
 	INNER JOIN areas a ON ST_Transform(ow.geom,4326) && a.wkb_geometry AND ST_Intersects(ST_Transform(ow.geom,4326), a.wkb_geometry)
 	WHERE ow.name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
 	GROUP by ow.name, a.area_name, a.area_id, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", a.wkb_geometry
 )
 UNION (
-	SELECT op.name, toSearchString(op.name), 'polygon', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Union(geom), 4326), a.wkb_geometry)
+	SELECT op.name, toSearchString(op.name), 'polygon', featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(op.area_id), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", regexp_split_to_array("name:etymology:wikidata", '\s*;\s*'), ST_Intersection(ST_Transform(ST_Union(geom), 4326), a.wkb_geometry)
 	FROM osm_polygons op
 	INNER JOIN areas a ON ST_Transform(op.geom,4326) && a.wkb_geometry AND ST_Intersects(ST_Transform(op.geom,4326), a.wkb_geometry)
 	WHERE op.name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
