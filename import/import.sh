@@ -3,7 +3,7 @@
 
 # Fetch variables
 . settings.sh
-export PGOPTIONS="-c search_path=${SCHEMA:?}"
+export PGOPTIONS="-c search_path=${SCHEMA:?},public"
 
 if [ -z "${PGDATABASE:-}" ]; then
     echo "Error: Set variable PGDATABASE in environment" 1>&2
