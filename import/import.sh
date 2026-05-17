@@ -2,7 +2,7 @@
 # Remember to set $PGDATABASE to database name
 
 # Fetch variables
-source settings.sh
+. settings.sh
 export PGOPTIONS="-c search_path=${SCHEMA:?}"
 
 if [ -z "${PGDATABASE:-}" ]; then
