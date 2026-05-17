@@ -134,8 +134,8 @@ CREATE INDEX locations_agg_area_idx ON locations_agg ("area_code");
 CREATE INDEX locations_agg_name_etymology_wikidata_idx ON locations_agg ("name:etymology:wikidata");
 CREATE INDEX locations_agg_wikidatas_idx ON locations_agg USING gin("wikidatas");
 
-DROP INDEX IF EXISTS areas_kode_idx;
-CREATE INDEX areas_kode_idx ON areas ("area_id");
+DROP INDEX IF EXISTS areas_idx;
+CREATE INDEX areas_idx ON areas ("area_id");
 
 -- Create map from locations to Wikidata items
 DROP TABLE IF EXISTS wikidatamap;
