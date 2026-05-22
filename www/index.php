@@ -111,9 +111,9 @@ if (is_readable($configPath)) {
 
         <p class="stats">
             Content in the database:<br>
-            Number of places: <span id="totalroads"></span><br>
-            Number of uniquely named places: <span id="uniquenamedroads"></span><br>
-            Number of unique topics, places are named after: <span id="uniqueetymologywikidata"></span><br>
+            Places: <span id="totalroads"></span><br>
+            Uniquely named places: <span id="uniquenamedroads"></span><br>
+            Unique topics, places are named after: <span id="uniqueetymologywikidata"></span><br>
             Date of dataset: <span id="importfiletime"></span>
         </p>
     </div>
