@@ -18,26 +18,23 @@ This is the generic template for country or city imports.
 * `ogr2ogr`, typically found in `gdal-bin`.
 
 ### Setup
-* Copy [import/settings.example.sh](import/settings.example.sh) to `import/settings.sh` and change variables:
-    * `SCHEMA`: Local database schema. Will be created if it does not exist.
-    * `URL_STATEFILE` and `URL_PBFFILE`: URLs to resources at e.g. [GeoFabrik download](https://download.geofabrik.de/) for OSM file.
-    * `AREAFILE`: prepared FlatGeobuf file for partitioning place, with area id as field 'id', area name as field 'name'.
-    * `AREAFILE_ID`: Column ID for area. Must be a number. `ogc_fid` would work as a default id.
-    * `AREAFILE_NAME`: Column name for area.
-* Copy [config/db.example.php](config/db.example.php) to `config/db.php` and update the variables with your database credentials and schema.
+* Copy [config/config.example.json](config/config.example.json) to `config/config.json` and update values for:
+    * `db`: database credentials and schema.
+    * `osm_urls`: URLs to resources at e.g. [GeoFabrik download](https://download.geofabrik.de/) for OSM file.
+    * `area`: FlatGeobuf area file and field names.
+    * `place`: initial map location and geocoding defaults for the web frontend.
+    * `external_urls`: optional links shown on the website.
+    * `language`: language settings. `language.wikidata` is a prioritized array used for Wikidata labels/descriptions, and the first value is used for alias extraction during import.
 
 For web usage:
 * Point your web server to the `www` folder.
 
 ### Installation
-1. Set the `PGDATABASE` variable to the name of your database.
-2. Run the [import script](import/import.sh).
+* Run the [import script](import/import.sh) in the `import` folder.
 
 This will generate the aggregated GIS table as well as supporting FlatGeobuf file (for web usage) and CSV file (for simple overview).
 
-The import script can simply be run again to retrieve updated data. GeoFabrik usually updates around daily.
-
-All done!
+The import script can simply be run again to retrieve updated data. GeoFabrik usually updates around daily. Only new Wikidata items are fetched after the first run to keep requests down.
 
 ## Code
 The web project is based on [Leaflet](https://leafletjs.com/) with [PostgreSQL](https://www.postgresql.org/) as DB backend. No OpenStreetMap editing feature is planned.
@@ -83,7 +80,6 @@ There are multiple options for figuring out the origin of a street name, such as
 ## Bugs
 Probably several (check Issues).
 
-* Map settings (start location, zoom level boundaries, geocoder country bias) is currently hardcoded to London in [www/map.js](www/map.js). A local JSON file should probably exist for this.
 * Areas should be optional, not requiring an area GIS file.
 
 ## Other resources

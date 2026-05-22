@@ -272,3 +272,7 @@ div.clear {
 .male-color {
     background-color: var(--male-color);
 }
+
+li#osrm_gender {
+    display: none;
+}

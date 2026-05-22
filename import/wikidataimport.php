@@ -2,6 +2,11 @@
 // Import all existing Wikidata items to local table
 require("../www/connect.inc.php");
 
+$configPath = __DIR__ . '/../config/config.json';
+$configData = json_decode(file_get_contents($configPath), true);
+$languages = $configData['language']['wikidata'];
+$primaryLanguage = $languages[0];
+
 // Set User-Agent globally
 ini_set('user_agent', 'Findvej OSM Etymology (https://github.com/PeterBrodersen/osmetymology/)');
 
@@ -13,7 +18,7 @@ $insertdb = $dbh->prepare('
 
 function getBestLabel($labels)
 { // Run through languages and search for existing value; pick first existing
-    $languages = ['en', 'fr', 'mul', 'da', 'sv', 'nb', 'de', 'es', 'fi', 'is'];
+    global $languages;
     $label = NULL;
     foreach ($languages as $language) {
         if (isset($labels->$language)) {
@@ -200,8 +205,9 @@ function createGINIndex()
 
 function insertLabels()
 {
-    global $dbh;
+    global $dbh, $primaryLanguage;
     $dbh->query('TRUNCATE wikilabels'); // Truncate table before inserting
+    $aliasLanguage = str_replace("'", "''", $primaryLanguage);
     $dbh->query(
         <<<EOD
         INSERT INTO wikilabels (itemId, label, searchlabel)
@@ -210,7 +216,7 @@ function insertLabels()
         FROM wikidata
         UNION
         SELECT itemid, value->>'value' AS label, toSearchString(value->>'value') as searchlabel
-        FROM wikidata, jsonb_array_elements(aliases->'en')
+        FROM wikidata, jsonb_array_elements(aliases->'{$aliasLanguage}')
         )
         EOD
     );

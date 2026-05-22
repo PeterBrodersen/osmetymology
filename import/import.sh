@@ -1,32 +1,88 @@
-#!/bin/sh
-# Remember to set $PGDATABASE to database name
+#!/usr/bin/env bash
 
-# Fetch variables
-. ./settings.sh
+set -eu
+
+CONFIG_FILE="../config/config.json"
+
+if [ ! -r "$CONFIG_FILE" ]; then
+    echo "Error: Could not read config file at $CONFIG_FILE" 1>&2
+    exit 1
+fi
+
+json_get() {
+    key="$1"
+    default_value="${2:-}"
+
+    if command -v jq >/dev/null 2>&1; then
+        value=$(jq -er --arg key "$key" 'getpath($key | split(".")) // empty' "$CONFIG_FILE" 2>/dev/null || true)
+    elif command -v python3 >/dev/null 2>&1; then
+        value=$(python3 -c 'import json,sys; data=json.load(open(sys.argv[1], encoding="utf-8")); cur=data; [cur:=cur.get(part) if isinstance(cur,dict) else None for part in sys.argv[2].split(".")]; print("" if cur is None else cur)' "$CONFIG_FILE" "$key" 2>/dev/null || true)
+    else
+        echo "Error: Neither jq nor python3 is available to parse $CONFIG_FILE" 1>&2
+        exit 1
+    fi
+
+    if [ -n "$value" ]; then
+        printf '%s\n' "$value"
+    else
+        printf '%s\n' "$default_value"
+    fi
+}
+
+SCHEMA="$(json_get 'db.schema' 'place_osmetymology')"
+URL_STATEFILE="$(json_get 'osm_urls.statefile' '')"
+URL_PBFFILE="$(json_get 'osm_urls.osmfile' '')"
+AREAFILE="$(json_get 'area.file' '')"
+AREAFILE_ID="$(json_get 'area.id_field' '')"
+AREAFILE_NAME="$(json_get 'area.name_field' '')"
+DB_HOST="$(json_get 'db.host' '')"
+DB_PORT="$(json_get 'db.port' '')"
+DB_NAME="$(json_get 'db.name' '')"
+DB_USER="$(json_get 'db.user' '')"
+DB_PASS="$(json_get 'db.pass' '')"
+
+if [ -z "$URL_STATEFILE" ] || [ -z "$URL_PBFFILE" ] || [ -z "$AREAFILE" ] || [ -z "$AREAFILE_ID" ] || [ -z "$AREAFILE_NAME" ]; then
+    echo "Error: Missing required import values in $CONFIG_FILE" 1>&2
+    exit 1
+fi
+
+PBFFILE="$(basename "$URL_PBFFILE")"
+STATEFILE="state.txt"
+LOCAL_DIR="../local"
+PBFFILE_FULLPATH="${LOCAL_DIR}/${PBFFILE}"
+STATEFILE_FULLPATH="${LOCAL_DIR}/${STATEFILE}"
+AREAFILE_FULLPATH="${LOCAL_DIR}/${AREAFILE}"
+
+# Allow environment overrides while defaulting to values from config.json.
+: "${PGHOST:=$DB_HOST}"
+: "${PGPORT:=$DB_PORT}"
+: "${PGUSER:=$DB_USER}"
+: "${PGPASSWORD:=$DB_PASS}"
+: "${PGDATABASE:=$DB_NAME}"
+
+export PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE
 export PGOPTIONS="-c search_path=${SCHEMA:?},public"
 
-AREAFILE_FULLPATH="../local/${AREAFILE:?}"
-
 if [ -z "${PGDATABASE:-}" ]; then
-    echo "Error: Set variable PGDATABASE in environment" 1>&2
+    echo "Error: Missing database name. Set db.name in config/config.json or PGDATABASE in environment" 1>&2
     exit 1
 fi
 
 # Get OSM file
-wget ${URL_STATEFILE:?} -O state.txt
-wget ${URL_PBFFILE:?} -O $PBFFILE
+wget "${URL_STATEFILE:?}" -O "$STATEFILE_FULLPATH"
+wget "${URL_PBFFILE:?}" -O "$PBFFILE_FULLPATH"
 
-if [ ! -s "$PBFFILE" ]; then
+if [ ! -s "$PBFFILE_FULLPATH" ]; then
     echo "Error: Couldn't download $PBFFILE"
     exit 1
 fi
 
 # Main import.
 psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
-osm2pgsql --schema ${SCHEMA:?} -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s ${PBFFILE:?}
+osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${PBFFILE_FULLPATH:?}"
 
 # Import areas.
-ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -lco SCHEMA=${SCHEMA:?} -nln "${SCHEMA:?}.areas" -overwrite
+ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -lco SCHEMA="${SCHEMA:?}" -nln "${SCHEMA:?}.areas" -overwrite
 # Rename fields
 psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_ID:?} TO area_id"
 psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_NAME:?} TO area_name"

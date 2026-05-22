@@ -1,3 +1,16 @@
+<?php
+$appConfig = [];
+$configPath = __DIR__ . '/../config/config.json';
+if (is_readable($configPath)) {
+    $decodedConfig = json_decode(file_get_contents($configPath), true);
+    if (is_array($decodedConfig)) {
+        $appConfig = [
+            'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
+            'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
+        ];
+    }
+}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -17,6 +30,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        window.appConfig = <?php echo json_encode($appConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+    </script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script> -->
     <script src="/map.js"></script>
@@ -28,7 +44,7 @@
 </head>
 
 <body>
-    <h1>What are streets and places named after?</h1>
+    <h1>What are streets and places <span id="locationname"></span>named after?</span></h1>
 
     <div style="clear: both;">
     </div>
@@ -74,9 +90,7 @@
         </p>
         <ul>
             <li><a href="areas/">Gender distribution per local area</a></li>
-            <!--
-		<li><a href="https://osrm.findvej.dk/placename/">Route planner that avoids roads named after men</a> (<a href="https://osrm.findvej.dk/placename/?z=13&center=48.842722%2C2.372320&loc=48.823939%2C2.330303&loc=48.819228%2C2.329402&hl=fr&alt=0">Example</a>)</li>
--->
+            <li id="osrm_gender"><a href="#" id="avoid_gender">Route planner that avoids roads named after men</a> (<a href="#" id="avoid_gender_example">Example</a>)</li>
         </ul>
     </div>
 

@@ -1,6 +1,14 @@
 let map;
 let highlightWayId = false;
+const mapConfig = window.appConfig || {};
 document.addEventListener("DOMContentLoaded", async () => {
+    const placeConfig = mapConfig.place || {};
+    const startLat = Number.isFinite(Number(placeConfig.lat)) ? Number(placeConfig.lat) : 51.5;
+    const startLng = Number.isFinite(Number(placeConfig.lng)) ? Number(placeConfig.lng) : 0;
+    const startZoom = Number.isFinite(Number(placeConfig.zoom)) ? Number(placeConfig.zoom) : 11;
+    const geocodingCountryCode = (placeConfig.geocoding_country_code || 'gb').toString();
+    const geocodingCountryName = (placeConfig.geocoding_country_name || 'United Kingdom').toString();
+
     let minZoom = 11;
     let maxZoom = 19;
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -15,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         minZoom,
         maxZoom
     });
-    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([51.5, 0], 11);
+    map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([startLat, startLng], startZoom);
 
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
@@ -27,10 +35,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     var geocoderOptions = {
         geocoder: new L.Control.Geocoder.nominatim({
             geocodingQueryParams: {
-                "countrycodes": "gb"
+                "countrycodes": geocodingCountryCode
             }
         }),
-        placeholder: 'Search for place in England'
+        placeholder: `Search for place in ${geocodingCountryName}`
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);

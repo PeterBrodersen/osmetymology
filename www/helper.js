@@ -1,11 +1,28 @@
 let requestCount = 0;
 let lastinputname = '';
 let lastinputlabel = '';
-let wikidata = {};
-let languages = ['en', 'fr', 'da', 'sv', 'nb', 'de', 'es', 'fi', 'is', 'mul'];
 let currentCount = 0;
+const helperConfig = window.appConfig || {};
 
 $(function () {
+  const placeConfig = helperConfig.place || {};
+  if (placeConfig.name) {
+    $("#locationname").text(`in ${placeConfig.name} `);
+  }
+
+  const externalUrls = helperConfig.external_urls || {};
+  const avoidGenderUrl = (externalUrls.avoid_gender || '').trim();
+  const avoidGenderExampleUrl = (externalUrls.avoid_gender_example || '').trim();
+  if (avoidGenderUrl || avoidGenderExampleUrl) {
+    $("#osrm_gender").css('display', 'list-item');
+    if (avoidGenderUrl) {
+      $("#avoid_gender").attr('href', avoidGenderUrl);
+    }
+    if (avoidGenderExampleUrl) {
+      $("#avoid_gender_example").attr('href', avoidGenderExampleUrl);
+    }
+  }
+
   let namefindTimeout = null;
   let namefindController = null;
   let latestRequestId = 0;
@@ -181,98 +198,6 @@ function doSearch(searchword) {
   $("#namefind").val(searchword).trigger('keyup');
 }
 
-function updateWikidataLabels(itemList) {
-  itemList = [...new Set(itemList)];
-  let shortList = [];
-  for (itemId of itemList) {
-    if (!(/^Q\d+$/).test(itemId)) { // Must match Q + digits
-      continue;
-    }
-    if (wikidata[itemId]) { // already set
-      continue;
-    }
-    shortList.push(itemId);
-  }
-  if (shortList.length > 0) {
-    getWikidataItems(shortList);
-  } else { // No new items
-    updateWikidataHTML();
-  }
-  return true;
-}
-
-async function getWikidataItems(itemIdsAll) {
-  let itemLimit = 50; // max limit for wbgetentities in Wikidata API call
-  itemArr = [];
-  // save in chucks
-  for (let i = 0; i < itemIdsAll.length; i += itemLimit) {
-    const chunk = itemIdsAll.slice(i, i + itemLimit);
-    itemArr.push(chunk);
-  }
-  //  itemArr = [itemArr[0]];
-  for (itemIds of itemArr) {
-    // Perform AJAX request to fetch Wikidata item
-    await $.ajax({
-      url: 'https://www.wikidata.org/w/api.php',
-      data: {
-        action: 'wbgetentities',
-        // ids: itemId,
-        ids: itemIds.join('|'), // Join IDs with pipe (|) separator
-        format: 'json',
-        origin: '*' // This is required for CORS
-      },
-      dataType: 'json',
-      success: function (data) {
-        // Process the response
-        $.each(itemIds, function (index, itemId) {
-          wikidata[itemId] = data.entities[itemId];
-        });
-        updateWikidataHTML();
-      },
-      error: function (xhr, status, error) {
-        console.error('Error fetching data: ', error);
-      }
-    });
-  }
-  return true;
-}
-
-function updateWikidataHTML() {
-  $(".wikidataname").each(function () { // Update labels
-    let element = $(this);
-    let itemId = element.data('wikidata');
-    let label = '';
-    if (itemId && wikidata[itemId]) {
-      for (language of languages) { // use first accepted language
-        label = wikidata[itemId].labels[language]?.value;
-        if (label) {
-          break;
-        }
-      }
-    }
-    if (label) {
-      element.html(label);
-    }
-  });
-  $(".wikidatadescription").each(function () { // Update descriptions
-    let element = $(this);
-    let itemId = element.data('wikidata');
-    let description = '';
-    if (itemId && wikidata[itemId]) {
-      for (language of languages) {
-        description = wikidata[itemId].descriptions[language]?.value;
-        if (description) {
-          break;
-        }
-      }
-    }
-    if (description) {
-      element.html(description);
-    }
-  });
-  return true;
-}
-
 /*
 addEventListener("hashchange", (event) => {
   var starttext = decodeURIComponent(window.location.hash.substring(1))
@@ -286,7 +211,6 @@ function updateResultTable(data) {
   if (data && data.length > 0) {
     let newtable = $("#tabletemplate").contents().clone();
     let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
-    let wikidataitems = [];
     for (row of data) {
       var mapTohtml = `<span onclick="panToWayId(${row['centroid_onfeature_latitude']}, ${row['centroid_onfeature_longitude']}, ${row['id']});">📍</span>`;
       var streetname = row['streetname'] ?? '';
@@ -325,7 +249,6 @@ function updateResultTable(data) {
       newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${areaname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
-    // updateWikidataLabels(wikidataitems);
     $("#result").html(newtable);
   } else {
     $("#result").html('No registered places found!');
