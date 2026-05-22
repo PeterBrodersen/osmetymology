@@ -1,0 +1,45 @@
+{
+    "place": {
+        "name": "Berlin",
+        "lat": 52.5,
+        "lng": 13.4,
+        "zoom": 14,
+        "geocoding_country_code": "de",
+        "geocoding_country_name": "Germany"
+    },
+    "db": {
+        "host": "localhost",
+        "port": "5432",
+        "name": "mydbname",
+        "user": "myuser",
+        "pass": "mypassword",
+        "schema": "place_osmetymology"
+    },
+    "osm_urls": {
+        "statefile": "https://download.geofabrik.de/europe/germany/berlin-updates/state.txt",
+        "osmfile": "https://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf"
+    },
+    "area": {
+        "file": "areas.fgb",
+        "id_field": "ogc_fid",
+        "name_field": "area_name"
+    },
+    "external_urls": {
+        "avoid_gender": "https://osrm.findvej.dk/berlin/",
+        "avoid_gender_example": "https://osrm.findvej.dk/berlin/?z=14&center=52.489915%2C13.410788&loc=52.485677%2C13.393455&loc=52.487550%2C13.387055&hl=de&alt=0&scale=metric&ly=openstreetmap.org&profile=0"
+    },
+    "language": {
+        "wikidata": [
+            "en",
+            "fr",
+            "de",
+            "es",
+            "mul",
+            "da",
+            "sv",
+            "nb",
+            "fi",
+            "is"
+        ]
+    }
+}
