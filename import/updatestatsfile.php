@@ -1,7 +1,7 @@
 <?php
 // Create static stats file
 require("../www/connect.inc.php");
-$statefile = '../local/' . $statefile;
+$statefile = '../local/state.txt';
 $statsjsonfile = '../www/data/stats.json';
 $areajsonfile = '../www/data/areas.json';
 $areajsonfolder = '../www/data/areas/';
