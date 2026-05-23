@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     }
 
-    function getPopupText(feature) {
+    function getPopupText(feature, popupLatLng = null, unitSystem = 'metric') {
         // :TODO: URLs probably don't support relations at the moment
         let osmURLs = {
             point: 'https://www.openstreetmap.org/node/',
@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         let wikipediaenurlprefix = 'https://en.wikipedia.org/w/index.php?title=';
         if (wikidataset) {
             let sections = [];
+            const distanceAwayText = getWikidataDistanceAwayText(feature.properties["wikidata_location"], popupLatLng, unitSystem);
+            let distanceTextAdded = false;
             let dateoptions = {
                 // day: 'numeric',
                 // month: 'short',
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (etymologyText && etymologyText != wikilabel) {
                 popupText += `<p><em>${etymologyText}</em></p>`;
             }
-            for (item of wikidataset) {
+            for (const item of wikidataset) {
                 var sectiontext = '';
                 let wikidataId = item["itemid"];
                 let wikidatalabel = item["label"];
@@ -126,8 +128,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     birthdeathtext += ')';
                     sectiontext += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
                 }
+                let descriptionParagraphParts = [];
                 if (wikidatadescription) {
-                    sectiontext += `<p>${wikidatadescription}</p>`;
+                    descriptionParagraphParts.push(wikidatadescription);
+                }
+                if (!distanceTextAdded && distanceAwayText) {
+                    descriptionParagraphParts.push(`(${distanceAwayText})`);
+                    distanceTextAdded = true;
+                }
+                if (descriptionParagraphParts.length > 0) {
+                    sectiontext += `<p>${descriptionParagraphParts.join('<br>')}</p>`;
                 }
                 // Wikidata and Wikipedia links
                 sectiontext += `<p>`;
@@ -140,6 +150,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 sections.push(sectiontext);
             }
             popupText += sections.map(section => `<div>${section}</div>`).join('\n');
+            if (!distanceTextAdded && distanceAwayText) {
+                popupText += `<p>(${distanceAwayText})</p>`;
+            }
         } else if (etymologyText) {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
@@ -225,6 +238,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 'popupopen': function (e) {
                     highlightWayId = feature.properties["id"];
+                    const popupLatLng = e.popup && e.popup.getLatLng ? e.popup.getLatLng() : null;
+                    e.popup.setContent(getPopupText(feature, popupLatLng));
                     e.target.setStyle({ color: highlightColor });
                 },
                 'popupclose': function (e) {
@@ -281,4 +296,86 @@ function panToWayId(latitude, longitude, wayId) {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getWikidataDistanceAwayText(wikidataLocation, fromLatLng, unitSystem = 'metric') {
+    if (!wikidataLocation || !fromLatLng) {
+        return null;
+    }
+    const locationLatLng = parseWikidataLocationToLatLng(wikidataLocation);
+    if (!locationLatLng) {
+        return null;
+    }
+    const distanceInMeters = fromLatLng.distanceTo(locationLatLng);
+    return formatDistanceAway(distanceInMeters, unitSystem);
+}
+
+function parseWikidataLocationToLatLng(wikidataLocation) {
+    if (!wikidataLocation) {
+        return null;
+    }
+
+    // GeoJSON-like point object: { type: "Point", coordinates: [lon, lat] }
+    if (wikidataLocation.type === 'Point' && Array.isArray(wikidataLocation.coordinates) && wikidataLocation.coordinates.length >= 2) {
+        return L.latLng(Number(wikidataLocation.coordinates[1]), Number(wikidataLocation.coordinates[0]));
+    }
+
+    // Some exporters may return a WKT string such as "POINT(lon lat)"
+    if (typeof wikidataLocation === 'string') {
+        try {
+            const parsedLocation = JSON.parse(wikidataLocation);
+            if (parsedLocation && parsedLocation.type === 'Point' && Array.isArray(parsedLocation.coordinates) && parsedLocation.coordinates.length >= 2) {
+                return L.latLng(Number(parsedLocation.coordinates[1]), Number(parsedLocation.coordinates[0]));
+            }
+        } catch (e) {
+            // Not JSON, continue and try WKT parsing.
+        }
+
+        const pointMatch = wikidataLocation.match(/POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)/i);
+        if (pointMatch) {
+            return L.latLng(Number(pointMatch[2]), Number(pointMatch[1]));
+        }
+    }
+
+    return null;
+}
+
+function formatDistanceAway(distanceInMeters, unitSystem = 'metric') {
+    if (!Number.isFinite(distanceInMeters)) {
+        return null;
+    }
+
+    if (unitSystem === 'imperial') {
+        const feetPerMeter = 3.280839895;
+        const milesPerMeter = 0.000621371192;
+        const distanceInFeet = distanceInMeters * feetPerMeter;
+        const distanceInMiles = distanceInMeters * milesPerMeter;
+
+        if (distanceInMiles < 1) {
+            const roundedFeet = Math.round(distanceInFeet);
+            return `${roundedFeet.toLocaleString()} ${roundedFeet === 1 ? 'foot' : 'feet'} away`;
+        }
+
+        if (distanceInMiles > 100) {
+            const roundedMiles = Math.round(distanceInMiles);
+            return `${roundedMiles.toLocaleString()} ${roundedMiles === 1 ? 'mile' : 'miles'} away`;
+        }
+
+        const roundedMiles = Math.round(distanceInMiles * 10) / 10;
+        return `${roundedMiles.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} miles away`;
+    }
+
+    if (distanceInMeters < 1000) {
+        const roundedMeters = Math.round(distanceInMeters);
+        return `${roundedMeters.toLocaleString()} ${roundedMeters === 1 ? 'meter' : 'meters'} away`;
+    }
+
+    const distanceInKilometers = distanceInMeters / 1000;
+    if (distanceInKilometers > 100) {
+        const roundedKilometers = Math.round(distanceInKilometers);
+        return `${roundedKilometers.toLocaleString()} ${roundedKilometers === 1 ? 'kilometer' : 'kilometers'} away`;
+    }
+
+    const roundedKilometers = Math.round(distanceInKilometers * 10) / 10;
+    return `${roundedKilometers.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kilometers away`;
 }
