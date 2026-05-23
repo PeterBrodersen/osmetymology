@@ -1,5 +1,5 @@
 # OSM Etymology
-Etymology map based on OpenStreetMap and Wikidata. This is geared for Danish content.
+Etymology map based on OpenStreetMap and Wikidata. This branch is geared for Danish content. Check out the [**generic branch**](https://www.github.com/PeterBrodersen/osmetymology/tree/generic) for a customizable version.
 
 OpenStreetMap has references to Wikidata for a bunch of Danish streets. This project aims to make the information searchable.
 
