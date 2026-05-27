@@ -167,14 +167,16 @@ fi
 FGBFILE="../www/data/names.fgb"
 CSVFILE="../www/data/names.csv"
 if [ "$SKIP_GENERATE_FILES" = false ]; then
-    if [ -f "$FGBFILE" ] ; then
-        rm -- "$FGBFILE"
-    fi
-    if [ -f "$CSVFILE" ] ; then
-        rm -- "$CSVFILE"
-    fi
-    ogr2ogr -progress "${FGBFILE:?}" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Etymology for places'
-    ogr2ogr -progress "${CSVFILE:?}" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
+    FGB_TMPFILE="$(dirname "${FGBFILE:?}")/.tmp.$$.$(basename "${FGBFILE:?}")"
+    CSV_TMPFILE="$(dirname "${CSVFILE:?}")/.tmp.$$.$(basename "${CSVFILE:?}")"
+
+    rm -f -- "$FGB_TMPFILE" "$CSV_TMPFILE"
+
+    ogr2ogr -progress "$FGB_TMPFILE" PG:dbname="${PGDATABASE:?}" -sql '@tofgb.sql' -nln 'Etymology for places'
+    mv -f -- "$FGB_TMPFILE" "${FGBFILE:?}"
+
+    ogr2ogr -progress "$CSV_TMPFILE" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
+    mv -f -- "$CSV_TMPFILE" "${CSVFILE:?}"
 fi
 
 if [ "$SKIP_STATISTICS" = false ]; then
