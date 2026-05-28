@@ -322,9 +322,9 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
         .then(places => {
             let html = `<strong>${data.label || wikidataId}</strong> <a href="https://www.wikidata.org/wiki/${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a>`;
             if (places && places.length > 0) {
-                html += '<ul style="padding-left:1em;margin:.3em 0;list-style:none">';
+                html += '<ul style="padding-left:1em; margin:.3em 0; list-style:none; overflow: auto; max-height: 300px; scrollbar-width: thin; scrollbar-gutter: stable; white-space: nowrap;">';
                 for (const row of places) {
-                    html += `<li><span onclick="panToWayId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
+                    html += `<li style="overflow: hidden; text-overflow: ellipsis;"><span onclick="panToWayId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
                 }
                 html += '</ul>';
             } else {
