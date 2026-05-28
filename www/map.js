@@ -1,5 +1,6 @@
 let map;
 let highlightWayId = false;
+const _wikidataSourceData = {};
 const mapConfig = window.appConfig || {};
 document.addEventListener("DOMContentLoaded", async () => {
     const placeConfig = mapConfig.place || {};
@@ -133,7 +134,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     descriptionParagraphParts.push(wikidatadescription);
                 }
                 if (!distanceTextAdded && distanceAwayText) {
-                    descriptionParagraphParts.push(`(${distanceAwayText})`);
+                    const locationLatLng = parseWikidataLocationToLatLng(feature.properties["wikidata_location"]);
+                    if (locationLatLng && popupLatLng) {
+                        _wikidataSourceData[wikidataId] = { label: wikidatalabel, lat: locationLatLng.lat, lng: locationLatLng.lng };
+                        const fromLat = popupLatLng.lat;
+                        const fromLng = popupLatLng.lng;
+                        const fromWayId = feature.properties["id"];
+                        descriptionParagraphParts.push(`(<a href="#" onclick="openWikidataSourcePopup('${wikidataId}', ${fromLat}, ${fromLng}, ${fromWayId}); return false;">${distanceAwayText}</a>)`);
+                    } else {
+                        descriptionParagraphParts.push(`(${distanceAwayText})`);
+                    }
                     distanceTextAdded = true;
                 }
                 if (descriptionParagraphParts.length > 0) {
@@ -296,6 +306,36 @@ function panToWayId(latitude, longitude, wayId) {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
+    const data = _wikidataSourceData[wikidataId];
+    if (!data) return;
+    const locLatLng = L.latLng(data.lat, data.lng);
+    map.panTo(locLatLng);
+    const popup = L.popup()
+        .setLatLng(locLatLng)
+        .setContent(`<strong>${data.label || wikidataId}</strong><br>Henter steder...`)
+        .openOn(map);
+    fetch(`lookup.php?search=${encodeURIComponent(wikidataId)}`)
+        .then(r => r.json())
+        .then(places => {
+            let html = `<strong>${data.label || wikidataId}</strong> <a href="https://www.wikidata.org/wiki/${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a>`;
+            if (places && places.length > 0) {
+                html += '<ul style="padding-left:1em;margin:.3em 0;list-style:none">';
+                for (const row of places) {
+                    html += `<li><span onclick="panToWayId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
+                }
+                html += '</ul>';
+            } else {
+                html += '<p>Ingen steder fundet.</p>';
+            }
+            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← Tilbage</a></p>`;
+            popup.setContent(html);
+        })
+        .catch(() => {
+            popup.setContent(`<strong>${data.label || wikidataId}</strong><br>Fejl ved hentning af steder.`);
+        });
 }
 
 function getWikidataDistanceAwayText(wikidataLocation, fromLatLng, unitSystem = 'metric') {
