@@ -315,7 +315,7 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
     map.panTo(locLatLng);
     const popup = L.popup()
         .setLatLng(locLatLng)
-        .setContent(`<strong>${data.label || wikidataId}</strong><br>Henter steder...`)
+        .setContent(`<strong>${data.label || wikidataId}</strong><br>Loading places...`)
         .openOn(map);
     fetch(`lookup.php?search=${encodeURIComponent(wikidataId)}`)
         .then(r => r.json())
@@ -328,13 +328,13 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
                 }
                 html += '</ul>';
             } else {
-                html += '<p>Ingen steder fundet.</p>';
+                html += '<p>No places found.</p>';
             }
-            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← Tilbage</a></p>`;
+            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← Back</a></p>`;
             popup.setContent(html);
         })
         .catch(() => {
-            popup.setContent(`<strong>${data.label || wikidataId}</strong><br>Fejl ved hentning af steder.`);
+            popup.setContent(`<strong>${data.label || wikidataId}</strong><br>Error loading places.`);
         });
 }
 
