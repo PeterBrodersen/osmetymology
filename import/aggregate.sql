@@ -45,6 +45,7 @@ AS $$
 		WHEN tags->>'amenity' = 'library' THEN 'library'
 		WHEN tags->>'power' = 'substation' THEN 'power'
 		WHEN tags->>'historic' = 'castle' THEN 'castle'
+		WHEN tags->>'historic' IS NOT NULL THEN 'historic'
 		WHEN tags->>'harbour' IS NOT NULL OR tags->>'water' = 'harbour' THEN 'harbour'
 		WHEN tags->>'natural' IN ('water','bay') THEN 'water'
 		WHEN tags->>'building' IS NOT NULL OR tags->>'building:part' IS NOT NULL THEN 'building'

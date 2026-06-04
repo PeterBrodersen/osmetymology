@@ -372,6 +372,7 @@ function getFeatureTypeIcon(featuretype) {
     'shop': '🛍️',
     'kindergarten': '👶',
     'hotel': '🏨',
+    'historic': '⌘',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];
