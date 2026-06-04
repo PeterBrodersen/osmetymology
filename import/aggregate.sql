@@ -35,6 +35,7 @@ AS $$
 		WHEN tags->>'tourism' = 'theme_park' THEN 'theme_park'
 		WHEN tags->>'shop' = 'bakery' THEN 'bakery'
 		WHEN tags->>'shop' IS NOT NULL THEN 'shop'
+		WHEN tags->>'tourism' = 'hotel' OR tags->>'building' = 'hotel' THEN 'hotel'
 		WHEN tags->>'natural' = 'tree' OR tags->>'natural' = 'wood' OR tags->>'landuse' = 'forest' OR tags->>'leisure' = 'garden' THEN 'wood'
 		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
 		WHEN tags->>'leisure' = 'playground' THEN 'playground'

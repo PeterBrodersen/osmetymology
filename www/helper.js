@@ -371,6 +371,7 @@ function getFeatureTypeIcon(featuretype) {
     'bakery': '🍞',
     'shop': '🛍️',
     'kindergarten': '👶',
+    'hotel': '🏨',
   }
   if (icons[featuretype]) {
     icon = icons[featuretype];
