@@ -38,6 +38,7 @@ AS $$
 		WHEN tags->>'natural' = 'tree' OR tags->>'natural' = 'wood' OR tags->>'landuse' = 'forest' OR tags->>'leisure' = 'garden' THEN 'wood'
 		WHEN tags->>'leisure' = 'sports_centre' THEN 'sport'
 		WHEN tags->>'leisure' = 'playground' THEN 'playground'
+		WHEN tags->>'sport' IS NOT NULL THEN 'sport'
 		WHEN tags->>'amenity' = 'theatre' THEN 'theatre'
 		WHEN tags->>'amenity' = 'cinema' THEN 'cinema'
 		WHEN tags->>'amenity' = 'library' THEN 'library'
