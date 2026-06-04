@@ -70,7 +70,7 @@
     </div>
 <div class="drlink">
 	<p>
-	Velkommen til! Tjek også <a href="kommuner/">kønsfordeling på kommuneniveau</a> samt <a href="https://osrm.findvej.dk/nomales/"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
+	Velkommen til! Tjek også <a href="kommuner/">kønsfordeling på kommuneniveau</a> samt <a href="https://osrm.findvej.dk/nomales/?profile=0"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
 	</p>
 	<p>
 		Eksempler:
