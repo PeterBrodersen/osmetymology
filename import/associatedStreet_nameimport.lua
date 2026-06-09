@@ -96,6 +96,13 @@ function osm2pgsql.process_way(object)
     -- print(dump(object.tags))
 
     if no_usable_data(object.tags) then
+        -- Only store highways to save memory
+        if object.tags.highway then
+            pending_ways[object.id] = {
+                tags = object.tags,
+                geom = object:as_linestring()
+            }
+        end
         return
     end
 
@@ -140,6 +147,36 @@ function osm2pgsql.process_relation(object)
             tags = object.tags,
             geom = object:as_multipolygon()
         })
+    elseif object.tags.type == 'associatedStreet' then
+        -- Process pending ways that are members of this associatedStreet relation
+        for _, member in ipairs(object.members) do
+            if member.type == 'w' then
+                local way = pending_ways[member.ref]
+                if way then
+                    -- Merge tags from relation
+                    way.tags.name = way.tags.name or object.tags.name
+                    way.tags["name:etymology"] = way.tags["name:etymology"] or object.tags["name:etymology"]
+                    way.tags["name:etymology:wikipedia"] = way.tags["name:etymology:wikipedia"] or
+                        object.tags["name:etymology:wikipedia"]
+                    way.tags["name:etymology:wikidata"] = way.tags["name:etymology:wikidata"] or
+                        object.tags["name:etymology:wikidata"]
+
+                    -- Insert the way
+                    tables.ways:insert({
+                        name = way.tags.name,
+                        ["name:etymology"] = way.tags["name:etymology"],
+                        ["name:etymology:wikipedia"] = way.tags["name:etymology:wikipedia"],
+                        ["name:etymology:wikidata"] = way.tags["name:etymology:wikidata"],
+                        highway = way.tags.highway,
+                        tags = way.tags,
+                        geom = way.geom
+                    })
+
+                    -- Remove from pending to avoid duplicates
+                    pending_ways[member.ref] = nil
+                end
+            end
+        end
     end
 end
 
