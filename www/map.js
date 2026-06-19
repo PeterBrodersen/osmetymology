@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         fillOpacity: 0.8
                     });
                 },
-                pane: feature.geometry.type === 'Polygon' ? 'polygonsPane' : 'overlayPane'
+                pane: (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') ? 'polygonsPane' : 'overlayPane'
             }).on({
                     'mouseover': function (e) {
                         const layer = e.target;
