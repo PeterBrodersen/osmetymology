@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const startZoom = Number.isFinite(Number(placeConfig.zoom)) ? Number(placeConfig.zoom) : 11;
     const geocodingCountryCode = (placeConfig.geocoding_country_code || 'gb').toString();
     const geocodingCountryName = (placeConfig.geocoding_country_name || 'United Kingdom').toString();
-
-    let minZoom = 11;
+    const minZoom = Number.isFinite(Number(placeConfig.minZoom)) ? Number(placeConfig.minZoom) : 11;
     let maxZoom = 19;
+
     var osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         minZoom,
         maxZoom,

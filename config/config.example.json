@@ -4,6 +4,7 @@
         "lat": 52.5,
         "lng": 13.4,
         "zoom": 14,
+        "minZoom": 11,
         "geocoding_country_code": "de",
         "geocoding_country_name": "Germany"
     },
