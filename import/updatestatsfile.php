@@ -31,9 +31,37 @@ $stats = [
 ];
 file_put_contents($statsjsonfile, json_encode($stats));
 
+function hasAreasTable()
+{
+	global $dbh;
+	return (bool) $dbh->query("SELECT to_regclass('areas') IS NOT NULL")->fetchColumn();
+}
+
+function getEmptyAreaTotals()
+{
+	return [
+		'unique_human_female_topic' => 0,
+		'unique_human_male_topic' => 0,
+		'unique_female_topic' => 0,
+		'unique_male_topic' => 0,
+		'unique_nogender_topic' => 0,
+		'total_unique_topics' => 0,
+		'total_gendered_topics' => 0,
+		'unique_ways_with_gender' => 0,
+		'human_female_percentage' => 0,
+		'human_male_percentage' => 0,
+		'female_percentage' => 0,
+		'male_percentage' => 0,
+	];
+}
+
 function getAreaStats()
 {
 	global $dbh;
+	$useAreas = hasAreasTable();
+	$areasJoin = $useAreas ? 'LEFT JOIN areas a ON expanded.area_code = a.area_id' : '';
+	$areaCodeExpr = 'COALESCE(expanded.area_code, 0)';
+	$areaNameExpr = $useAreas ? "COALESCE(a.area_name, 'No area')" : "'No area'";
 	$querystring = <<<EOD
 		WITH expanded AS (
 			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
@@ -41,8 +69,8 @@ function getAreaStats()
 			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
-			expanded.area_code,
-			a.area_name,
+			$areaCodeExpr AS area_code,
+			$areaNameExpr AS area_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' AND w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' THEN w.itemid END) AS unique_human_male_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
@@ -68,11 +96,11 @@ function getAreaStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN areas a ON expanded.area_code = a.area_id
+		$areasJoin
 		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.area_code, a.area_name
-		ORDER BY expanded.area_code
+		GROUP BY $areaCodeExpr, $areaNameExpr
+		ORDER BY ($areaCodeExpr = 0), area_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -80,6 +108,17 @@ function getAreaStats()
 	$resultclean = [];
 	foreach ($result as $row) {
 		$resultclean[] = array_map('strtofloat', $row); // hack due to PDO returning floats as string; fixed in PHP 8.4: https://github.com/devnexen/php-src/commit/c176f3d21688b0c7cc10f8afe31c17ca9adaed16
+	}
+
+	$hasNoAreaRow = false;
+	foreach ($resultclean as $row) {
+		if ((int) $row['area_code'] === 0) {
+			$hasNoAreaRow = true;
+			break;
+		}
+	}
+	if (!$hasNoAreaRow) {
+		$resultclean[] = array_merge(['area_code' => 0, 'area_name' => 'No area'], getEmptyAreaTotals());
 	}
 
 	// total stats; need own query to remove duplicates
@@ -136,12 +175,24 @@ function strtofloat($scalar)
 function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
-	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$areacode]);
-	$result = $q->fetch();
-	if (!$result) {
-		return [];
+	$areacode = (int) $areacode;
+	if ($areacode === 0) {
+		$result = ['area_code' => 0, 'area_name' => 'No area'];
+		$expandedWhere = 'l.area_code IS NULL';
+		$params = [];
+	} else {
+		if (!hasAreasTable()) {
+			return [];
+		}
+		$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
+		$q->setFetchMode(PDO::FETCH_ASSOC);
+		$q->execute([$areacode]);
+		$result = $q->fetch();
+		if (!$result) {
+			return [];
+		}
+		$expandedWhere = 'l.area_code = ?';
+		$params = [$areacode];
 	}
 
 	$querystring = <<<EOD
@@ -149,7 +200,7 @@ function getSingleAreaWayPersons($areacode)
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
 			FROM locations_agg l
 			WHERE l.featuretype IN('way','square')
-			AND l.area_code = ?
+			AND $expandedWhere
 		)
 		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
@@ -160,7 +211,7 @@ function getSingleAreaWayPersons($areacode)
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$areacode]);
+	$q->execute($params);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
@@ -168,7 +219,7 @@ function getSingleAreaWayPersons($areacode)
 function getAreaCodes()
 {
 	global $dbh;
-	$result = $dbh->query("SELECT area_id FROM areas ORDER BY area_id")->fetchAll(PDO::FETCH_COLUMN);
+	$result = $dbh->query("SELECT area_code FROM (SELECT DISTINCT COALESCE(area_code, 0) AS area_code FROM locations_agg WHERE featuretype IN('way','square') UNION SELECT 0) areaset ORDER BY (area_code = 0), area_code")->fetchAll(PDO::FETCH_COLUMN);
 	return $result;
 }
 

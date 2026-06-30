@@ -65,11 +65,8 @@ function getAreaStats() {
 
             // Highlight row if hash is present
             if (window.location.hash.length > 1) {
-                let hash = decodeURIComponent(window.location.hash.substring(1));
-                hash = parseInt(hash);
-                if (hash) {
-                    $(`#areastats tbody tr td[data-areacode="${hash}"]`).parent().addClass('active');
-                }
+                let hash = parseInt(window.location.hash.substring(1), 10);
+                $(`#areastats tbody tr td[data-areacode="${hash}"]`).parent().addClass('active');
             }
         }
         );
@@ -132,10 +129,8 @@ function getSingleAreaStats(area_code) {
 }
 
 function hashChanged() {
-    let hash = decodeURIComponent(window.location.hash.substring(1));
-    hash = parseInt(hash);
-    if (hash) {
-        getSingleAreaStats(hash);
+    if (window.location.hash.length > 1) {
+        getSingleAreaStats(parseInt(window.location.hash.substring(1), 10));
         return true;
     } else {
         $('#singlearea').html('');

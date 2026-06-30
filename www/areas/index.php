@@ -68,7 +68,7 @@
 
     <div id="betaboilerplate">
         <p>
-            This extract only fetches roads and not e.g. buildings statues, parks, etc.
+            This extract only fetches roads and not e.g. buildings, statues, parks, etc.
         </p>
         <p>
             The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. This extract for areas can be <a href="/data/areas.json">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href="mailto:peter@ter.dk">send an email</a>.

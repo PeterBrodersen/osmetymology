@@ -24,7 +24,7 @@
         "osmfile": "https://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf"
     },
     "area": {
-        "file": "areas.fgb",
+        "file": "",
         "id_field": "ogc_fid",
         "name_field": "area_name"
     },

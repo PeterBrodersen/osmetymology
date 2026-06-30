@@ -218,7 +218,7 @@ function updateResultTable(data) {
       // if (row['sampleway_id']) {
       //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
       // }
-      var areaname = row['areaname'] ?? '';
+      var areaname = row['areaname'] ? row['areaname'] : 'No area';
       var wikidatalinkhtml = '';
       var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];

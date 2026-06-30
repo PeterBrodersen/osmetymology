@@ -84,6 +84,11 @@ DB_USER="$(json_get 'db.user' '')"
 DB_PASS="$(json_get 'db.pass' '')"
 OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="$([ "$(json_get 'import.enable_associated_street_relations' 'false')" = "true" ] && echo 1 || echo 0)"
 
+if [ -z "$AREAFILE" ] && [ "$SKIP_IMPORT_AREAS" = false ]; then
+    echo "Info: area.file is empty in $CONFIG_FILE; skipping area import and area-based aggregation"
+    SKIP_IMPORT_AREAS=true
+fi
+
 if [ "$SKIP_DOWNLOAD" = false ] && { [ -z "$URL_STATEFILE" ] || [ -z "$URL_OSMFILE" ]; }; then
     echo "Error: Missing osm_urls values in $CONFIG_FILE (required unless --skip-download is used)" 1>&2
     exit 1
@@ -154,7 +159,16 @@ fi
 # Aggregate, split by area boundaries.
 # :TODO: Allow for import without areas, then aggregate without area boundaries.
 if [ "$SKIP_AGGREGATE" = false ]; then
-    psql -f aggregate.sql
+    AGGREGATE_SQL="aggregate_no_areas.sql"
+    if [ "$SKIP_IMPORT_AREAS" = false ]; then
+        HAS_AREAS_TABLE="$(psql -qtAX -c "SELECT to_regclass('${SCHEMA:?}.areas') IS NOT NULL" | tr -d '\r[:space:]')"
+        if [ "$HAS_AREAS_TABLE" = "t" ]; then
+            AGGREGATE_SQL="aggregate.sql"
+        else
+            echo "Warning: areas table not found; running aggregation without areas"
+        fi
+    fi
+    psql -f "$AGGREGATE_SQL"
 fi
 
 # Download and import Wikidata items. First import fetches all referred items, otherwise only fetch missing items.

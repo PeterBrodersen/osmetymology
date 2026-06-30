@@ -9,6 +9,7 @@ $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
 $areacode = (int) ($_GET['areacode'] ?? 0);
+$hasAreacode = array_key_exists('areacode', $_GET);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -37,7 +38,7 @@ function convertPGArraysToPHPArray($result)
 	return $cleanresult;
 }
 
-function getColumns($coordinates = FALSE)
+function getColumns($coordinates = FALSE, $useAreas = true)
 {
 	$columns = [
 		'l.id',
@@ -48,7 +49,7 @@ function getColumns($coordinates = FALSE)
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		"a.area_name AS areaname",
+		$useAreas ? "COALESCE(a.area_name, '') AS areaname" : "'' AS areaname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
@@ -72,10 +73,12 @@ function getColumns($coordinates = FALSE)
 
 function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 {
-	$columns = getColumns($coordinates);
+	$useAreas = hasAreasTable();
+	$columns = getColumns($coordinates, $useAreas);
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['l.name, a.area_name'];
+	$orderbylist = [$useAreas ? 'l.name, a.area_name NULLS LAST' : 'l.name'];
+	$areasJoin = $useAreas ? 'LEFT JOIN areas a on l.area_code = a.area_id' : '';
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
@@ -93,7 +96,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 	$querystring = <<<EOD
 		SELECT $columns
 		FROM locations_agg l
-		INNER JOIN areas a on l.area_code = a.area_id
+		$areasJoin
 		LEFT JOIN wikidata w ON l."name:etymology:wikidata" = w.itemid
 		LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -119,6 +122,16 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		LIMIT $limit
 	EOD;
 	return $querystring;
+}
+
+function hasAreasTable()
+{
+	global $dbh;
+	static $hasAreas = null;
+	if ($hasAreas === null) {
+		$hasAreas = (bool) $dbh->query("SELECT to_regclass('areas') IS NOT NULL")->fetchColumn();
+	}
+	return $hasAreas;
 }
 
 function findPlaceName($searchname)
@@ -229,12 +242,24 @@ function getStats()
 function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
-	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$areacode]);
-	$result = $q->fetch();
-	if (!$result) {
-		return [];
+	$areacode = (int) $areacode;
+	if ($areacode === 0) {
+		$result = ['area_code' => 0, 'area_name' => 'No area'];
+		$expandedWhere = 'l.area_code IS NULL';
+		$params = [];
+	} else {
+		if (!hasAreasTable()) {
+			return [];
+		}
+		$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
+		$q->setFetchMode(PDO::FETCH_ASSOC);
+		$q->execute([$areacode]);
+		$result = $q->fetch();
+		if (!$result) {
+			return [];
+		}
+		$expandedWhere = 'l.area_code = ?';
+		$params = [$areacode];
 	}
 
 	$querystring = <<<EOD
@@ -242,18 +267,18 @@ function getSingleAreaWayPersons($areacode)
 			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
 			FROM locations_agg l
 			WHERE l.featuretype = 'way'
-			AND l.area_code = ?
+			AND $expandedWhere
 		)
 		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
 		FROM expanded
 		INNER JOIN wikidata w ON expanded.wd = w.itemid
-		INNER JOIN gendermap ON w.claims->'P21->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description
 		ORDER BY gender, personname
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$areacode]);
+	$q->execute($params);
 	$result['items'] = $q->fetchAll();
 	return $result;
 }
@@ -261,6 +286,10 @@ function getSingleAreaWayPersons($areacode)
 function getAreaStats()
 {
 	global $dbh;
+	$useAreas = hasAreasTable();
+	$areasJoin = $useAreas ? 'LEFT JOIN areas a on expanded.area_code = a.area_id' : '';
+	$areaCodeExpr = 'COALESCE(expanded.area_code, 0)';
+	$areaNameExpr = $useAreas ? "COALESCE(a.area_name, 'No area')" : "'No area'";
 	$querystring = <<<EOD
 		WITH expanded AS (
 			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
@@ -268,8 +297,8 @@ function getAreaStats()
 			WHERE l.featuretype = 'way'
 		)
 		SELECT
-			expanded.area_code,
-			a.area_name
+			$areaCodeExpr AS area_code,
+			$areaNameExpr AS area_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -285,11 +314,11 @@ function getAreaStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN areas a on expanded.area_code = a.area_id
+		$areasJoin
 		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
 		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.area_code, a.area_name
-		ORDER BY expanded.area_code
+		GROUP BY $areaCodeExpr, $areaNameExpr
+		ORDER BY area_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -318,7 +347,7 @@ if ($searchname) {
 	$result = findNearestPlacesFromBBOX($bbox);
 } elseif ($request == 'stats') {
 	$result = getStats();
-} elseif ($areacode) {
+} elseif ($hasAreacode) {
 	$result = getSingleAreaWayPersons($areacode);
 } elseif ($request == 'areastats') {
 	$result = getAreaStats();

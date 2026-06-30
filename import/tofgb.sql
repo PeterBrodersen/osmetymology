@@ -9,7 +9,7 @@ SELECT l.id, l.name AS streetname, l."name:etymology", l."name:etymology:wikidat
         ELSE NULL
 END AS wikidata_location, l.geomtype, l.object_ids[1] AS sampleobject_id, wikidatas.wikidataset, wikidatas.wikilabel, l.geom
 FROM locations_agg l
-INNER JOIN areas a on l.area_code = a.area_id
+LEFT JOIN areas a on l.area_code = a.area_id
 LEFT JOIN wikidata w ON l."name:etymology:wikidata" = w.itemid
 LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -30,4 +30,5 @@ LEFT JOIN LATERAL(
     LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
     WHERE l.id = map.location_id
 ) AS wikidatas ON TRUE
-ORDER BY l.name, a.area_name, a.area_id
+WHERE l.geom IS NOT NULL AND NOT ST_IsEmpty(l.geom)
+ORDER BY l.name, a.area_name NULLS LAST, a.area_id NULLS LAST
