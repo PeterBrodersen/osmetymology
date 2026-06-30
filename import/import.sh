@@ -27,7 +27,7 @@ fi
 
 # Main import. Estimated time: 20 seconds; uses about 400 MB due to relation parsing
 psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
-osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PARISFILE
+OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" osm2pgsql --schema $SCHEMA -d "${PGDATABASE:?}" -O flex -S jsonb.lua -s $PARISFILE
 
 # Import arrondissements. Takes about a second.
 ogr2ogr PG:dbname="${PGDATABASE:?}" arrondissements.fgb -lco SCHEMA=$SCHEMA -nln "$SCHEMA.arrondissements" -overwrite

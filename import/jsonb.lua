@@ -8,8 +8,13 @@
 -- A place to store the SQL tables we will define shortly.
 local tables = {}
 
--- Store pending ways without usable data (only highways to save memory)
-local pending_ways = {}
+-- Store relation tags for ways that need a second pass after relations are processed.
+local associated_street_ways = {}
+local enable_associated_street = os.getenv('OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS') == '1'
+
+if enable_associated_street then
+    print('associatedStreet support enabled via OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS=1')
+end
 
 tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name',                     type = 'text' },
@@ -95,13 +100,34 @@ end
 function osm2pgsql.process_way(object)
     -- print(dump(object.tags))
 
-    if no_usable_data(object.tags) then
-        -- Only store highways to save memory
-        if object.tags.highway then
-            pending_ways[object.id] = {
-                tags = object.tags,
+    if enable_associated_street and osm2pgsql.stage == 2 and no_usable_data(object.tags) then
+        local relation = associated_street_ways[object.id]
+        if relation and object.tags.highway then
+            print(
+                "associatedStreet match: way id=" .. object.id ..
+                ", way name=" .. tostring(object.tags.name) ..
+                ", relation name=" .. tostring(relation.name)
+            )
+
+            local tags = object.tags
+
+            -- Merge tags from relation
+            tags.name = tags.name or relation.name
+            tags["name:etymology"] = tags["name:etymology"] or relation["name:etymology"]
+            tags["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"] or
+                relation["name:etymology:wikipedia"]
+            tags["name:etymology:wikidata"] = tags["name:etymology:wikidata"] or
+                relation["name:etymology:wikidata"]
+
+            tables.ways:insert({
+                name = tags.name,
+                ["name:etymology"] = tags["name:etymology"],
+                ["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"],
+                ["name:etymology:wikidata"] = tags["name:etymology:wikidata"],
+                highway = tags.highway,
+                tags = tags,
                 geom = object:as_linestring()
-            }
+            })
         end
         return
     end
@@ -147,36 +173,30 @@ function osm2pgsql.process_relation(object)
             tags = object.tags,
             geom = object:as_multipolygon()
         })
-    elseif object.tags.type == 'associatedStreet' then
-        -- Process pending ways that are members of this associatedStreet relation
+    elseif enable_associated_street and object.tags.type == 'associatedStreet' then
         for _, member in ipairs(object.members) do
             if member.type == 'w' then
-                local way = pending_ways[member.ref]
-                if way then
-                    -- Merge tags from relation
-                    way.tags.name = way.tags.name or object.tags.name
-                    way.tags["name:etymology"] = way.tags["name:etymology"] or object.tags["name:etymology"]
-                    way.tags["name:etymology:wikipedia"] = way.tags["name:etymology:wikipedia"] or
-                        object.tags["name:etymology:wikipedia"]
-                    way.tags["name:etymology:wikidata"] = way.tags["name:etymology:wikidata"] or
-                        object.tags["name:etymology:wikidata"]
-
-                    -- Insert the way
-                    tables.ways:insert({
-                        name = way.tags.name,
-                        ["name:etymology"] = way.tags["name:etymology"],
-                        ["name:etymology:wikipedia"] = way.tags["name:etymology:wikipedia"],
-                        ["name:etymology:wikidata"] = way.tags["name:etymology:wikidata"],
-                        highway = way.tags.highway,
-                        tags = way.tags,
-                        geom = way.geom
-                    })
-
-                    -- Remove from pending to avoid duplicates
-                    pending_ways[member.ref] = nil
-                end
+                associated_street_ways[member.ref] = associated_street_ways[member.ref] or {
+                    name = object.tags.name,
+                    ["name:etymology"] = object.tags["name:etymology"],
+                    ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+                    ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"]
+                }
             end
         end
+    end
+end
+
+function osm2pgsql.select_relation_members(relation)
+    if enable_associated_street and relation.tags.type == 'associatedStreet' then
+        print(
+            "select_relation_members: associatedStreet relation id=" .. relation.id ..
+            ", name=" .. tostring(relation.tags.name)
+        )
+
+        return {
+            ways = osm2pgsql.way_member_ids(relation)
+        }
     end
 end
 
