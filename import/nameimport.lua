@@ -1,15 +1,9 @@
--- For debugging
--- inspect = require('inspect')
-
--- The global variable "osm2pgsql" is used to talk to the main osm2pgsql code.
--- You can, for instance, get the version of osm2pgsql:
--- print('osm2pgsql version: ' .. osm2pgsql.version)
-
 -- A place to store the SQL tables we will define shortly.
 local tables = {}
 
--- Store pending ways without usable data (only highways to save memory)
-local pending_ways = {}
+-- Store relation tags for ways that need a second pass after relations are processed.
+local associated_street_ways = {}
+local enable_associated_street = os.getenv('OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS') == '1'
 
 tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name',                     type = 'text' },
@@ -40,13 +34,6 @@ tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
     { column = 'tags',                     type = 'jsonb' },
     { column = 'geom',                     type = 'geometry' },
 })
-
--- Debug output: Show definition of tables
-for name, dtable in pairs(tables) do
-    print("\ntable '" .. name .. "':")
-    print("  name='" .. dtable:name() .. "'")
-    --    print("  columns=" .. inspect(dtable:columns()))
-end
 
 -- Helper function to remove some of the tags we usually are not interested in.
 -- Returns true if there are no tags left.
@@ -93,9 +80,31 @@ function osm2pgsql.process_node(object)
 end
 
 function osm2pgsql.process_way(object)
-    -- print(dump(object.tags))
-
     if no_usable_data(object.tags) then
+        if enable_associated_street and osm2pgsql.stage == 2 then
+            local relation = associated_street_ways[object.id]
+            if relation and object.tags.highway then
+            local tags = object.tags
+
+            -- Merge tags from relation
+            tags.name = tags.name or relation.name
+            tags["name:etymology"] = tags["name:etymology"] or relation["name:etymology"]
+            tags["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"] or
+                relation["name:etymology:wikipedia"]
+            tags["name:etymology:wikidata"] = tags["name:etymology:wikidata"] or
+                relation["name:etymology:wikidata"]
+
+            tables.ways:insert({
+                name = tags.name,
+                ["name:etymology"] = tags["name:etymology"],
+                ["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"],
+                ["name:etymology:wikidata"] = tags["name:etymology:wikidata"],
+                highway = tags.highway,
+                tags = tags,
+                geom = object:as_linestring()
+            })
+            end
+        end
         return
     end
 
@@ -140,6 +149,25 @@ function osm2pgsql.process_relation(object)
             tags = object.tags,
             geom = object:as_multipolygon()
         })
+    elseif enable_associated_street and object.tags.type == 'associatedStreet' then
+        for _, member in ipairs(object.members) do
+            if member.type == 'w' and (member.role == nil or member.role == '' or member.role == 'street') then
+                associated_street_ways[member.ref] = associated_street_ways[member.ref] or {
+                    name = object.tags.name,
+                    ["name:etymology"] = object.tags["name:etymology"],
+                    ["name:etymology:wikipedia"] = object.tags["name:etymology:wikipedia"],
+                    ["name:etymology:wikidata"] = object.tags["name:etymology:wikidata"]
+                }
+            end
+        end
+    end
+end
+
+function osm2pgsql.select_relation_members(relation)
+    if enable_associated_street and relation.tags.type == 'associatedStreet' then
+        return {
+            ways = osm2pgsql.way_member_ids(relation)
+        }
     end
 end
 

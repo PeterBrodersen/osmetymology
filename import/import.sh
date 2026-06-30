@@ -82,6 +82,7 @@ DB_PORT="$(json_get 'db.port' '')"
 DB_NAME="$(json_get 'db.name' '')"
 DB_USER="$(json_get 'db.user' '')"
 DB_PASS="$(json_get 'db.pass' '')"
+OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="$([ "$(json_get 'import.enable_associated_street_relations' 'false')" = "true" ] && echo 1 || echo 0)"
 
 if [ "$SKIP_DOWNLOAD" = false ] && { [ -z "$URL_STATEFILE" ] || [ -z "$URL_OSMFILE" ]; }; then
     echo "Error: Missing osm_urls values in $CONFIG_FILE (required unless --skip-download is used)" 1>&2
@@ -131,20 +132,19 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
     wget "${URL_OSMFILE:?}" -O "$OSMFILE_FULLPATH"
 fi
 
-if [ "$SKIP_IMPORT_OSM" = false ] && [ ! -s "$OSMFILE_FULLPATH" ]; then
-    echo "Error: Couldn't download $OSMFILE"
-    exit 1
-fi
-
 if [ "$SKIP_IMPORT_OSM" = false ]; then
+    if [ ! -s "$OSMFILE_FULLPATH" ]; then
+        echo "Error: Couldn't download $OSMFILE"
+        exit 1
+    fi
     # Main import.
     psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
-    osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
+    OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
 fi
 
 if [ "$SKIP_IMPORT_AREAS" = false ]; then
     # Import areas.
-    ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -lco SCHEMA="${SCHEMA:?}" -nln "${SCHEMA:?}.areas" -overwrite
+    ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -t_srs EPSG:4326 -lco SCHEMA="${SCHEMA:?}" -nln "${SCHEMA:?}.areas" -overwrite
     # Rename fields
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_ID:?} TO area_id"
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_NAME:?} TO area_name"
