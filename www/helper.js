@@ -170,7 +170,7 @@ $(function () {
   if (window.location.hash.length > 1) {
     // should be moved to map.js startup instead of starting a location that we immediately move away from
     let hash = decodeURIComponent(window.location.hash.substring(1));
-    const regex = /^map=(\d+)\/(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/;
+    const regex = /^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/;
     const match = hash.match(regex);
     if (match && map.setView) {
       map.setView(L.latLng(match[2], match[3]), match[1]);
