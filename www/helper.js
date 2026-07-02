@@ -5,10 +5,6 @@ let currentCount = 0;
 const helperConfig = window.appConfig || {};
 
 $(function () {
-  const placeConfig = helperConfig.place || {};
-  if (placeConfig.name) {
-    $("#locationname").text(`in ${placeConfig.name} `);
-  }
 
   const externalUrls = helperConfig.external_urls || {};
   const avoidGenderUrl = (externalUrls.avoid_gender || '').trim();

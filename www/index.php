@@ -1,6 +1,7 @@
 <?php
 $appConfig = [];
 $configPath = __DIR__ . '/../config/config.json';
+$placeName = '';
 if (is_readable($configPath)) {
     $decodedConfig = json_decode(file_get_contents($configPath), true);
     if (is_array($decodedConfig)) {
@@ -8,16 +9,16 @@ if (is_readable($configPath)) {
             'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
             'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
         ];
+        $placeName = $decodedConfig['place']['name'] ?? '';
     }
 }
+$title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') . 'named after?';
 ?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>
-        What are places named after?
-    </title>
+    <title><?php print htmlspecialchars($title); ?></title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
@@ -44,13 +45,13 @@ if (is_readable($configPath)) {
 </head>
 
 <body>
-    <h1>What are streets and places <span id="locationname"></span>named after?</span></h1>
+    <h1><?php print htmlspecialchars($title); ?></h1>
 
     <div style="clear: both;">
     </div>
 
     <div id="userinput">
-        <div id="placename"><input required autofocus id="namefind" placeholder="Search street name" accesskey="f"> <span id="copylink"><a href="#">[copy link 🔗]</a></span></div>
+        <div id="placename"><input required autofocus id="namefind" placeholder="Search street or place name in database" accesskey="f" size="35"> <span id="copylink"><a href="#">[copy link 🔗]</a></span></div>
         <div id="itemname"><input required autofocus id="itemfind" placeholder="Search topic" accesskey="t"></div>
     </div>
 

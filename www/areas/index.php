@@ -1,10 +1,21 @@
+<?php
+$configPath = __DIR__ . '/../../config/config.json';
+$placeName = '';
+if (is_readable($configPath)) {
+    $decodedConfig = json_decode(file_get_contents($configPath), true);
+    if (is_array($decodedConfig)) {
+        $placeName = $decodedConfig['place']['name'] ?? '';
+    }
+}
+$title = 'Overview and statistics for gender distribution of street names in areas' . ($placeName ? " in $placeName" : '');
+$header = "Statistics for gender distribution of street names in areas" . ($placeName ? " in $placeName" : '');
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>
-        Overview and statistics for gender distribution of street names in areas
-    </title>
+    <title><?php print htmlspecialchars($title); ?></title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js" integrity="sha512-O/JP2r8BG27p5NOtVhwqsSokAwEP5RwYgvEzU9G6AfNjLYqyt2QT8jqU1XrXCiezS50Qp1i3ZtCQWkHZIRulGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href='/style.css' rel='stylesheet' />
@@ -15,9 +26,9 @@
 </head>
 
 <body>
-    <h1>Statistics for gender distribution of street names in areas</h1>
+    <h1><?php print htmlspecialchars($header); ?></h1>
     <p>
-        Statistics from the <a href="/">Name Project</a> for gender distribution on streets in the areas. Each person is counted only once within an area, even if multiple street names refer to the same person. Click on an area name to see the people in the area with streets associated.
+        Statistics from the <a href="../"><?php print htmlspecialchars($placeName) ; ?> Name Project</a> for gender distribution on streets in the areas. Each person is counted only once within an area, even if multiple street names refer to the same person. Click on an area name to see the people in the area with streets associated.
     </p>
     <p>
         Date for data set: <span id="importfiletime"></span>
