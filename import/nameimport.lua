@@ -4,6 +4,7 @@ local tables = {}
 -- Store relation tags for ways that need a second pass after relations are processed.
 local associated_street_ways = {}
 local enable_associated_street = os.getenv('OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS') == '1'
+local keep_nonusable_osm_data = os.getenv('OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA') == '1'
 
 tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name',                     type = 'text' },
@@ -46,11 +47,14 @@ function clean_tags(tags)
     return next(tags) == nil
 end
 
--- We are only interested in objects with name and some kind of etymology
+-- We are only interested in objects with name and some kind of etymology, and will mark objects without those as "non-usable" and skip them.
 function no_usable_data(tags)
+    if keep_nonusable_osm_data then
+        return false
+    end
+
     return tags.name == nil or
         (tags["name:etymology"] == nil and tags["name:etymology:wikipedia"] == nil and tags["name:etymology:wikidata"] == nil)
-    -- return false -- always false, we want to process everything
 end
 
 -- Assume input object is not a point

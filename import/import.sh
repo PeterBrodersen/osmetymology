@@ -83,6 +83,7 @@ DB_NAME="$(json_get 'db.name' '')"
 DB_USER="$(json_get 'db.user' '')"
 DB_PASS="$(json_get 'db.pass' '')"
 OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="$([ "$(json_get 'import.enable_associated_street_relations' 'false')" = "true" ] && echo 1 || echo 0)"
+OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="$([ "$(json_get 'import.keep_nonusable_osm_data' 'false')" = "true" ] && echo 1 || echo 0)"
 
 if [ -z "$AREAFILE" ] && [ "$SKIP_IMPORT_AREAS" = false ]; then
     echo "Info: area.file is empty in $CONFIG_FILE; skipping area import and area-based aggregation"
@@ -144,7 +145,7 @@ if [ "$SKIP_IMPORT_OSM" = false ]; then
     fi
     # Main import.
     psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
-    OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
+    OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="${OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA:-0}" osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
 fi
 
 if [ "$SKIP_IMPORT_AREAS" = false ]; then
