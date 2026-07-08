@@ -112,7 +112,7 @@
                 "womenAll": "Women,<br>all",
                 "menAll": "Men,<br>all"
             },
-            "sumNoteHtml": "The sum for <b>All {{areaNamePlural}}</b> is higher than the total for <b>All {{areaNamePlural}}</b>, as duplicates (same people appearing in multiple {{areaNamePlural}}) are only counted once in the total.",
+            "sumNoteHtml": "The sum for all {{areaNamePlural}} is higher than the total listed as <b>All {{areaNamePlural}}</b>, as duplicates (same people appearing in multiple {{areaNamePlural}}) are only counted once in the total.",
             "roadsOnlyHtml": "This extract only fetches roads and not e.g. buildings, statues, parks, etc.",
             "projectHtml": "The project is developed by <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. This extract for areas can be <a href=\"/data/areas.json\">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href=\"mailto:peter@ter.dk\">send an email</a>.",
             "copyrightHtml": "Map data is sourced from <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> and is licensed under the <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href=\"https://www.wikidata.org/\">Wikidata</a> and is licensed under the <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
