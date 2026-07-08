@@ -41,6 +41,8 @@
             "ar": "برلين",
             "la": "Berolinum"
         },
+        "areaName": "area",
+        "areaNamePlural": "areas",
         "translation_overrides": {
             "da": {
                 "home": {

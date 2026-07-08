@@ -17,6 +17,8 @@ $i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static
     return [
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
+        'areaName' => isset($GLOBALS['decodedConfig']['language']['areaName']) ? $GLOBALS['decodedConfig']['language']['areaName'] : 'area',
+        'areaNamePlural' => isset($GLOBALS['decodedConfig']['language']['areaNamePlural']) ? $GLOBALS['decodedConfig']['language']['areaNamePlural'] : 'areas',
     ];
 });
 $translations = $i18nContext['translations'];
@@ -26,6 +28,8 @@ $localeParams = $i18nContext['localeParams'];
 $translationParams = $i18nContext['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
+    'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
+    'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
 $placeName = $translationParams['placeName'] ?? $placeName;
 $titleKey = $placeName ? 'areas.titleWithPlace' : 'areas.title';

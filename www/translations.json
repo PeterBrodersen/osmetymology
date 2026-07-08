@@ -18,7 +18,7 @@
             "noPlacesFound": "No places found.",
             "errorLoadingPlaces": "Error loading places.",
             "back": "Back",
-            "noArea": "No area",
+            "noArea": "No {{areaName}}",
             "updating": "(updating)",
             "errorPrefix": "Error: {{error}}",
             "openStreetMapLogoAlt": "OpenStreetMap Logo",
@@ -58,7 +58,7 @@
             "bc": "BC",
             "women": "Women",
             "men": "Men",
-            "allAreas": "All areas"
+            "allAreas": "All {{areaNamePlural}}"
         },
         "home": {
             "title": "What are streets and places named after?",
@@ -76,7 +76,7 @@
             "findPlacesNearYou": "[➹ find places near you]",
             "listPlacesInMapView": "[list all places in map view]",
             "alsoCheckOut": "Also check out:",
-            "genderDistributionLink": "Gender distribution per local area",
+            "genderDistributionLink": "Gender distribution per local {{areaName}}",
             "avoidGenderLink": "Route planner that avoids roads named after men or women",
             "example": "Example",
             "downloadsHtml": "You can download all registered roads with information in a <a href=\"/data/names.csv\">comma-separated file</a> and in <a href=\"/data/names.fgb\">FlatGeobuf format (for GIS users)</a>. Not all places are registered yet.",
@@ -92,14 +92,14 @@
             "noRegisteredPlaces": "No registered places found!"
         },
         "areas": {
-            "title": "Overview and statistics for gender distribution of street names in areas",
-            "titleWithPlace": "Overview and statistics for gender distribution of street names in areas in {{placeName}}",
-            "header": "Statistics for gender distribution of street names in areas",
-            "headerWithPlace": "Statistics for gender distribution of street names in areas in {{placeName}}",
-            "introHtml": "Statistics from the <a href=\"../\">{{projectDisplayName}}</a> for gender distribution on streets in the areas. Each person is counted only once within an area, even if multiple street names refer to the same person. Click on an area name to see the people in the area with streets associated.",
+            "title": "Overview and statistics for gender distribution of street names in {{areaNamePlural}}",
+            "titleWithPlace": "Overview and statistics for gender distribution of street names in {{areaNamePlural}} in {{placeName}}",
+            "header": "Statistics for gender distribution of street names in {{areaNamePlural}}",
+            "headerWithPlace": "Statistics for gender distribution of street names in {{areaNamePlural}} in {{placeName}}",
+            "introHtml": "Statistics from the <a href=\"../\">{{projectDisplayName}}</a> for gender distribution on streets in the {{areaNamePlural}}. Each person is counted only once within an {{areaName}}, even if multiple street names refer to the same person. Click on an {{areaName}} name to see the people in the {{areaName}} with streets associated.",
             "datasetDate": "Date for data set:",
             "table": {
-                "area": "Area",
+                "area": "{{areaName}}",
                 "name": "Name",
                 "humansExisted": "Humans that have existed",
                 "allHumansIncludingFictional": "All humans, including fictional",
@@ -112,11 +112,11 @@
                 "womenAll": "Women,<br>all",
                 "menAll": "Men,<br>all"
             },
-            "sumNoteHtml": "The sum for all areas is higher than the total for <b>All areas</b>, as duplicates (same people appearing in multiple areas) are only counted once in the total.",
+            "sumNoteHtml": "The sum for all {{areaNamePlural}} is higher than the total for <b>All {{areaNamePlural}}</b>, as duplicates (same people appearing in multiple {{areaNamePlural}}) are only counted once in the total.",
             "roadsOnlyHtml": "This extract only fetches roads and not e.g. buildings, statues, parks, etc.",
             "projectHtml": "The project is developed by <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. This extract for areas can be <a href=\"/data/areas.json\">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href=\"mailto:peter@ter.dk\">send an email</a>.",
             "copyrightHtml": "Map data is sourced from <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> and is licensed under the <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href=\"https://www.wikidata.org/\">Wikidata</a> and is licensed under the <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
-            "noRoadsNamedAfterPeople": "No registered roads in the area are named after people"
+            "noRoadsNamedAfterPeople": "No registered roads in the {{areaName}} are named after people"
         },
         "map": {
             "baseLayers": {
@@ -180,7 +180,7 @@
             "noPlacesFound": "Ingen steder fundet.",
             "errorLoadingPlaces": "Fejl ved indlæsning af steder.",
             "back": "Tilbage",
-            "noArea": "Intet område",
+            "noArea": "Intet {{areaName}}",
             "updating": "(opdaterer)",
             "errorPrefix": "Fejl: {{error}}",
             "openStreetMapLogoAlt": "OpenStreetMap Logo",
@@ -220,7 +220,7 @@
             "bc": "f.Kr.",
             "women": "Kvinder",
             "men": "Mænd",
-            "allAreas": "Alle områder"
+            "allAreas": "Alle {{areaNamePlural}}"
         },
         "home": {
             "title": "Hvad er veje og steder opkaldt efter?",
@@ -238,7 +238,7 @@
             "findPlacesNearYou": "[➹ find steder nær dig]",
             "listPlacesInMapView": "[list all steder i kortudsnit]",
             "alsoCheckOut": "Tjek også:",
-            "genderDistributionLink": "Kønsfordeling pr. område",
+            "genderDistributionLink": "Kønsfordeling pr. {{areaName}}",
             "avoidGenderLink": "Ruteplanlægger, der undgår veje opkaldt efter mænd eller kvinder",
             "example": "Eksempel",
             "downloadsHtml": "Du kan downloade alle registrerede veje med information i en <a href=\"/data/names.csv\">komma-separeret fil</a> og i <a href=\"/data/names.fgb\">FlatGeobuf-format (for GIS-brugere)</a>. Ikke alle steder er registreret endnu.",
@@ -254,14 +254,14 @@
             "noRegisteredPlaces": "Ingen registrerede steder fundet!"
         },
         "areas": {
-            "title": "Oversigt og statistik for kønsfordeling af vejnavne i områder",
-            "titleWithPlace": "Oversigt og statistik for kønsfordeling af vejnavne i områder i {{placeName}}",
-            "header": "Statistik for kønsfordeling af vejnavne i områder",
-            "headerWithPlace": "Statistik for kønsfordeling af vejnavne i områder i {{placeName}}",
-            "introHtml": "Statistik fra <a href=\"../\">{{projectDisplayName}}</a> for kønsfordeling på veje i områderne. Hver person tælles kun én gang inden for et område, selvom flere vejnavne refererer til den samme person. Klik på et områdenavn for at se personerne i området med tilknyttede veje.",
+            "title": "Oversigt og statistik for kønsfordeling af vejnavne i {{areaNamePlural}}",
+            "titleWithPlace": "Oversigt og statistik for kønsfordeling af vejnavne i {{areaNamePlural}} i {{placeName}}",
+            "header": "Statistik for kønsfordeling af vejnavne i {{areaNamePlural}}",
+            "headerWithPlace": "Statistik for kønsfordeling af vejnavne i {{areaNamePlural}} i {{placeName}}",
+            "introHtml": "Statistik fra <a href=\"../\">{{projectDisplayName}}</a> for kønsfordeling på veje i {{areaNamePlural}}. Hver person tælles kun én gang inden for et {{areaName}}, selvom flere vejnavne refererer til den samme person. Klik på et {{areaName}}-navn for at se personerne i {{areaName}} med tilknyttede veje.",
             "datasetDate": "Dato for datasæt:",
             "table": {
-                "area": "Område",
+                "area": "{{areaName}}",
                 "name": "Navn",
                 "humansExisted": "Mennesker, som har eksisteret",
                 "allHumansIncludingFictional": "Alle mennesker, også fiktive",
@@ -274,11 +274,11 @@
                 "womenAll": "Kvinder,<br>alle",
                 "menAll": "Mænd,<br>alle"
             },
-            "sumNoteHtml": "Tallene for Alle kommuner er lavere end summen for de enkelte kommuner, idet dubletter (samme personer, som optræder i flere kommuner) kun bliver talt med én gang.",
+            "sumNoteHtml": "Tallene for Alle {{areaNamePlural}} er lavere end summen for de enkelte {{areaNamePlural}}, idet dubletter (samme personer, som optræder i flere {{areaNamePlural}}) kun bliver talt med én gang.",
             "roadsOnlyHtml": "Dette uddrag henter kun veje og ikke f.eks. bygninger, statuer, parker osv.",
             "projectHtml": "Projektet er udviklet af <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. Dette uddrag for områder kan <a href=\"/data/areas.json\">downloades som JSON-fil</a>. Hvis du har spørgsmål om projektet, er du velkommen til at <a href=\"mailto:peter@ter.dk\">sende en e-mail</a>.",
             "copyrightHtml": "Kortdata er hentet fra <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> og er licenseret under <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href=\"https://www.wikidata.org/\">Wikidata</a> og er licenseret under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
-            "noRoadsNamedAfterPeople": "Ingen registrerede veje i området er opkaldt efter personer"
+            "noRoadsNamedAfterPeople": "Ingen registrerede veje i {{areaName}} er opkaldt efter personer"
         },
         "map": {
             "baseLayers": {

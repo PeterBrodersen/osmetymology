@@ -23,6 +23,8 @@ $i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
         'geocodingCountryName' => $config['place']['geocoding_country_name'] ?? 'United Kingdom',
+        'areaName' => $config['language']['areaName'] ?? 'area',
+        'areaNamePlural' => $config['language']['areaNamePlural'] ?? 'areas',
     ];
 });
 $translations = $i18nContext['translations'];
@@ -33,6 +35,8 @@ $translationParams = $i18nContext['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
     'geocodingCountryName' => $appConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
+    'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
+    'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
 $placeName = $translationParams['placeName'] ?? $placeName;
 $titleKey = $placeName ? 'home.titleWithPlace' : 'home.title';
