@@ -266,6 +266,9 @@ function updateResultTable(data) {
     }
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     $("#result").html(newtable);
+    if (i18n && typeof i18n.applyTranslations === 'function') {
+      i18n.applyTranslations(document.getElementById('result'));
+    }
   } else {
     $("#result").html(translate('home.noRegisteredPlaces'));
   }
