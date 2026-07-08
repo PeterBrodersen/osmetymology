@@ -112,7 +112,7 @@
                 "womenAll": "Women,<br>all",
                 "menAll": "Men,<br>all"
             },
-            "sumNoteHtml": "The sum for all {{areaNamePlural}} is higher than the total for <b>All {{areaNamePlural}}</b>, as duplicates (same people appearing in multiple {{areaNamePlural}}) are only counted once in the total.",
+            "sumNoteHtml": "The sum for <b>All {{areaNamePlural}}</b> is higher than the total for <b>All {{areaNamePlural}}</b>, as duplicates (same people appearing in multiple {{areaNamePlural}}) are only counted once in the total.",
             "roadsOnlyHtml": "This extract only fetches roads and not e.g. buildings, statues, parks, etc.",
             "projectHtml": "The project is developed by <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. This extract for areas can be <a href=\"/data/areas.json\">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href=\"mailto:peter@ter.dk\">send an email</a>.",
             "copyrightHtml": "Map data is sourced from <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> and is licensed under the <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href=\"https://www.wikidata.org/\">Wikidata</a> and is licensed under the <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
@@ -274,7 +274,7 @@
                 "womenAll": "Kvinder,<br>alle",
                 "menAll": "Mænd,<br>alle"
             },
-            "sumNoteHtml": "Tallene for Alle {{areaNamePlural}} er lavere end summen for de enkelte {{areaNamePlural}}, idet dubletter (samme personer, som optræder i flere {{areaNamePlural}}) kun bliver talt med én gang.",
+            "sumNoteHtml": "Tallene for <b>Alle {{areaNamePlural}}</b> er lavere end summen for de enkelte {{areaNamePlural}}, idet dubletter (samme personer, som optræder i flere {{areaNamePlural}}) kun bliver talt med én gang.",
             "roadsOnlyHtml": "Dette uddrag henter kun veje og ikke f.eks. bygninger, statuer, parker osv.",
             "projectHtml": "Projektet er udviklet af <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. Dette uddrag for områder kan <a href=\"/data/areas.json\">downloades som JSON-fil</a>. Hvis du har spørgsmål om projektet, er du velkommen til at <a href=\"mailto:peter@ter.dk\">sende en e-mail</a>.",
             "copyrightHtml": "Kortdata er hentet fra <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> og er licenseret under <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href=\"https://www.wikidata.org/\">Wikidata</a> og er licenseret under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
