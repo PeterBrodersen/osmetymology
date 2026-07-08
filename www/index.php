@@ -4,21 +4,8 @@ require __DIR__ . '/i18n.php';
 $appConfig = [];
 $configPath = __DIR__ . '/../config/config.json';
 $translationPath = __DIR__ . '/translations.json';
-$placeName = '';
-$translations = loadTranslationCatalogue($translationPath);
-if (is_readable($configPath)) {
-    $decodedConfig = json_decode(file_get_contents($configPath), true);
-    if (is_array($decodedConfig)) {
-        $appConfig = [
-            'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
-            'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
-        ];
-        $placeName = $decodedConfig['place']['name'] ?? '';
-    }
-}
-$decodedConfig = isset($decodedConfig) && is_array($decodedConfig) ? $decodedConfig : [];
-$buildConfiguredI18nContext = 'buildConfiguredI18nContext';
-$i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static function (string $localeCode, string $localizedPlaceName, array $config): array {
+
+$i18nSetup = setupPageI18nContext($configPath, $translationPath, static function (string $localeCode, string $localizedPlaceName, array $config): array {
     return [
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
@@ -27,17 +14,28 @@ $i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static
         'areaNamePlural' => $config['language']['areaNamePlural'] ?? 'areas',
     ];
 });
-$translations = $i18nContext['translations'];
-$locale = $i18nContext['locale'];
-$translationOverrides = $i18nContext['translationOverrides'];
-$localeParams = $i18nContext['localeParams'];
-$translationParams = $i18nContext['translationParams'] ?: [
+
+$decodedConfig = $i18nSetup['decodedConfig'];
+$placeName = $i18nSetup['placeName'];
+$translations = $i18nSetup['translations'];
+$locale = $i18nSetup['locale'];
+$translationOverrides = $i18nSetup['translationOverrides'];
+$localeParams = $i18nSetup['localeParams'];
+$translationParams = $i18nSetup['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
-    'geocodingCountryName' => $appConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
+    'geocodingCountryName' => $decodedConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
     'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
     'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
+
+if (is_readable($configPath)) {
+    $appConfig = [
+        'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
+        'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
+    ];
+}
+
 $placeName = $translationParams['placeName'] ?? $placeName;
 $titleKey = $placeName ? 'home.titleWithPlace' : 'home.title';
 $title = translateCatalogue($translations, $locale, $titleKey, $translationParams);

@@ -3,34 +3,29 @@ require __DIR__ . '/../i18n.php';
 
 $configPath = __DIR__ . '/../../config/config.json';
 $translationPath = __DIR__ . '/../translations.json';
-$placeName = '';
-$translations = loadTranslationCatalogue($translationPath);
-if (is_readable($configPath)) {
-    $decodedConfig = json_decode(file_get_contents($configPath), true);
-    if (is_array($decodedConfig)) {
-        $placeName = $decodedConfig['place']['name'] ?? '';
-    }
-}
-$decodedConfig = isset($decodedConfig) && is_array($decodedConfig) ? $decodedConfig : [];
-$buildConfiguredI18nContext = 'buildConfiguredI18nContext';
-$i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static function (string $localeCode, string $localizedPlaceName): array {
+
+$i18nSetup = setupPageI18nContext($configPath, $translationPath, static function (string $localeCode, string $localizedPlaceName, array $config): array {
     return [
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
-        'areaName' => isset($GLOBALS['decodedConfig']['language']['areaName']) ? $GLOBALS['decodedConfig']['language']['areaName'] : 'area',
-        'areaNamePlural' => isset($GLOBALS['decodedConfig']['language']['areaNamePlural']) ? $GLOBALS['decodedConfig']['language']['areaNamePlural'] : 'areas',
+        'areaName' => $config['language']['areaName'] ?? 'area',
+        'areaNamePlural' => $config['language']['areaNamePlural'] ?? 'areas',
     ];
 });
-$translations = $i18nContext['translations'];
-$locale = $i18nContext['locale'];
-$translationOverrides = $i18nContext['translationOverrides'];
-$localeParams = $i18nContext['localeParams'];
-$translationParams = $i18nContext['translationParams'] ?: [
+
+$decodedConfig = $i18nSetup['decodedConfig'];
+$placeName = $i18nSetup['placeName'];
+$translations = $i18nSetup['translations'];
+$locale = $i18nSetup['locale'];
+$translationOverrides = $i18nSetup['translationOverrides'];
+$localeParams = $i18nSetup['localeParams'];
+$translationParams = $i18nSetup['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
     'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
     'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
+
 $placeName = $translationParams['placeName'] ?? $placeName;
 $titleKey = $placeName ? 'areas.titleWithPlace' : 'areas.title';
 $headerKey = $placeName ? 'areas.headerWithPlace' : 'areas.header';

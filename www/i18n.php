@@ -196,6 +196,35 @@ function translateCatalogue(array $catalogue, string $locale, string $key, array
     return interpolateTranslationText($value, $params);
 }
 
+function loadAndInitializeConfig(string $configPath): array
+{
+    $decodedConfig = [];
+    if (is_readable($configPath)) {
+        $decoded = json_decode(file_get_contents($configPath), true);
+        $decodedConfig = is_array($decoded) ? $decoded : [];
+    }
+    return $decodedConfig;
+}
+
+function setupPageI18nContext(string $configPath, string $translationPath, callable $paramBuilder): array
+{
+    $decodedConfig = loadAndInitializeConfig($configPath);
+    $translations = loadTranslationCatalogue($translationPath);
+    $placeName = (string) ($decodedConfig['place']['name'] ?? '');
+
+    $i18nContext = buildConfiguredI18nContext($translations, $decodedConfig, $paramBuilder);
+
+    return [
+        'decodedConfig' => $decodedConfig,
+        'placeName' => $placeName,
+        'translations' => $i18nContext['translations'],
+        'locale' => $i18nContext['locale'],
+        'translationOverrides' => $i18nContext['translationOverrides'],
+        'localeParams' => $i18nContext['localeParams'],
+        'translationParams' => $i18nContext['translationParams'],
+    ];
+}
+
 function buildI18nConfig(array $catalogue, string $locale, string $page, array $params = [], array $paramsByLocale = [], array $translationOverrides = []): array
 {
     $availableLocales = [];
