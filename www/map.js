@@ -2,6 +2,16 @@ let map;
 let highlightWayId = false;
 const _wikidataSourceData = {};
 const mapConfig = window.appConfig || {};
+const mapI18n = window.appI18n;
+
+function mapTranslate(key, params) {
+    return mapI18n.t(key, params);
+}
+
+function mapTranslatePlural(key, count, params) {
+    return mapI18n.tp(key, count, params);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const placeConfig = mapConfig.place || {};
     const startLat = Number.isFinite(Number(placeConfig.lat)) ? Number(placeConfig.lat) : 51.5;
@@ -29,20 +39,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
 
-    var baseMaps = {
-        "OpenStreetMap": osmLayer,
-        "Spinal Map": Thunderforest_SpinalMap,
+    function getBaseMaps() {
+        return {
+            [mapTranslate('map.baseLayers.openStreetMap')]: osmLayer,
+            [mapTranslate('map.baseLayers.spinalMap')]: Thunderforest_SpinalMap,
+        };
     }
+
     var geocoderOptions = {
         geocoder: new L.Control.Geocoder.nominatim({
             geocodingQueryParams: {
                 "countrycodes": geocodingCountryCode
             }
         }),
-        placeholder: `Search for place in ${geocodingCountryName}`
+        placeholder: mapTranslate('map.searchPlaceInCountry', { country: geocodingCountryName })
     };
 
-    var layerControl = L.control.layers(baseMaps).addTo(map);
+    var layerControl = L.control.layers(getBaseMaps()).addTo(map);
     L.control.scale().addTo(map);
 
     L.Control.geocoder(geocoderOptions).addTo(map);
@@ -71,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             polygon: 'https://mapcomplete.org/etymology.html#way/',
             relation: 'https://mapcomplete.org/etymology.html#relation/'
         }
-        let placename = feature.properties["streetname"] ?? '(no name)';
+        let placename = feature.properties["streetname"] ?? mapTranslate('map.noName');
         let etymologyText = feature.properties["name:etymology"];
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
         let wikidataset = feature.properties["wikidataset"];
@@ -112,18 +125,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                         if (typeof wikibirth === 'string' && wikibirth.trim().endsWith('BC')) {
                             // Handle BC date string, e.g. "0600-01-01 BC"
                             let yearMatch = wikibirth.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' BC';
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' ' + mapTranslate('common.bc');
                         } else {
-                            birthdeathtext += new Date(wikibirth).toLocaleDateString('da-DK', dateoptions);
+                            birthdeathtext += mapI18n.formatDate(new Date(wikibirth), dateoptions);
                         }
                     }
                     birthdeathtext += ' - ';
                     if (wikideath) {
                         if (typeof wikideath === 'string' && wikideath.trim().endsWith('BC')) {
                             let yearMatch = wikideath.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' BC';
+                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' ' + mapTranslate('common.bc');
                         } else {
-                            birthdeathtext += new Date(wikideath).toLocaleDateString('da-DK', dateoptions);
+                            birthdeathtext += mapI18n.formatDate(new Date(wikideath), dateoptions);
                         }
                     }
                     birthdeathtext += ')';
@@ -152,11 +165,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Wikidata and Wikipedia links
                 sectiontext += `<p>`;
                 if (wikipediatitleen) {
-                    sectiontext += `<a href="${wikipediaenurlprefix}${encodeURI(wikipediatitleen)}">Wikipedia article</a> - `;
+                    sectiontext += `<a href="${wikipediaenurlprefix}${encodeURI(wikipediatitleen)}">${mapTranslate('common.wikipediaArticle')}</a> - `;
                 }
-                sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">Wikidata item</a>`;
+                sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${mapTranslate('common.wikidataItem')}</a>`;
                 sectiontext += `</p>`;
-                sectiontext += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">Find all places named after this topic</a></p>`;
+                sectiontext += `<p class="localsearch"><a href="#${wikidataId}" onclick="doSearch('${wikidataId}'); return false;">${mapTranslate('common.findPlacesForTopic')}</a></p>`;
                 sections.push(sectiontext);
             }
             popupText += sections.map(section => `<div>${section}</div>`).join('\n');
@@ -168,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
         let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
-        popupText += `<div><a href="${osmurl}" title="See the place on OpenStreetMap.org"><img src="media/openstreetmap_30.png" width="30" height="30" alt="OpenStreetMap Logo"></a> <a href="${mapcompleteurl}" title="Edit the place on MapComplete"><img src="media/mapcomplete.svg" width="30" height="30" alt="MapComplete Logo"></a></div>`;
+        popupText += `<div><a href="${osmurl}" title="${mapTranslate('common.openStreetMapTitle')}"><img src="media/openstreetmap_30.png" width="30" height="30" alt="${mapTranslate('common.openStreetMapLogoAlt')}"></a> <a href="${mapcompleteurl}" title="${mapTranslate('common.mapCompleteTitle')}"><img src="media/mapcomplete.svg" width="30" height="30" alt="${mapTranslate('common.mapCompleteLogoAlt')}"></a></div>`;
         return popupText;
     }
 
@@ -277,20 +290,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     map.on('locationfound', (data) => {
         // $(".resulttable").fadeTo("slow", 0.5);
-        $("#result").html('Henter nærmeste steder ...');
+        $("#result").html(mapTranslate('common.loadingNearbyPlaces'));
         let coordinates = `${data.latlng.lat},${data.latlng.lng}`;
         map.panTo(data.latlng);
         const radius = data.accuracy / 2;
         const locationMarker = L.marker(data.latlng).addTo(map)
-            .bindPopup(`You are within ${Math.round(radius).toLocaleString()} meters of this point`).openPopup();
+            .bindPopup(mapTranslatePlural('common.youAreWithinMeters', Math.round(radius), { count: mapI18n.formatNumber(Math.round(radius)) })).openPopup();
         const locationCircle = L.circle(data.latlng, radius).addTo(map);
         $.getJSON("lookup.php", { coordinates })
             .fail((jqxhr, textStatus, error) => updateResultTableError(error))
             .done((data) => updateResultTable(data));
     });
     map.on('locationerror', (e) => {
-        $("#result").html('Cannot find your position: ' + e.message);
+        $("#result").html(mapTranslate('common.cannotFindPosition', { message: e.message }));
         console.log(e);
+    });
+
+    document.addEventListener('app:languagechange', () => {
+        layerControl.remove();
+        layerControl = L.control.layers(getBaseMaps()).addTo(map);
+        const geocoderInput = document.querySelector('.leaflet-control-geocoder-form input');
+        if (geocoderInput) {
+            geocoderInput.placeholder = mapTranslate('map.searchPlaceInCountry', { country: geocodingCountryName });
+        }
+        map.closePopup();
     });
 });
 
@@ -315,12 +338,12 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
     map.panTo(locLatLng);
     const popup = L.popup()
         .setLatLng(locLatLng)
-        .setContent(`<strong>${data.label || wikidataId}</strong><br>Loading places...`)
+        .setContent(`<strong>${data.label || wikidataId}</strong><br>${mapTranslate('common.loadingPlaces')}`)
         .openOn(map);
     fetch(`lookup.php?search=${encodeURIComponent(wikidataId)}`)
         .then(r => r.json())
         .then(places => {
-            let html = `<strong>${data.label || wikidataId}</strong> <a href="https://www.wikidata.org/wiki/${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">[Wikidata]</a>`;
+            let html = `<strong>${data.label || wikidataId}</strong> <a href="https://www.wikidata.org/wiki/${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${mapTranslate('common.wikidataBadge')}</a>`;
             if (places && places.length > 0) {
                 html += '<ul style="padding-left:1em; margin:.3em 0; list-style:none; overflow: auto; max-height: 300px; scrollbar-width: thin; scrollbar-gutter: stable; white-space: nowrap;">';
                 for (const row of places) {
@@ -328,13 +351,13 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
                 }
                 html += '</ul>';
             } else {
-                html += '<p>No places found.</p>';
+                html += `<p>${mapTranslate('common.noPlacesFound')}</p>`;
             }
-            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← Back</a></p>`;
+            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← ${mapTranslate('common.back')}</a></p>`;
             popup.setContent(html);
         })
         .catch(() => {
-            popup.setContent(`<strong>${data.label || wikidataId}</strong><br>Error loading places.`);
+            popup.setContent(`<strong>${data.label || wikidataId}</strong><br>${mapTranslate('common.errorLoadingPlaces')}`);
         });
 }
 
@@ -393,29 +416,29 @@ function formatDistanceAway(distanceInMeters, unitSystem = 'metric') {
 
         if (distanceInMiles < 1) {
             const roundedFeet = Math.round(distanceInFeet);
-            return `${roundedFeet.toLocaleString()} ${roundedFeet === 1 ? 'foot' : 'feet'} away`;
+            return mapTranslatePlural('common.distance.foot', roundedFeet, { count: mapI18n.formatNumber(roundedFeet) });
         }
 
         if (distanceInMiles > 100) {
             const roundedMiles = Math.round(distanceInMiles);
-            return `${roundedMiles.toLocaleString()} ${roundedMiles === 1 ? 'mile' : 'miles'} away`;
+            return mapTranslatePlural('common.distance.mile', roundedMiles, { count: mapI18n.formatNumber(roundedMiles) });
         }
 
         const roundedMiles = Math.round(distanceInMiles * 10) / 10;
-        return `${roundedMiles.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} miles away`;
+        return mapTranslatePlural('common.distance.mile', roundedMiles, { count: mapI18n.formatNumber(roundedMiles, undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
     }
 
     if (distanceInMeters < 1000) {
         const roundedMeters = Math.round(distanceInMeters);
-        return `${roundedMeters.toLocaleString()} ${roundedMeters === 1 ? 'meter' : 'meters'} away`;
+        return mapTranslatePlural('common.distance.meter', roundedMeters, { count: mapI18n.formatNumber(roundedMeters) });
     }
 
     const distanceInKilometers = distanceInMeters / 1000;
     if (distanceInKilometers > 100) {
         const roundedKilometers = Math.round(distanceInKilometers);
-        return `${roundedKilometers.toLocaleString()} ${roundedKilometers === 1 ? 'kilometer' : 'kilometers'} away`;
+        return mapTranslatePlural('common.distance.kilometer', roundedKilometers, { count: mapI18n.formatNumber(roundedKilometers) });
     }
 
     const roundedKilometers = Math.round(distanceInKilometers * 10) / 10;
-    return `${roundedKilometers.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kilometers away`;
+    return mapTranslatePlural('common.distance.kilometer', roundedKilometers, { count: mapI18n.formatNumber(roundedKilometers, undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
 }

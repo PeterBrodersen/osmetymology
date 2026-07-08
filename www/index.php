@@ -1,7 +1,11 @@
 <?php
+require __DIR__ . '/i18n.php';
+
 $appConfig = [];
 $configPath = __DIR__ . '/../config/config.json';
+$translationPath = __DIR__ . '/translations.json';
 $placeName = '';
+$translations = loadTranslationCatalogue($translationPath);
 if (is_readable($configPath)) {
     $decodedConfig = json_decode(file_get_contents($configPath), true);
     if (is_array($decodedConfig)) {
@@ -12,13 +16,34 @@ if (is_readable($configPath)) {
         $placeName = $decodedConfig['place']['name'] ?? '';
     }
 }
-$title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') . 'named after?';
+$decodedConfig = isset($decodedConfig) && is_array($decodedConfig) ? $decodedConfig : [];
+$buildConfiguredI18nContext = 'buildConfiguredI18nContext';
+$i18nContext = $buildConfiguredI18nContext($translations, $decodedConfig, static function (string $localeCode, string $localizedPlaceName, array $config): array {
+    return [
+        'placeName' => $localizedPlaceName,
+        'projectDisplayName' => $localizedPlaceName,
+        'geocodingCountryName' => $config['place']['geocoding_country_name'] ?? 'United Kingdom',
+    ];
+});
+$translations = $i18nContext['translations'];
+$locale = $i18nContext['locale'];
+$translationOverrides = $i18nContext['translationOverrides'];
+$localeParams = $i18nContext['localeParams'];
+$translationParams = $i18nContext['translationParams'] ?: [
+    'placeName' => $placeName,
+    'projectDisplayName' => $placeName,
+    'geocodingCountryName' => $appConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
+];
+$placeName = $translationParams['placeName'] ?? $placeName;
+$titleKey = $placeName ? 'home.titleWithPlace' : 'home.title';
+$title = translateCatalogue($translations, $locale, $titleKey, $translationParams);
+$appConfig['i18n'] = buildI18nConfig($translations, $locale, 'home', $translationParams, $localeParams, $translationOverrides);
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php print htmlspecialchars($locale); ?>">
 
 <head>
-    <title><?php print htmlspecialchars($title); ?></title>
+    <title data-i18n="<?php print htmlspecialchars($titleKey); ?>"><?php print htmlspecialchars($title); ?></title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
@@ -36,6 +61,7 @@ $title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') .
     </script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script> -->
+    <script src="/i18n.js"></script>
     <script src="/map.js"></script>
     <script src="/helper.js"></script>
     <link href='/style.css' rel='stylesheet' />
@@ -45,14 +71,21 @@ $title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') .
 </head>
 
 <body>
-    <h1><?php print htmlspecialchars($title); ?></h1>
+    <div class="page-header">
+        <h1 data-i18n="<?php print htmlspecialchars($titleKey); ?>"><?php print htmlspecialchars($title); ?></h1>
+
+        <div class="language-switcher">
+            <label for="language-select" data-i18n="common.languageLabel"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.languageLabel', $translationParams)); ?></label>
+            <select id="language-select"></select>
+        </div>
+    </div>
 
     <div style="clear: both;">
     </div>
 
     <div id="userinput">
-        <div id="placename"><input required autofocus id="namefind" placeholder="Search street or place name in database" accesskey="f" size="35"> <span id="copylink"><a href="#">[copy link 🔗]</a></span></div>
-        <div id="itemname"><input required autofocus id="itemfind" placeholder="Search topic" accesskey="t"></div>
+        <div id="placename"><input required autofocus id="namefind" data-i18n-placeholder="home.searchPlaceholder" placeholder="<?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.searchPlaceholder', $translationParams)); ?>" accesskey="f" size="35"> <span id="copylink"><a href="#" data-i18n="common.copyLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.copyLink', $translationParams)); ?></a></span></div>
+        <div id="itemname"><input required autofocus id="itemfind" data-i18n-placeholder="home.topicPlaceholder" placeholder="<?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.topicPlaceholder', $translationParams)); ?>" accesskey="t"></div>
     </div>
 
     <div id="result">
@@ -62,12 +95,12 @@ $title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') .
         <table class="resulttable">
             <thead>
                 <tr class="tableheader">
-                    <th>Map</th>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Area</th>
-                    <th>Topic</th>
-                    <th>Description</th>
+                    <th data-i18n="home.table.map"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.map', $translationParams)); ?></th>
+                    <th data-i18n="home.table.type"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.type', $translationParams)); ?></th>
+                    <th data-i18n="home.table.name"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.name', $translationParams)); ?></th>
+                    <th data-i18n="home.table.area"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.area', $translationParams)); ?></th>
+                    <th data-i18n="home.table.topic"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.topic', $translationParams)); ?></th>
+                    <th data-i18n="home.table.description"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.description', $translationParams)); ?></th>
                 </tr>
             </thead>
         </table>
@@ -75,47 +108,40 @@ $title = 'What are streets and places ' . ($placeName ? "in $placeName " : '') .
 
     <div id="maplinks">
         <div>
-            <a href="#" id="getposition">[➹ find places near you]</a> <span class="location-loader" style="display:none;"></span>
+            <a href="#" id="getposition" data-i18n="home.findPlacesNearYou"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.findPlacesNearYou', $translationParams)); ?></a> <span class="location-loader" style="display:none;"></span>
         </div>
         <div>
-            <a href="#" id="showplacesinmapview">[list all places in map view]</a><br>
+            <a href="#" id="showplacesinmapview" data-i18n="home.listPlacesInMapView"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.listPlacesInMapView', $translationParams)); ?></a><br>
         </div>
         <div>
-            <a href="#" id="copylinktomap">[copy link to map view 🔗]</a><br>
+            <a href="#" id="copylinktomap" data-i18n="common.copyLinkToMap"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.copyLinkToMap', $translationParams)); ?></a><br>
         </div>
 
     </div>
     <div class="drlink">
         <p>
-            Also check out:
+            <span data-i18n="home.alsoCheckOut"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.alsoCheckOut', $translationParams)); ?></span>
         </p>
         <ul>
-            <li><a href="areas/">Gender distribution per local area</a></li>
-            <li id="osrm_gender"><a href="#" id="avoid_gender">Route planner that avoids roads named after men</a> (<a href="#" id="avoid_gender_example">Example</a>)</li>
+            <li><a href="areas/" data-i18n="home.genderDistributionLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.genderDistributionLink', $translationParams)); ?></a></li>
+            <li id="osrm_gender"><a href="#" id="avoid_gender" data-i18n="home.avoidGenderLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.avoidGenderLink', $translationParams)); ?></a> (<a href="#" id="avoid_gender_example" data-i18n="home.example"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.example', $translationParams)); ?></a>)</li>
         </ul>
     </div>
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">
-        <p>
-            You can download all registered roads with information in a <a href="/data/names.csv">comma-separated file</a> and in <a href="/data/names.fgb">FlatGeobuf format (for GIS users)</a>. Not all places are registered yet.
-        </p>
-        <p>
-            The project is developed by <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. The code for the project is <a href="https://github.com/PeterBrodersen/osmetymology/tree/generic">available on GitHub</a>. If you have questions about the project, you are
-            more than welcome to <a href="mailto:peter@ter.dk">send an email</a>.
-        </p>
+        <p data-i18n-html="home.downloadsHtml"><?php print translateCatalogue($translations, $locale, 'home.downloadsHtml', $translationParams); ?></p>
+        <p data-i18n-html="home.projectHtml"><?php print translateCatalogue($translations, $locale, 'home.projectHtml', $translationParams); ?></p>
 
-        <p class="copyright">
-            Map data is sourced from <a href="https://www.openstreetmap.org/">OpenStreetMap</a> and is licensed under the <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href="https://www.wikidata.org/">Wikidata</a> and is licensed under the <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 License</a>.
-        </p>
+        <p class="copyright" data-i18n-html="home.copyrightHtml"><?php print translateCatalogue($translations, $locale, 'home.copyrightHtml', $translationParams); ?></p>
 
         <p class="stats">
-            Content in the database:<br>
-            Places: <span id="totalroads"></span><br>
-            Uniquely named places: <span id="uniquenamedroads"></span><br>
-            Unique topics, places are named after: <span id="uniqueetymologywikidata"></span><br>
-            Date of dataset: <span id="importfiletime"></span>
+            <span data-i18n="home.stats.content"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.content', $translationParams)); ?></span><br>
+            <span data-i18n="home.stats.places"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.places', $translationParams)); ?></span> <span id="totalroads"></span><br>
+            <span data-i18n="home.stats.uniquelyNamedPlaces"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniquelyNamedPlaces', $translationParams)); ?></span> <span id="uniquenamedroads"></span><br>
+            <span data-i18n="home.stats.uniqueTopics"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniqueTopics', $translationParams)); ?></span> <span id="uniqueetymologywikidata"></span><br>
+            <span data-i18n="home.stats.datasetDate"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.datasetDate', $translationParams)); ?></span> <span id="importfiletime"></span>
         </p>
     </div>
 </body>

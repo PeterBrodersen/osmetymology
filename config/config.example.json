@@ -34,6 +34,20 @@
         "avoid_gender_example": "https://osrm.findvej.dk/berlin/?z=14&center=52.489915%2C13.410788&loc=52.485677%2C13.393455&loc=52.487550%2C13.387055&hl=de&alt=0&scale=metric&ly=openstreetmap.org&profile=0"
     },
     "language": {
+        "default_locale": "en",
+        "project_names": {
+            "en": "Berlin",
+            "da": "Berlin",
+            "ar": "برلين",
+            "la": "Berolinum"
+        },
+        "translation_overrides": {
+            "da": {
+                "home": {
+                    "alsoCheckOut": "Se også:"
+                }
+            }
+        },
         "wikidata": [
             "en",
             "fr",

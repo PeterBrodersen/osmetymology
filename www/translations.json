@@ -1,0 +1,329 @@
+{
+    "meta": {
+        "defaultLocale": "en"
+    },
+    "en": {
+        "languageName": "English",
+        "common": {
+            "languageLabel": "Language",
+            "dateLocale": "en-GB",
+            "copyLink": "[copy link 🔗]",
+            "copyLinkToMap": "[copy link to map view 🔗]",
+            "wikidataBadge": "[Wikidata]",
+            "wikipediaArticle": "Wikipedia article",
+            "wikidataItem": "Wikidata item",
+            "findPlacesForTopic": "Find all places named after this topic",
+            "findPlacesForTopicTitle": "Find all places named after this topic",
+            "loadingPlaces": "Loading places...",
+            "noPlacesFound": "No places found.",
+            "errorLoadingPlaces": "Error loading places.",
+            "back": "Back",
+            "noArea": "No area",
+            "updating": "(updating)",
+            "errorPrefix": "Error: {{error}}",
+            "openStreetMapLogoAlt": "OpenStreetMap Logo",
+            "mapCompleteLogoAlt": "MapComplete Logo",
+            "openStreetMapTitle": "See the place on OpenStreetMap.org",
+            "mapCompleteTitle": "Edit the place on MapComplete",
+            "realPerson": "Real person",
+            "acquiringPosition": "Acquiring your position - hang on...",
+            "loadingNearbyPlaces": "Finding the nearest places...",
+            "cannotFindPosition": "Cannot find your position: {{message}}",
+            "youAreWithinMeters": {
+                "one": "You are within {{count}} meter of this point",
+                "other": "You are within {{count}} meters of this point"
+            },
+            "placeCount": {
+                "one": "{{count}} place",
+                "other": "{{count}} places"
+            },
+            "distance": {
+                "foot": {
+                    "one": "{{count}} foot away",
+                    "other": "{{count}} feet away"
+                },
+                "mile": {
+                    "one": "{{count}} mile away",
+                    "other": "{{count}} miles away"
+                },
+                "meter": {
+                    "one": "{{count}} meter away",
+                    "other": "{{count}} meters away"
+                },
+                "kilometer": {
+                    "one": "{{count}} kilometer away",
+                    "other": "{{count}} kilometers away"
+                }
+            },
+            "bc": "BC",
+            "women": "Women",
+            "men": "Men",
+            "allAreas": "All areas"
+        },
+        "home": {
+            "title": "What are streets and places named after?",
+            "titleWithPlace": "What are streets and places in {{placeName}} named after?",
+            "searchPlaceholder": "Search street or place name in database",
+            "topicPlaceholder": "Search topic",
+            "table": {
+                "map": "Map",
+                "type": "Type",
+                "name": "Name",
+                "area": "Area",
+                "topic": "Topic",
+                "description": "Description"
+            },
+            "findPlacesNearYou": "[➹ find places near you]",
+            "listPlacesInMapView": "[list all places in map view]",
+            "alsoCheckOut": "Also check out:",
+            "genderDistributionLink": "Gender distribution per local area",
+            "avoidGenderLink": "Route planner that avoids roads named after men or women",
+            "example": "Example",
+            "downloadsHtml": "You can download all registered roads with information in a <a href=\"/data/names.csv\">comma-separated file</a> and in <a href=\"/data/names.fgb\">FlatGeobuf format (for GIS users)</a>. Not all places are registered yet.",
+            "projectHtml": "The project is developed by <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. The code for the project is <a href=\"https://github.com/PeterBrodersen/osmetymology/tree/generic\">available on GitHub</a>. If you have questions about the project, you are more than welcome to <a href=\"mailto:peter@ter.dk\">send an email</a>.",
+            "copyrightHtml": "Map data is sourced from <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> and is licensed under the <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href=\"https://www.wikidata.org/\">Wikidata</a> and is licensed under the <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
+            "stats": {
+                "content": "Content in the database:",
+                "places": "Places:",
+                "uniquelyNamedPlaces": "Uniquely named places:",
+                "uniqueTopics": "Unique topics, places are named after:",
+                "datasetDate": "Date of dataset:"
+            },
+            "noRegisteredPlaces": "No registered places found!"
+        },
+        "areas": {
+            "title": "Overview and statistics for gender distribution of street names in areas",
+            "titleWithPlace": "Overview and statistics for gender distribution of street names in areas in {{placeName}}",
+            "header": "Statistics for gender distribution of street names in areas",
+            "headerWithPlace": "Statistics for gender distribution of street names in areas in {{placeName}}",
+            "introHtml": "Statistics from the <a href=\"../\">{{projectDisplayName}}</a> for gender distribution on streets in the areas. Each person is counted only once within an area, even if multiple street names refer to the same person. Click on an area name to see the people in the area with streets associated.",
+            "datasetDate": "Date for data set:",
+            "table": {
+                "area": "Area",
+                "name": "Name",
+                "humansExisted": "Humans that have existed",
+                "allHumansIncludingFictional": "All humans, including fictional",
+                "women": "Women",
+                "men": "Men",
+                "percentageDistribution": "Percentage distribution",
+                "womenHumans": "Women,<br>humans",
+                "menHumans": "Men,<br>humans",
+                "percentageDistributionHumans": "Percentage distribution,<br>humans",
+                "womenAll": "Women,<br>all",
+                "menAll": "Men,<br>all"
+            },
+            "sumNoteHtml": "The sum for all areas is higher than the total for <b>All areas</b>, as duplicates (same people appearing in multiple areas) are only counted once in the total.",
+            "roadsOnlyHtml": "This extract only fetches roads and not e.g. buildings, statues, parks, etc.",
+            "projectHtml": "The project is developed by <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. This extract for areas can be <a href=\"/data/areas.json\">downloaded as JSON file</a>. If you have questions about the project, feel free to <a href=\"mailto:peter@ter.dk\">send an email</a>.",
+            "copyrightHtml": "Map data is sourced from <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> and is licensed under the <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata is sourced from <a href=\"https://www.wikidata.org/\">Wikidata</a> and is licensed under the <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
+            "noRoadsNamedAfterPeople": "No registered roads in the area are named after people"
+        },
+        "map": {
+            "baseLayers": {
+                "openStreetMap": "OpenStreetMap",
+                "spinalMap": "Spinal Map"
+            },
+            "searchPlaceInCountry": "Search for place in {{country}}",
+            "noName": "(no name)"
+        },
+        "featureTypes": {
+            "museum": "Museum",
+            "way": "Road",
+            "artwork": "Artwork",
+            "office": "Office",
+            "pedestrian": "Pedestrian area",
+            "building": "Building",
+            "place": "Place",
+            "park": "Park",
+            "water": "Water",
+            "wood": "Wood",
+            "place_of_worship": "Place of worship",
+            "square": "Square",
+            "equestrian": "Equestrian route",
+            "parking": "Parking",
+            "school": "School",
+            "bridge": "Bridge",
+            "sport": "Sports facility",
+            "power": "Power",
+            "castle": "Castle",
+            "aeroway": "Aeroway",
+            "zoo": "Zoo",
+            "hospital": "Hospital",
+            "university": "University",
+            "alcohol": "Alcohol shop",
+            "harbour": "Harbour",
+            "theatre": "Theatre",
+            "cinema": "Cinema",
+            "library": "Library",
+            "playground": "Playground",
+            "cemetery": "Cemetery",
+            "prison": "Prison",
+            "theme_park": "Theme park",
+            "bakery": "Bakery",
+            "shop": "Shop",
+            "kindergarten": "Kindergarten"
+        }
+    },
+    "da": {
+        "languageName": "Dansk",
+        "common": {
+            "languageLabel": "Sprog",
+            "dateLocale": "da-DK",
+            "copyLink": "[kopiér link 🔗]",
+            "copyLinkToMap": "[kopiér link til kortudsnit 🔗]",
+            "wikidataBadge": "[Wikidata]",
+            "wikipediaArticle": "Wikipedia-artikel",
+            "wikidataItem": "Wikidata-emne",
+            "findPlacesForTopic": "Find alle steder opkaldt efter dette emne",
+            "findPlacesForTopicTitle": "Find alle steder opkaldt efter dette emne",
+            "loadingPlaces": "Indlæser steder...",
+            "noPlacesFound": "Ingen steder fundet.",
+            "errorLoadingPlaces": "Fejl ved indlæsning af steder.",
+            "back": "Tilbage",
+            "noArea": "Intet område",
+            "updating": "(opdaterer)",
+            "errorPrefix": "Fejl: {{error}}",
+            "openStreetMapLogoAlt": "OpenStreetMap Logo",
+            "mapCompleteLogoAlt": "MapComplete Logo",
+            "openStreetMapTitle": "Se stedet på OpenStreetMap.org",
+            "mapCompleteTitle": "Rediger stedet på MapComplete",
+            "realPerson": "Rigtig person",
+            "acquiringPosition": "Finder din position - vent lidt ...",
+            "loadingNearbyPlaces": "Finder de nærmeste steder...",
+            "cannotFindPosition": "Kan ikke finde din position: {{message}}",
+            "youAreWithinMeters": {
+                "one": "Du er inden for {{count}} meter fra dette punkt",
+                "other": "Du er inden for {{count}} meter fra dette punkt"
+            },
+            "placeCount": {
+                "one": "{{count}} sted",
+                "other": "{{count}} steder"
+            },
+            "distance": {
+                "foot": {
+                    "one": "{{count}} fod væk",
+                    "other": "{{count}} fod væk"
+                },
+                "mile": {
+                    "one": "{{count}} mil væk",
+                    "other": "{{count}} mil væk"
+                },
+                "meter": {
+                    "one": "{{count}} meter væk",
+                    "other": "{{count}} meter væk"
+                },
+                "kilometer": {
+                    "one": "{{count}} kilometer væk",
+                    "other": "{{count}} kilometer væk"
+                }
+            },
+            "bc": "f.Kr.",
+            "women": "Kvinder",
+            "men": "Mænd",
+            "allAreas": "Alle områder"
+        },
+        "home": {
+            "title": "Hvad er veje og steder opkaldt efter?",
+            "titleWithPlace": "Hvad er veje og steder i {{placeName}} opkaldt efter?",
+            "searchPlaceholder": "Søg efter vej- eller stednavn i databasen",
+            "topicPlaceholder": "Slå emne op",
+            "table": {
+                "map": "Kort",
+                "type": "Type",
+                "name": "Stednavn",
+                "area": "Område",
+                "topic": "Emne",
+                "description": "Beskrivelse"
+            },
+            "findPlacesNearYou": "[➹ find steder nær dig]",
+            "listPlacesInMapView": "[list all steder i kortudsnit]",
+            "alsoCheckOut": "Tjek også:",
+            "genderDistributionLink": "Kønsfordeling pr. område",
+            "avoidGenderLink": "Ruteplanlægger, der undgår veje opkaldt efter mænd eller kvinder",
+            "example": "Eksempel",
+            "downloadsHtml": "Du kan downloade alle registrerede veje med information i en <a href=\"/data/names.csv\">komma-separeret fil</a> og i <a href=\"/data/names.fgb\">FlatGeobuf-format (for GIS-brugere)</a>. Ikke alle steder er registreret endnu.",
+            "projectHtml": "Projektet er udviklet af <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. Koden til projektet er <a href=\"https://github.com/PeterBrodersen/osmetymology/tree/generic\">tilgængelig på GitHub</a>. Hvis du har spørgsmål om projektet, er du mere end velkommen til at <a href=\"mailto:peter@ter.dk\">sende en e-mail</a>.",
+            "copyrightHtml": "Kortdata er hentet fra <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> og er licenseret under <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href=\"https://www.wikidata.org/\">Wikidata</a> og er licenseret under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
+            "stats": {
+                "content": "Indhold i databasen:",
+                "places": "Steder:",
+                "uniquelyNamedPlaces": "Unikt navngivne steder:",
+                "uniqueTopics": "Unikke emner, steder er opkaldt efter:",
+                "datasetDate": "Dato for datasæt:"
+            },
+            "noRegisteredPlaces": "Ingen registrerede steder fundet!"
+        },
+        "areas": {
+            "title": "Oversigt og statistik for kønsfordeling af vejnavne i områder",
+            "titleWithPlace": "Oversigt og statistik for kønsfordeling af vejnavne i områder i {{placeName}}",
+            "header": "Statistik for kønsfordeling af vejnavne i områder",
+            "headerWithPlace": "Statistik for kønsfordeling af vejnavne i områder i {{placeName}}",
+            "introHtml": "Statistik fra <a href=\"../\">{{projectDisplayName}}</a> for kønsfordeling på veje i områderne. Hver person tælles kun én gang inden for et område, selvom flere vejnavne refererer til den samme person. Klik på et områdenavn for at se personerne i området med tilknyttede veje.",
+            "datasetDate": "Dato for datasæt:",
+            "table": {
+                "area": "Område",
+                "name": "Navn",
+                "humansExisted": "Mennesker, som har eksisteret",
+                "allHumansIncludingFictional": "Alle mennesker, også fiktive",
+                "women": "Kvinder",
+                "men": "Mænd",
+                "percentageDistribution": "Procentvis fordeling",
+                "womenHumans": "Kvinder,<br>mennesker",
+                "menHumans": "Mænd,<br>mennesker",
+                "percentageDistributionHumans": "Procentvis fordeling,<br>mennesker",
+                "womenAll": "Kvinder,<br>alle",
+                "menAll": "Mænd,<br>alle"
+            },
+            "sumNoteHtml": "Tallene for Alle kommuner er lavere end summen for de enkelte kommuner, idet dubletter (samme personer, som optræder i flere kommuner) kun bliver talt med én gang.",
+            "roadsOnlyHtml": "Dette uddrag henter kun veje og ikke f.eks. bygninger, statuer, parker osv.",
+            "projectHtml": "Projektet er udviklet af <a href=\"https://www.openstreetmap.org/user/Peter%20Brodersen\">Peter Brodersen</a>. Dette uddrag for områder kan <a href=\"/data/areas.json\">downloades som JSON-fil</a>. Hvis du har spørgsmål om projektet, er du velkommen til at <a href=\"mailto:peter@ter.dk\">sende en e-mail</a>.",
+            "copyrightHtml": "Kortdata er hentet fra <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> og er licenseret under <a href=\"https://www.openstreetmap.org/copyright\">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href=\"https://www.wikidata.org/\">Wikidata</a> og er licenseret under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/deed.da\">Creative Commons CC0 License</a>.",
+            "noRoadsNamedAfterPeople": "Ingen registrerede veje i området er opkaldt efter personer"
+        },
+        "map": {
+            "baseLayers": {
+                "openStreetMap": "OpenStreetMap",
+                "spinalMap": "Spinal Map"
+            },
+            "searchPlaceInCountry": "Søg efter sted i {{country}}",
+            "noName": "(ingen navn)"
+        },
+        "featureTypes": {
+            "museum": "Museum",
+            "way": "Vej",
+            "artwork": "Kunstværk",
+            "office": "Kontor",
+            "pedestrian": "Gågade",
+            "building": "Bygning",
+            "place": "Sted",
+            "park": "Park",
+            "water": "Vand",
+            "wood": "Skov",
+            "place_of_worship": "Sted for tilbedelse",
+            "square": "Torv",
+            "equestrian": "Heste",
+            "parking": "Parkering",
+            "school": "Skole",
+            "bridge": "Bro",
+            "sport": "Sportsfacilitet",
+            "power": "Kraft",
+            "castle": "Slot",
+            "aeroway": "Luftvej",
+            "zoo": "Zoo",
+            "hospital": "Hospital",
+            "university": "Universitet",
+            "alcohol": "Alkohol",
+            "harbour": "Havn",
+            "theatre": "Teater",
+            "cinema": "Biograf",
+            "library": "Bibliotek",
+            "playground": "Legeplads",
+            "cemetery": "Kirkegård",
+            "prison": "Fængsel",
+            "theme_park": "Forlystelsespark",
+            "bakery": "Bageri",
+            "shop": "Butik",
+            "kindergarten": "Børnehave"
+        }
+    }
+}

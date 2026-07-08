@@ -2,7 +2,17 @@ let requestCount = 0;
 let lastinputname = '';
 let lastinputlabel = '';
 let currentCount = 0;
+let lastResultState = null;
 const helperConfig = window.appConfig || {};
+const i18n = window.appI18n;
+
+function translate(key, params) {
+  return i18n.t(key, params);
+}
+
+function translatePlural(key, count, params) {
+  return i18n.tp(key, count, params);
+}
 
 $(function () {
 
@@ -109,7 +119,7 @@ $(function () {
       if (item.description) {
         optionHTML += `<span class="autoitemdescription">${item.description}</span><br>`;
       }
-      optionHTML += `<span class="autoitemcount">${item.placecount} ${item.placecount == 1 ? "sted" : "steder"} </span>`;
+      optionHTML += `<span class="autoitemcount">${translatePlural('common.placeCount', item.placecount, { count: i18n.formatNumber(item.placecount) })} </span>`;
       optionHTML += `</div></div>`;
       // .autocomplete("instance")._renderItem = function (ul, item) {
       //   let optionHTML = `<div class="autoitemblock">`;
@@ -140,7 +150,7 @@ $(function () {
   });
 
   $("#getposition").on("click", () => { // :TODO: Indicate a location search is going on
-    $("#result").html('Acquiring your position - hang on...');
+    $("#result").html(translate('common.acquiringPosition'));
     // map.locate({ enableHighAccuracy: true });
     map.locate();
   });
@@ -175,16 +185,21 @@ $(function () {
     }
   }
   getStats();
+
+  document.addEventListener('app:languagechange', () => {
+    getStats();
+    rerenderLastResultState();
+  });
 });
 
 function getStats() {
   $.getJSON('data/stats.json')
     .done((data) => {
       if (data) {
-        $('.stats #totalroads').text(data.totalroads.toLocaleString());
-        $('.stats #uniquenamedroads').text(data.uniquenamedroads.toLocaleString());
-        $('.stats #uniqueetymologywikidata').text(data.uniqueetymologywikidata.toLocaleString());
-        $('.stats #importfiletime').text(new Date(data.importfiletime * 1000).toLocaleDateString());
+        $('.stats #totalroads').text(i18n.formatNumber(data.totalroads));
+        $('.stats #uniquenamedroads').text(i18n.formatNumber(data.uniquenamedroads));
+        $('.stats #uniqueetymologywikidata').text(i18n.formatNumber(data.uniqueetymologywikidata));
+        $('.stats #importfiletime').text(i18n.formatDate(new Date(data.importfiletime * 1000)));
       }
     }
     );
@@ -202,6 +217,7 @@ addEventListener("hashchange", (event) => {
 */
 
 function updateResultTable(data) {
+  lastResultState = { type: 'data', payload: data };
   requestCount++;
   currentCount = requestCount;
   if (data && data.length > 0) {
@@ -214,17 +230,21 @@ function updateResultTable(data) {
       // if (row['sampleway_id']) {
       //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
       // }
-      var areaname = row['areaname'] ? row['areaname'] : 'No area';
+      var areaname = row['areaname'] ? row['areaname'] : translate('common.noArea');
       var wikidatalinkhtml = '';
       var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];
-      let featureType = `<span title="${capitalizeFirstLetter(row['featuretype'])}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
+      let featureTypeLabel = translate(`featureTypes.${row['featuretype']}`);
+      if (featureTypeLabel === `featureTypes.${row['featuretype']}`) {
+        featureTypeLabel = capitalizeFirstLetter(row['featuretype']);
+      }
+      let featureType = `<span title="${featureTypeLabel}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
       let topics = [];
       let descriptions = [];
       if (wikidataset.length > 0) {
         for (let item of wikidataset) {
-          var wikidatalinkhtml = `<a href="#${item.itemid}" onclick="doSearch('${item.itemid}'); return false;" title="Find alle steder opkaldt efter dette emne">${item.label ?? '(under opdatering)'}</a> ` +
-            `<span class="topicwikidata"><a href="${wikidataurlprefix}${item.itemid}" class="wikidataname" data-wikidata="${item.itemid}">[Wikidata]</a></span>`;
+          var wikidatalinkhtml = `<a href="#${item.itemid}" onclick="doSearch('${item.itemid}'); return false;" title="${translate('common.findPlacesForTopicTitle')}">${item.label ?? translate('common.updating')}</a> ` +
+            `<span class="topicwikidata"><a href="${wikidataurlprefix}${item.itemid}" class="wikidataname" data-wikidata="${item.itemid}">${translate('common.wikidataBadge')}</a></span>`;
           topics.push(wikidatalinkhtml);
           descriptions.push(item.description);
         }
@@ -247,7 +267,7 @@ function updateResultTable(data) {
     // console.log('Current: ' + currentCount + ', request: ' + requestCount);
     $("#result").html(newtable);
   } else {
-    $("#result").html('No registered places found!');
+    $("#result").html(translate('home.noRegisteredPlaces'));
   }
 }
 
@@ -301,5 +321,21 @@ function getFeatureTypeIcon(featuretype) {
 
 function updateResultTableError(error) {
   console.log(error);
-  $("#result").html('Error: ' + error);
+  lastResultState = { type: 'error', payload: String(error) };
+  $("#result").html(translate('common.errorPrefix', { error }));
+}
+
+function rerenderLastResultState() {
+  if (!lastResultState) {
+    return;
+  }
+
+  if (lastResultState.type === 'data') {
+    updateResultTable(lastResultState.payload);
+    return;
+  }
+
+  if (lastResultState.type === 'error') {
+    $("#result").html(translate('common.errorPrefix', { error: lastResultState.payload }));
+  }
 }
