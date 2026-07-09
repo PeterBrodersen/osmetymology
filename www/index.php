@@ -74,7 +74,7 @@
 	</p>
 	<ul>
 		<li><a href="arrondissements/">Gender distribution per arrondissement</a></li>
-		<li><a href="https://osrm.findvej.dk/paris/">Route planner that avoids roads named after men</a> (<a href="https://osrm.findvej.dk/paris/?z=13&center=48.842722%2C2.372320&loc=48.823939%2C2.330303&loc=48.819228%2C2.329402&hl=fr&alt=0">Example</a>)</li>
+		<li><a href="https://osrm.findvej.dk/paris/">Route planner that avoids roads named after men or women</a> (<a href="https://osrm.findvej.dk/paris/?z=12&center=48.858507%2C2.392616&loc=48.822180%2C2.324724&loc=48.819228%2C2.329402&hl=fr&alt=0&scale=metric&ly=openstreetmap.org&profile=0">Example</a>)</li>
         </ul>
     </div>
 
