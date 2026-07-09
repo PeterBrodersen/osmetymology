@@ -7,12 +7,13 @@ $(function () {
     }
 
     document.addEventListener('app:languagechange', () => {
-        getStats();
+        renderStats(lastStatsData);
         renderAreaStats(lastAreaStatsData);
         renderSingleAreaStats(lastSingleAreaData, false);
     });
 });
 
+let lastStatsData = null;
 let lastAreaStatsData = null;
 let lastSingleAreaData = null;
 const areasI18n = window.appI18n;
@@ -20,11 +21,18 @@ const areasI18n = window.appI18n;
 function getStats() {
     $.getJSON('/data/stats.json')
         .done((data) => {
-            if (data) {
-                $('#importfiletime').text(areasI18n.formatDate(new Date(data.importfiletime * 1000)));
-            }
+            lastStatsData = data || null;
+            renderStats(lastStatsData);
         }
         );
+}
+
+function renderStats(data) {
+    if (!data) {
+        return;
+    }
+
+    $('#importfiletime').text(areasI18n.formatDate(new Date(data.importfiletime * 1000)));
 }
 
 function getAreaStats() {

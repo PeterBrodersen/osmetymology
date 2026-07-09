@@ -16,6 +16,20 @@
         translationOverrides: bootstrap.translationOverrides || {},
     };
 
+    function syncActiveMessagesFromLoadedTranslations() {
+        if (!state.allTranslations) {
+            return;
+        }
+
+        if (state.allTranslations[state.currentLocale]) {
+            state.currentMessages = state.allTranslations[state.currentLocale];
+        }
+
+        if (state.allTranslations[state.fallbackLocale]) {
+            state.fallbackMessages = state.allTranslations[state.fallbackLocale];
+        }
+    }
+
     function isPlainObject(value) {
         return !!value && typeof value === 'object' && !Array.isArray(value);
     }
@@ -195,13 +209,14 @@
             return state.allTranslations;
         }
 
-        const response = await fetch(state.fileUrl, { cache: 'no-cache' });
+        const response = await fetch(state.fileUrl);
         if (!response.ok) {
             throw new Error(response.statusText);
         }
 
         state.allTranslations = mergeTranslationTrees(await response.json(), state.translationOverrides);
         updateAvailableLocales();
+        syncActiveMessagesFromLoadedTranslations();
         return state.allTranslations;
     }
 
@@ -218,13 +233,8 @@
             return false;
         }
 
-        if (state.allTranslations && state.allTranslations[locale]) {
-            state.currentMessages = state.allTranslations[locale];
-        }
-        if (state.allTranslations && state.allTranslations[state.fallbackLocale]) {
-            state.fallbackMessages = state.allTranslations[state.fallbackLocale];
-        }
         state.currentLocale = locale;
+        syncActiveMessagesFromLoadedTranslations();
         applyTranslations();
         populateLanguageSelector();
 
@@ -251,7 +261,6 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        applyTranslations();
         populateLanguageSelector();
 
         const selector = document.getElementById('language-select');
@@ -263,10 +272,11 @@
 
         ensureTranslationsLoaded()
             .then(() => {
+                applyTranslations();
                 populateLanguageSelector();
             })
             .catch((error) => {
-                console.warn('Could not refresh translations from JSON', error);
+                console.warn('Could not load translations from JSON', error);
             });
     });
 })();

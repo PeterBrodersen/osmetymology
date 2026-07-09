@@ -246,7 +246,5 @@ function buildI18nConfig(array $catalogue, string $locale, string $page, array $
         'locales' => $availableLocales,
         'fileUrl' => '/translations.json',
         'translationOverrides' => $translationOverrides,
-        'currentMessages' => is_array($catalogue[$locale] ?? null) ? $catalogue[$locale] : [],
-        'fallbackMessages' => is_array($catalogue[$defaultLocale] ?? null) ? $catalogue[$defaultLocale] : [],
     ];
 }
