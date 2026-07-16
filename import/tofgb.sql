@@ -30,5 +30,5 @@ LEFT JOIN LATERAL(
     LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
     WHERE l.id = map.location_id
 ) AS wikidatas ON TRUE
-WHERE l.geom IS NOT NULL AND NOT ST_IsEmpty(l.geom)
+WHERE l.geom IS NOT NULL AND NOT ST_IsEmpty(l.geom::geometry)
 ORDER BY l.name, a.area_name NULLS LAST, a.area_id NULLS LAST

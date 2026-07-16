@@ -1,9 +1,6 @@
 -- Shared aggregation finalization used by both area and no-area modes.
 
-UPDATE locations_agg_next SET geom_dk = ST_Transform(geom, 25832);
-
 CREATE INDEX locations_agg_next_geom_idx ON locations_agg_next USING gist (geom);
-CREATE INDEX locations_agg_next_geom_dk_idx ON locations_agg_next USING gist (geom_dk);
 CREATE INDEX locations_agg_next_name_idx ON locations_agg_next ("name" text_pattern_ops);
 CREATE INDEX locations_agg_next_searchname_idx ON locations_agg_next ("searchname" text_pattern_ops);
 CREATE INDEX locations_agg_next_area_idx ON locations_agg_next ("area_code");
@@ -32,7 +29,6 @@ ALTER TABLE wikidatamap_next RENAME TO wikidatamap;
 DROP TABLE IF EXISTS locations_agg_old;
 DROP TABLE IF EXISTS wikidatamap_old;
 ALTER INDEX IF EXISTS locations_agg_next_geom_idx RENAME TO locations_agg_geom_idx;
-ALTER INDEX IF EXISTS locations_agg_next_geom_dk_idx RENAME TO locations_agg_geom_dk_idx;
 ALTER INDEX IF EXISTS locations_agg_next_name_idx RENAME TO locations_agg_name_idx;
 ALTER INDEX IF EXISTS locations_agg_next_searchname_idx RENAME TO locations_agg_searchname_idx;
 ALTER INDEX IF EXISTS locations_agg_next_area_idx RENAME TO locations_agg_area_idx;

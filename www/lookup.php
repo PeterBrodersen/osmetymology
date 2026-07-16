@@ -58,14 +58,14 @@ function getColumns($coordinates = FALSE, $useAreas = true)
 		"to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
 		"to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"w.sitelinks->'enwiki'->>'title' AS wikipediatitleen",
-		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
-		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
+		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_longitude',
+		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_latitude',
 		'array_to_json(l.wikidatas) AS wikidatas',
 		'wikidatas.wikidataset',
 		'wikidatas.wikilabel'
 	];
 	if ($coordinates) {
-		$columns[] = "l.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
+		$columns[] = "l.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geography AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
