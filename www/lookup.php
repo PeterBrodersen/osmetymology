@@ -75,6 +75,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 {
 	$useAreas = hasAreasTable();
 	$columns = getColumns($coordinates, $useAreas);
+	$prefix = '';
 	$where = '';
 	$limit = 1000;
 	$orderbylist = [$useAreas ? 'l.name, a.area_name NULLS LAST' : 'l.name'];
@@ -88,12 +89,14 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		$orderbylist = ['distance'];
 	} elseif ($type == 'bbox') {
 		[$latitudeA, $longitudeA, $latitudeB, $longitudeB] = $bbox;
-		$where = "WHERE ST_Intersects(geom, ST_Envelope('SRID=4326;LINESTRING($longitudeA $latitudeA, $longitudeB $latitudeB)'::geometry))";
+		$prefix = "WITH bbox AS (SELECT ST_MakeEnvelope($longitudeA, $latitudeA, $longitudeB, $latitudeB, 4326)::geography AS bboxgeom)";
+		$where = "CROSS JOIN bbox WHERE geom && bbox.bboxgeom AND ST_Intersects(geom, bbox.bboxgeom)";
 		$limit = 100;
 		// :TODO: add order by distance from center of bbox
 	}
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
+		$prefix
 		SELECT $columns
 		FROM locations_agg l
 		$areasJoin
