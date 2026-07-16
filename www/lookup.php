@@ -221,8 +221,6 @@ function findNearestPlacesFromBBOX($bboxstring)
 	global $dbh;
 	$bbox = array_map('floatval', explode(",", $bboxstring));
 	$querystring = getQuerystring('bbox', FALSE, $bbox);
-	print $querystring;
-	exit;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
