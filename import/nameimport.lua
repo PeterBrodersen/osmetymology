@@ -1,3 +1,6 @@
+-- Let's use LatLng
+local srid = 4326
+
 -- A place to store the SQL tables we will define shortly.
 local tables = {}
 
@@ -13,7 +16,7 @@ tables.points = osm2pgsql.define_node_table('osm_points', {
     { column = 'name:etymology:wikidata',  type = 'text' },
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
-    { column = 'geom',                     type = 'point' }, -- will be something like `GEOMETRY(Point, 4326)` in SQL
+    { column = 'geom',                     type = 'point', projection = 4326 }, -- will be something like `GEOMETRY(Point, 4326)` in SQL
 })
 
 tables.ways = osm2pgsql.define_way_table('osm_ways', {
@@ -23,7 +26,7 @@ tables.ways = osm2pgsql.define_way_table('osm_ways', {
     { column = 'name:etymology:wikidata',  type = 'text' },
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
-    { column = 'geom',                     type = 'linestring' },
+    { column = 'geom',                     type = 'linestring', projection = 4326 },
 })
 
 tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
@@ -33,7 +36,7 @@ tables.polygons = osm2pgsql.define_area_table('osm_polygons', {
     { column = 'name:etymology:wikidata',  type = 'text' },
     { column = 'highway',                  type = 'text' },
     { column = 'tags',                     type = 'jsonb' },
-    { column = 'geom',                     type = 'geometry' },
+    { column = 'geom',                     type = 'geometry', projection = 4326 },
 })
 
 -- Helper function to remove some of the tags we usually are not interested in.
@@ -88,25 +91,25 @@ function osm2pgsql.process_way(object)
         if enable_associated_street and osm2pgsql.stage == 2 then
             local relation = associated_street_ways[object.id]
             if relation and object.tags.highway then
-            local tags = object.tags
+                local tags = object.tags
 
-            -- Merge tags from relation
-            tags.name = tags.name or relation.name
-            tags["name:etymology"] = tags["name:etymology"] or relation["name:etymology"]
-            tags["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"] or
-                relation["name:etymology:wikipedia"]
-            tags["name:etymology:wikidata"] = tags["name:etymology:wikidata"] or
-                relation["name:etymology:wikidata"]
+                -- Merge tags from relation
+                tags.name = tags.name or relation.name
+                tags["name:etymology"] = tags["name:etymology"] or relation["name:etymology"]
+                tags["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"] or
+                    relation["name:etymology:wikipedia"]
+                tags["name:etymology:wikidata"] = tags["name:etymology:wikidata"] or
+                    relation["name:etymology:wikidata"]
 
-            tables.ways:insert({
-                name = tags.name,
-                ["name:etymology"] = tags["name:etymology"],
-                ["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"],
-                ["name:etymology:wikidata"] = tags["name:etymology:wikidata"],
-                highway = tags.highway,
-                tags = tags,
-                geom = object:as_linestring()
-            })
+                tables.ways:insert({
+                    name = tags.name,
+                    ["name:etymology"] = tags["name:etymology"],
+                    ["name:etymology:wikipedia"] = tags["name:etymology:wikipedia"],
+                    ["name:etymology:wikidata"] = tags["name:etymology:wikidata"],
+                    highway = tags.highway,
+                    tags = tags,
+                    geom = object:as_linestring()
+                })
             end
         end
         return
