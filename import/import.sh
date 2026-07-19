@@ -77,6 +77,7 @@ URL_OSMFILE="$(json_get 'osm_urls.osmfile' '')"
 AREAFILE="$(json_get 'area.file' '')"
 AREAFILE_ID="$(json_get 'area.id_field' '')"
 AREAFILE_NAME="$(json_get 'area.name_field' '')"
+EXTRACTFILE="$(json_get 'extract.file' '')"
 DB_HOST="$(json_get 'db.host' '')"
 DB_PORT="$(json_get 'db.port' '')"
 DB_NAME="$(json_get 'db.name' '')"
@@ -111,6 +112,9 @@ LOCAL_DIR="../local"
 OSMFILE_FULLPATH="${LOCAL_DIR}/${OSMFILE}"
 STATEFILE_FULLPATH="${LOCAL_DIR}/${STATEFILE}"
 AREAFILE_FULLPATH="${LOCAL_DIR}/${AREAFILE}"
+EXTRACTFILE_FULLPATH="${LOCAL_DIR}/${EXTRACTFILE}"
+ORIGINAL_OSMFILE="original_${OSMFILE}"
+ORIGINAL_OSMFILE_FULLPATH="${LOCAL_DIR}/${ORIGINAL_OSMFILE}"
 
 # Allow environment overrides while defaulting to values from config.json.
 : "${PGHOST:=$DB_HOST}"
@@ -136,6 +140,26 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
     # Get OSM file
     wget "${URL_STATEFILE:?}" -O "$STATEFILE_FULLPATH"
     wget "${URL_OSMFILE:?}" -O "$OSMFILE_FULLPATH"
+
+    if [ -n "$EXTRACTFILE" ]; then
+        if ! command -v osmium >/dev/null 2>&1; then
+            echo "Error: extract.file is set, but osmium is not installed or not in PATH" 1>&2
+            exit 1
+        fi
+
+        if [ ! -r "$EXTRACTFILE_FULLPATH" ]; then
+            echo "Error: Extract file is missing or not readable: $EXTRACTFILE_FULLPATH" 1>&2
+            exit 1
+        fi
+
+        mv -f -- "$OSMFILE_FULLPATH" "$ORIGINAL_OSMFILE_FULLPATH"
+
+        # Clip to extract only. Fall back to the full downloaded file if extraction fails.
+        if ! osmium extract --polygon="$EXTRACTFILE_FULLPATH" --overwrite -o "$OSMFILE_FULLPATH" "$ORIGINAL_OSMFILE_FULLPATH"; then
+            echo "Warning: osmium extract failed. Falling back to full downloaded file" 1>&2
+            cp -f -- "$ORIGINAL_OSMFILE_FULLPATH" "$OSMFILE_FULLPATH"
+        fi
+    fi
 fi
 
 if [ "$SKIP_IMPORT_OSM" = false ]; then
