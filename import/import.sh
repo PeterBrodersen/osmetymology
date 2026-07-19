@@ -63,53 +63,22 @@ EOF
     printf '%-20s %s\n' "Total" "$(timing_format_seconds "$total_elapsed")"
 }
 
-for arg in "$@"; do
-    case "$arg" in
-        --skip-download)
-            SKIP_DOWNLOAD=true
-            ;;
-        --skip-import-osm)
-            SKIP_IMPORT_OSM=true
-            ;;
-        --skip-import-areas)
-            SKIP_IMPORT_AREAS=true
-            ;;
-        --skip-aggregate)
-            SKIP_AGGREGATE=true
-            ;;
-        --skip-import-wikidata)
-            SKIP_IMPORT_WIKIDATA=true
-            ;;
-        --skip-generate-files)
-            SKIP_GENERATE_FILES=true
-            ;;
-        --skip-statistics)
-            SKIP_STATISTICS=true
-            ;;
-        --timing)
-            TIMING_ENABLED=true
-            ;;
-        --help|-h)
-            echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics] [--timing]"
-            exit 0
-            ;;
-        *)
-            echo "Error: Unknown option '$arg'" 1>&2
-            exit 1
-            ;;
-    esac
-done
+run_section() {
+    section_name="$1"
+    skip_flag="$2"
+    section_function="$3"
+    section_start="$(timing_now)"
 
-if [ "$TIMING_ENABLED" = true ]; then
-    IMPORT_START_TIME="$(timing_now)"
-fi
+    if [ "$skip_flag" = true ]; then
+        timing_record_section "$section_name" "$section_start" "skipped"
+        return
+    fi
+
+    "$section_function"
+    timing_record_section "$section_name" "$section_start" "done"
+}
 
 CONFIG_FILE="../config/config.json"
-
-if [ ! -r "$CONFIG_FILE" ]; then
-    echo "Error: Could not read config file at $CONFIG_FILE" 1>&2
-    exit 1
-fi
 
 json_get() {
     key="$1"
@@ -131,73 +100,134 @@ json_get() {
     fi
 }
 
-SCHEMA="$(json_get 'db.schema' 'place_osmetymology')"
-URL_STATEFILE="$(json_get 'osm_urls.statefile' '')"
-URL_OSMFILE="$(json_get 'osm_urls.osmfile' '')"
-AREAFILE="$(json_get 'area.file' '')"
-AREAFILE_ID="$(json_get 'area.id_field' '')"
-AREAFILE_NAME="$(json_get 'area.name_field' '')"
-EXTRACTFILE="$(json_get 'extract.file' '')"
-DB_HOST="$(json_get 'db.host' '')"
-DB_PORT="$(json_get 'db.port' '')"
-DB_NAME="$(json_get 'db.name' '')"
-DB_USER="$(json_get 'db.user' '')"
-DB_PASS="$(json_get 'db.pass' '')"
-OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="$([ "$(json_get 'import.enable_associated_street_relations' 'false')" = "true" ] && echo 1 || echo 0)"
-OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="$([ "$(json_get 'import.keep_nonusable_osm_data' 'false')" = "true" ] && echo 1 || echo 0)"
+parse_args() {
+    for arg in "$@"; do
+        case "$arg" in
+            --skip-download)
+                SKIP_DOWNLOAD=true
+                ;;
+            --skip-import-osm)
+                SKIP_IMPORT_OSM=true
+                ;;
+            --skip-import-areas)
+                SKIP_IMPORT_AREAS=true
+                ;;
+            --skip-aggregate)
+                SKIP_AGGREGATE=true
+                ;;
+            --skip-import-wikidata)
+                SKIP_IMPORT_WIKIDATA=true
+                ;;
+            --skip-generate-files)
+                SKIP_GENERATE_FILES=true
+                ;;
+            --skip-statistics)
+                SKIP_STATISTICS=true
+                ;;
+            --timing)
+                TIMING_ENABLED=true
+                ;;
+            --help|-h)
+                echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics] [--timing]"
+                exit 0
+                ;;
+            *)
+                echo "Error: Unknown option '$arg'" 1>&2
+                exit 1
+                ;;
+        esac
+    done
+}
 
-if [ -z "$AREAFILE" ] && [ "$SKIP_IMPORT_AREAS" = false ]; then
-    echo "Info: area.file is empty in $CONFIG_FILE; skipping area import and area-based aggregation"
-    SKIP_IMPORT_AREAS=true
-fi
+init_timing() {
+    if [ "$TIMING_ENABLED" = true ]; then
+        IMPORT_START_TIME="$(timing_now)"
+    fi
+}
 
-if [ "$SKIP_DOWNLOAD" = false ] && { [ -z "$URL_STATEFILE" ] || [ -z "$URL_OSMFILE" ]; }; then
-    echo "Error: Missing osm_urls values in $CONFIG_FILE (required unless --skip-download is used)" 1>&2
-    exit 1
-fi
+validate_config_file() {
+    if [ ! -r "$CONFIG_FILE" ]; then
+        echo "Error: Could not read config file at $CONFIG_FILE" 1>&2
+        exit 1
+    fi
+}
 
-if [ "$SKIP_IMPORT_OSM" = false ] && [ -z "$URL_OSMFILE" ]; then
-    echo "Error: Missing osm_urls.osmfile in $CONFIG_FILE (required unless --skip-import-osm is used)" 1>&2
-    exit 1
-fi
+load_config() {
+    SCHEMA="$(json_get 'db.schema' 'place_osmetymology')"
+    URL_STATEFILE="$(json_get 'osm_urls.statefile' '')"
+    URL_OSMFILE="$(json_get 'osm_urls.osmfile' '')"
+    AREAFILE="$(json_get 'area.file' '')"
+    AREAFILE_ID="$(json_get 'area.id_field' '')"
+    AREAFILE_NAME="$(json_get 'area.name_field' '')"
+    EXTRACTFILE="$(json_get 'extract.file' '')"
+    DB_HOST="$(json_get 'db.host' '')"
+    DB_PORT="$(json_get 'db.port' '')"
+    DB_NAME="$(json_get 'db.name' '')"
+    DB_USER="$(json_get 'db.user' '')"
+    DB_PASS="$(json_get 'db.pass' '')"
+    OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="$([ "$(json_get 'import.enable_associated_street_relations' 'false')" = "true" ] && echo 1 || echo 0)"
+    OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="$([ "$(json_get 'import.keep_nonusable_osm_data' 'false')" = "true" ] && echo 1 || echo 0)"
 
-if [ "$SKIP_IMPORT_AREAS" = false ] && { [ -z "$AREAFILE" ] || [ -z "$AREAFILE_ID" ] || [ -z "$AREAFILE_NAME" ]; }; then
-    echo "Error: Missing area values in $CONFIG_FILE (required unless --skip-import-areas is used)" 1>&2
-    exit 1
-fi
+    OSMFILE="$(basename "$URL_OSMFILE")"
+    STATEFILE="state.txt"
+    LOCAL_DIR="../local"
+    OSMFILE_FULLPATH="${LOCAL_DIR}/${OSMFILE}"
+    STATEFILE_FULLPATH="${LOCAL_DIR}/${STATEFILE}"
+    AREAFILE_FULLPATH="${LOCAL_DIR}/${AREAFILE}"
+    EXTRACTFILE_FULLPATH="${LOCAL_DIR}/${EXTRACTFILE}"
+    ORIGINAL_OSMFILE="original_${OSMFILE}"
+    ORIGINAL_OSMFILE_FULLPATH="${LOCAL_DIR}/${ORIGINAL_OSMFILE}"
+    FGBFILE="../www/data/names.fgb"
+    CSVFILE="../www/data/names.csv"
+}
 
-OSMFILE="$(basename "$URL_OSMFILE")"
-STATEFILE="state.txt"
-LOCAL_DIR="../local"
-OSMFILE_FULLPATH="${LOCAL_DIR}/${OSMFILE}"
-STATEFILE_FULLPATH="${LOCAL_DIR}/${STATEFILE}"
-AREAFILE_FULLPATH="${LOCAL_DIR}/${AREAFILE}"
-EXTRACTFILE_FULLPATH="${LOCAL_DIR}/${EXTRACTFILE}"
-ORIGINAL_OSMFILE="original_${OSMFILE}"
-ORIGINAL_OSMFILE_FULLPATH="${LOCAL_DIR}/${ORIGINAL_OSMFILE}"
+validate_config() {
+    if [ -z "$AREAFILE" ] && [ "$SKIP_IMPORT_AREAS" = false ]; then
+        echo "Info: area.file is empty in $CONFIG_FILE; skipping area import and area-based aggregation"
+        SKIP_IMPORT_AREAS=true
+    fi
 
-# Allow environment overrides while defaulting to values from config.json.
-: "${PGHOST:=$DB_HOST}"
-: "${PGPORT:=$DB_PORT}"
-: "${PGUSER:=$DB_USER}"
-: "${PGPASSWORD:=$DB_PASS}"
-: "${PGDATABASE:=$DB_NAME}"
+    if [ "$SKIP_DOWNLOAD" = false ] && { [ -z "$URL_STATEFILE" ] || [ -z "$URL_OSMFILE" ]; }; then
+        echo "Error: Missing osm_urls values in $CONFIG_FILE (required unless --skip-download is used)" 1>&2
+        exit 1
+    fi
 
-export PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE
-export PGOPTIONS="-c search_path=${SCHEMA:?},public"
+    if [ "$SKIP_IMPORT_OSM" = false ] && [ -z "$URL_OSMFILE" ]; then
+        echo "Error: Missing osm_urls.osmfile in $CONFIG_FILE (required unless --skip-import-osm is used)" 1>&2
+        exit 1
+    fi
 
-if [ -z "${PGDATABASE:-}" ]; then
-    echo "Error: Missing database name. Set db.name in config/config.json or PGDATABASE in environment" 1>&2
-    exit 1
-fi
+    if [ "$SKIP_IMPORT_AREAS" = false ] && { [ -z "$AREAFILE" ] || [ -z "$AREAFILE_ID" ] || [ -z "$AREAFILE_NAME" ]; }; then
+        echo "Error: Missing area values in $CONFIG_FILE (required unless --skip-import-areas is used)" 1>&2
+        exit 1
+    fi
+}
 
-if [ "$SKIP_IMPORT_AREAS" = false ] && [ ! -r "$AREAFILE_FULLPATH" ]; then
-    echo "Error: Area file is missing or not readable: $AREAFILE_FULLPATH" 1>&2
-    exit 1
-fi
+configure_database_env() {
+    # Allow environment overrides while defaulting to values from config.json.
+    : "${PGHOST:=$DB_HOST}"
+    : "${PGPORT:=$DB_PORT}"
+    : "${PGUSER:=$DB_USER}"
+    : "${PGPASSWORD:=$DB_PASS}"
+    : "${PGDATABASE:=$DB_NAME}"
 
-SECTION_START="$(timing_now)"
-if [ "$SKIP_DOWNLOAD" = false ]; then
+    export PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE
+    export PGOPTIONS="-c search_path=${SCHEMA:?},public"
+
+    if [ -z "${PGDATABASE:-}" ]; then
+        echo "Error: Missing database name. Set db.name in config/config.json or PGDATABASE in environment" 1>&2
+        exit 1
+    fi
+}
+
+validate_inputs() {
+    if [ "$SKIP_IMPORT_AREAS" = false ] && [ ! -r "$AREAFILE_FULLPATH" ]; then
+        echo "Error: Area file is missing or not readable: $AREAFILE_FULLPATH" 1>&2
+        exit 1
+    fi
+}
+
+download_section() {
     # Get OSM file
     wget "${URL_STATEFILE:?}" -O "$STATEFILE_FULLPATH"
     wget "${URL_OSMFILE:?}" -O "$OSMFILE_FULLPATH"
@@ -221,36 +251,28 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
             cp -f -- "$ORIGINAL_OSMFILE_FULLPATH" "$OSMFILE_FULLPATH"
         fi
     fi
-fi
-timing_record_section "download" "$SECTION_START" "$([ "$SKIP_DOWNLOAD" = true ] && echo skipped || echo done)"
+}
 
-SECTION_START="$(timing_now)"
-if [ "$SKIP_IMPORT_OSM" = false ]; then
+import_osm_section() {
     if [ ! -s "$OSMFILE_FULLPATH" ]; then
         echo "Error: Couldn't download $OSMFILE"
         exit 1
     fi
+
     # Main import.
     psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
     OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="${OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA:-0}" osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
-fi
-timing_record_section "import-osm" "$SECTION_START" "$([ "$SKIP_IMPORT_OSM" = true ] && echo skipped || echo done)"
+}
 
-SECTION_START="$(timing_now)"
-if [ "$SKIP_IMPORT_AREAS" = false ]; then
+import_areas_section() {
     # Import areas.
     ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -t_srs EPSG:4326 -lco SCHEMA="${SCHEMA:?}" -nln "${SCHEMA:?}.areas" -overwrite
     # Rename fields
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_ID:?} TO area_id"
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_NAME:?} TO area_name"
-fi
-timing_record_section "import-areas" "$SECTION_START" "$([ "$SKIP_IMPORT_AREAS" = true ] && echo skipped || echo done)"
+}
 
-
-# Aggregate, split by area boundaries.
-# :TODO: Allow for import without areas, then aggregate without area boundaries.
-SECTION_START="$(timing_now)"
-if [ "$SKIP_AGGREGATE" = false ]; then
+aggregate_section() {
     AGGREGATE_SQL="aggregate_no_areas.sql"
     if [ "$SKIP_IMPORT_AREAS" = false ]; then
         HAS_AREAS_TABLE="$(psql -qtAX -c "SELECT to_regclass('${SCHEMA:?}.areas') IS NOT NULL" | tr -d '\r[:space:]')"
@@ -261,22 +283,13 @@ if [ "$SKIP_AGGREGATE" = false ]; then
         fi
     fi
     psql -f "$AGGREGATE_SQL"
-fi
-timing_record_section "aggregate" "$SECTION_START" "$([ "$SKIP_AGGREGATE" = true ] && echo skipped || echo done)"
+}
 
-# Download and import Wikidata items. First import fetches all referred items, otherwise only fetch missing items.
-# For a clean import of all items, use --cleanimport
-SECTION_START="$(timing_now)"
-if [ "$SKIP_IMPORT_WIKIDATA" = false ]; then
+import_wikidata_section() {
     php wikidataimport.php --auto
-fi
-timing_record_section "import-wikidata" "$SECTION_START" "$([ "$SKIP_IMPORT_WIKIDATA" = true ] && echo skipped || echo done)"
+}
 
-# Create aggregated FlatGeobuf file for web usage.
-FGBFILE="../www/data/names.fgb"
-CSVFILE="../www/data/names.csv"
-SECTION_START="$(timing_now)"
-if [ "$SKIP_GENERATE_FILES" = false ]; then
+generate_files_section() {
     FGB_TMPFILE="$(dirname "${FGBFILE:?}")/.tmp.$$.$(basename "${FGBFILE:?}")"
     CSV_TMPFILE="$(dirname "${CSVFILE:?}")/.tmp.$$.$(basename "${CSVFILE:?}")"
 
@@ -287,18 +300,32 @@ if [ "$SKIP_GENERATE_FILES" = false ]; then
 
     ogr2ogr -progress "$CSV_TMPFILE" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
     mv -f -- "$CSV_TMPFILE" "${CSVFILE:?}"
-fi
-timing_record_section "generate-files" "$SECTION_START" "$([ "$SKIP_GENERATE_FILES" = true ] && echo skipped || echo done)"
+}
 
-SECTION_START="$(timing_now)"
-if [ "$SKIP_STATISTICS" = false ]; then
+statistics_section() {
     php updatestatsfile.php
-    # Backup stats file with import date
     DATE=$(date +%F)
     cp ../www/data/stats.json ../www/data/old/stats_${DATE:?}.json
     cp ../www/data/areas.json ../www/data/old/areas_${DATE:?}.json
-fi
-timing_record_section "statistics" "$SECTION_START" "$([ "$SKIP_STATISTICS" = true ] && echo skipped || echo done)"
+}
 
-timing_print_summary
+main() {
+    parse_args "$@"
+    init_timing
+    validate_config_file
+    load_config
+    validate_config
+    configure_database_env
+    validate_inputs
+    run_section "download" "$SKIP_DOWNLOAD" download_section
+    run_section "import-osm" "$SKIP_IMPORT_OSM" import_osm_section
+    run_section "import-areas" "$SKIP_IMPORT_AREAS" import_areas_section
+    run_section "aggregate" "$SKIP_AGGREGATE" aggregate_section
+    run_section "import-wikidata" "$SKIP_IMPORT_WIKIDATA" import_wikidata_section
+    run_section "generate-files" "$SKIP_GENERATE_FILES" generate_files_section
+    run_section "statistics" "$SKIP_STATISTICS" statistics_section
+    timing_print_summary
+}
+
+main "$@"
 

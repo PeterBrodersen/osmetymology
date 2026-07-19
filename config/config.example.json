@@ -16,13 +16,13 @@
         "pass": "mypassword",
         "schema": "place_osmetymology"
     },
-    "import": {
-        "enable_associated_street_relations": true,
-        "keep_nonusable_osm_data": false
-    },
     "osm_urls": {
         "statefile": "https://download.geofabrik.de/europe/germany/berlin-updates/state.txt",
         "osmfile": "https://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf"
+    },
+    "import": {
+        "enable_associated_street_relations": true,
+        "keep_nonusable_osm_data": false
     },
     "area": {
         "file": "",

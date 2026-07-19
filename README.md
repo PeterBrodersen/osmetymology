@@ -16,17 +16,23 @@ This is the generic template for country or city imports.
 ### Requirements
 * Postgres database
 * PHP installation
-* `osm2pgsql`
-* `ogr2ogr`, typically found in `gdal-bin`.
+* [osm2pgsql](https://osm2pgsql.org/)
+* [ogr2ogr](https://gdal.org/en/stable/programs/ogr2ogr.html), typically found in `gdal-bin` package in Linux distributions
+* [osmosis](https://github.com/openstreetmap/osmosis); only needed if extract is used
 
 ### Setup
-* Copy [config/config.example.json](config/config.example.json) to `config/config.json` and update values for:
-    * `db`: database credentials and schema.
-    * `osm_urls`: URLs to resources at e.g. [GeoFabrik download](https://download.geofabrik.de/) for OSM file.
-    * `area`: FlatGeobuf area file and field names.
-    * `place`: initial map location and geocoding defaults for the web frontend.
-    * `external_urls`: optional links shown on the website.
-    * `language`: language settings. `language.wikidata` is a prioritized array used for Wikidata labels/descriptions, and the first value is used for alias extraction during import.
+Copy [config/config.example.json](config/config.example.json) to `config/config.json` and update values for:
+* `place`: initial map location and geocoding defaults for the web frontend.
+* `db`: database credentials and schema.
+* `osm_urls`: URLs to resources at e.g. [GeoFabrik download](https://download.geofabrik.de/) for OSM file.
+* `import`: import settings.
+  * `enable_associated_street_relations`: Check for [associatedStreet](https://wiki.openstreetmap.org/wiki/Relation:associatedStreet) tagging.
+  * `keep_nonusable_osm_data`: Keep OSM data not used in final import.
+* `area`: *optional* FlatGeobuf area file and field names.
+* `extract`: *optional* GIS area file to extract from downloaded OSM resource.
+* `external_urls`: *optional* links shown on the website.
+* `language`: language settings.
+  * `wikidata`: prioritized array used for Wikidata labels/descriptions; first value is used for alias extraction during import.
 
 For web usage:
 * Point your web server to the `www` folder.
@@ -48,13 +54,15 @@ A search option allows users to search for street names as well as topics.
 ### Import process
 The import script works as follows:
 
-1. Download [copy of OpenStreetMap data for the specific area](https://download.geofabrik.de/) from GeoFabrik
-2. Import to PostgreSQL using [osm2pgsql](https://osm2pgsql.org/doc/manual.html#the-flex-output) with Flex output for storing keys in JSON field
-3. Optionally import areas for grouping places. Area boundary files are not included.
-4. Create aggregated table of imported data, grouping by name and etymology - no need to have several individual road segments
-5. Fetch set of every Wikidata item from the OpenStreetMap data as well as their "Instance of" items
-6. Save geometry table as [FlatGeobuf](https://flatgeobuf.org/) file for web service as well as CSV file
-7. Profit!
+1. Download [copy of OpenStreetMap data for the specific area](https://download.geofabrik.de/) from GeoFabrik.
+2. Optionally extract a subsection of the downloaded data.
+3. Import to PostgreSQL using [osm2pgsql](https://osm2pgsql.org/doc/manual.html#the-flex-output) with Flex output for storing keys in JSON field.
+4. Optionally import areas for grouping places. Area boundary files are not included.
+5. Create aggregated table of imported data, grouping by name and etymology ― no need to have several individual road segments.
+6. Fetch set of every Wikidata item from the OpenStreetMap data as well as their "Instance of" items.
+7. Save geometry table as [FlatGeobuf](https://flatgeobuf.org/) file for web service as well as CSV file.
+8. Create statistics for each area.
+9. Profit!
 
 The optional area split is based on the idea that any named conceptual road should only exist once in a area. Every road segment for a street with a specific name should be considered the conceptually same road.
 
