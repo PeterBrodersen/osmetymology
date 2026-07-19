@@ -16,9 +16,11 @@ This is the generic template for country or city imports.
 ### Requirements
 * Postgres database
 * PHP installation
+* bash
 * [osm2pgsql](https://osm2pgsql.org/)
 * [ogr2ogr](https://gdal.org/en/stable/programs/ogr2ogr.html), typically found in `gdal-bin` package in Linux distributions
-* [osmosis](https://github.com/openstreetmap/osmosis); only needed if extract is used
+* [osmium](https://osmcode.org/); only needed if extract is used
+* [python3](https://www.python.org/) or [jq](https://jqlang.org/) for parsing JSON
 
 ### Setup
 Copy [config/config.example.json](config/config.example.json) to `config/config.json` and update values for:
