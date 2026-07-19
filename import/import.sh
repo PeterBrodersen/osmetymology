@@ -9,6 +9,59 @@ SKIP_AGGREGATE=false
 SKIP_IMPORT_WIKIDATA=false
 SKIP_GENERATE_FILES=false
 SKIP_STATISTICS=false
+TIMING_ENABLED=false
+
+TIMING_ENTRIES=""
+IMPORT_START_TIME=""
+
+timing_now() {
+    date +%s
+}
+
+timing_format_seconds() {
+    total_seconds="$1"
+    hours=$((total_seconds / 3600))
+    minutes=$(((total_seconds % 3600) / 60))
+    seconds=$((total_seconds % 60))
+    printf '%02d:%02d:%02d' "$hours" "$minutes" "$seconds"
+}
+
+timing_record_section() {
+    section_name="$1"
+    section_start="$2"
+    section_state="$3"
+
+    if [ "$TIMING_ENABLED" != true ]; then
+        return
+    fi
+
+    section_end="$(timing_now)"
+    section_elapsed=$((section_end - section_start))
+    TIMING_ENTRIES="${TIMING_ENTRIES}${section_name}|${section_elapsed}|${section_state}
+"
+}
+
+timing_print_summary() {
+    if [ "$TIMING_ENABLED" != true ] || [ -z "$IMPORT_START_TIME" ]; then
+        return
+    fi
+
+    total_elapsed=$(( $(timing_now) - IMPORT_START_TIME ))
+
+    echo
+    echo "Timing summary"
+    echo "--------------"
+
+    while IFS='|' read -r section_name section_elapsed section_state; do
+        [ -n "$section_name" ] || continue
+        printf '%-20s %s (%s)\n' "$section_name" "$(timing_format_seconds "$section_elapsed")" "$section_state"
+    done <<EOF
+${TIMING_ENTRIES}
+EOF
+
+    echo "--------------"
+    printf '%-20s %s\n' "Total" "$(timing_format_seconds "$total_elapsed")"
+}
 
 for arg in "$@"; do
     case "$arg" in
@@ -33,8 +86,11 @@ for arg in "$@"; do
         --skip-statistics)
             SKIP_STATISTICS=true
             ;;
+        --timing)
+            TIMING_ENABLED=true
+            ;;
         --help|-h)
-            echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics]"
+            echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics] [--timing]"
             exit 0
             ;;
         *)
@@ -43,6 +99,10 @@ for arg in "$@"; do
             ;;
     esac
 done
+
+if [ "$TIMING_ENABLED" = true ]; then
+    IMPORT_START_TIME="$(timing_now)"
+fi
 
 CONFIG_FILE="../config/config.json"
 
@@ -136,6 +196,7 @@ if [ "$SKIP_IMPORT_AREAS" = false ] && [ ! -r "$AREAFILE_FULLPATH" ]; then
     exit 1
 fi
 
+SECTION_START="$(timing_now)"
 if [ "$SKIP_DOWNLOAD" = false ]; then
     # Get OSM file
     wget "${URL_STATEFILE:?}" -O "$STATEFILE_FULLPATH"
@@ -161,7 +222,9 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
         fi
     fi
 fi
+timing_record_section "download" "$SECTION_START" "$([ "$SKIP_DOWNLOAD" = true ] && echo skipped || echo done)"
 
+SECTION_START="$(timing_now)"
 if [ "$SKIP_IMPORT_OSM" = false ]; then
     if [ ! -s "$OSMFILE_FULLPATH" ]; then
         echo "Error: Couldn't download $OSMFILE"
@@ -171,7 +234,9 @@ if [ "$SKIP_IMPORT_OSM" = false ]; then
     psql -c "CREATE SCHEMA IF NOT EXISTS ${SCHEMA:?}"
     OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS="${OSM2PGSQL_ENABLE_ASSOCIATED_STREET_RELATIONS:-1}" OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA="${OSM2PGSQL_KEEP_NONUSABLE_OSM_DATA:-0}" osm2pgsql --schema "${SCHEMA:?}" -d "${PGDATABASE:?}" -O flex -S nameimport.lua --drop -s "${OSMFILE_FULLPATH:?}"
 fi
+timing_record_section "import-osm" "$SECTION_START" "$([ "$SKIP_IMPORT_OSM" = true ] && echo skipped || echo done)"
 
+SECTION_START="$(timing_now)"
 if [ "$SKIP_IMPORT_AREAS" = false ]; then
     # Import areas.
     ogr2ogr PG:dbname="${PGDATABASE:?}" "${AREAFILE_FULLPATH:?}" -t_srs EPSG:4326 -lco SCHEMA="${SCHEMA:?}" -nln "${SCHEMA:?}.areas" -overwrite
@@ -179,10 +244,12 @@ if [ "$SKIP_IMPORT_AREAS" = false ]; then
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_ID:?} TO area_id"
     psql -c "ALTER TABLE ${SCHEMA:?}.areas RENAME COLUMN ${AREAFILE_NAME:?} TO area_name"
 fi
+timing_record_section "import-areas" "$SECTION_START" "$([ "$SKIP_IMPORT_AREAS" = true ] && echo skipped || echo done)"
 
 
 # Aggregate, split by area boundaries.
 # :TODO: Allow for import without areas, then aggregate without area boundaries.
+SECTION_START="$(timing_now)"
 if [ "$SKIP_AGGREGATE" = false ]; then
     AGGREGATE_SQL="aggregate_no_areas.sql"
     if [ "$SKIP_IMPORT_AREAS" = false ]; then
@@ -195,16 +262,20 @@ if [ "$SKIP_AGGREGATE" = false ]; then
     fi
     psql -f "$AGGREGATE_SQL"
 fi
+timing_record_section "aggregate" "$SECTION_START" "$([ "$SKIP_AGGREGATE" = true ] && echo skipped || echo done)"
 
 # Download and import Wikidata items. First import fetches all referred items, otherwise only fetch missing items.
 # For a clean import of all items, use --cleanimport
+SECTION_START="$(timing_now)"
 if [ "$SKIP_IMPORT_WIKIDATA" = false ]; then
     php wikidataimport.php --auto
 fi
+timing_record_section "import-wikidata" "$SECTION_START" "$([ "$SKIP_IMPORT_WIKIDATA" = true ] && echo skipped || echo done)"
 
 # Create aggregated FlatGeobuf file for web usage.
 FGBFILE="../www/data/names.fgb"
 CSVFILE="../www/data/names.csv"
+SECTION_START="$(timing_now)"
 if [ "$SKIP_GENERATE_FILES" = false ]; then
     FGB_TMPFILE="$(dirname "${FGBFILE:?}")/.tmp.$$.$(basename "${FGBFILE:?}")"
     CSV_TMPFILE="$(dirname "${CSVFILE:?}")/.tmp.$$.$(basename "${CSVFILE:?}")"
@@ -217,7 +288,9 @@ if [ "$SKIP_GENERATE_FILES" = false ]; then
     ogr2ogr -progress "$CSV_TMPFILE" PG:dbname="${PGDATABASE:?}" -lco SEPARATOR=SEMICOLON -sql '@tocsv.sql'
     mv -f -- "$CSV_TMPFILE" "${CSVFILE:?}"
 fi
+timing_record_section "generate-files" "$SECTION_START" "$([ "$SKIP_GENERATE_FILES" = true ] && echo skipped || echo done)"
 
+SECTION_START="$(timing_now)"
 if [ "$SKIP_STATISTICS" = false ]; then
     php updatestatsfile.php
     # Backup stats file with import date
@@ -225,4 +298,7 @@ if [ "$SKIP_STATISTICS" = false ]; then
     cp ../www/data/stats.json ../www/data/old/stats_${DATE:?}.json
     cp ../www/data/areas.json ../www/data/old/areas_${DATE:?}.json
 fi
+timing_record_section "statistics" "$SECTION_START" "$([ "$SKIP_STATISTICS" = true ] && echo skipped || echo done)"
+
+timing_print_summary
 
