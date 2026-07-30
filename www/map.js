@@ -1,5 +1,5 @@
 let map;
-let highlightWayId = false;
+let highlightLocationId = false;
 const _wikidataSourceData = {};
 const mapConfig = window.appConfig || {};
 const mapI18n = window.appI18n;
@@ -201,11 +201,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function updateMapData() {
         // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously
         // remove the old results
-        let previousHighlightWayId = highlightWayId; // Store the current highlightWayId
+        let previousHighlightLocationId = highlightLocationId;
         previousResults.remove();
         const nextResults = L.layerGroup().addTo(map);
         previousResults = nextResults;
-        highlightWayId = previousHighlightWayId; // Restore the highlightWayId
+        highlightLocationId = previousHighlightLocationId;
 
         let statisticsData = [];
 
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const popupText = getPopupText(feature);
             let lineColor = getLineColorFromGender(feature);
             let highlightColor = '#cccc00ff';
-            let highlightFeature = (feature.properties["id"] == highlightWayId);
+            let highlightFeature = (feature.properties["id"] == highlightLocationId);
             if (highlightFeature) {
                 lineColor = highlightColor;
             }
@@ -260,13 +260,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     layer.setStyle({ weight: 7, fillOpacity: 0.1 });
                 },
                 'popupopen': function (e) {
-                    highlightWayId = feature.properties["id"];
+                    highlightLocationId = feature.properties["id"];
                     const popupLatLng = e.popup && e.popup.getLatLng ? e.popup.getLatLng() : null;
                     e.popup.setContent(getPopupText(feature, popupLatLng));
                     e.target.setStyle({ color: highlightColor });
                 },
                 'popupclose': function (e) {
-                    highlightWayId = false;
+                    highlightLocationId = false;
                     e.target.setStyle({ color: getLineColorFromGender(feature) });
                 }
             }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
@@ -322,8 +322,8 @@ function updateMapLink() {
     $("#copylinktomap").attr('href', '#map=' + coordLink);
 }
 
-function panToWayId(latitude, longitude, wayId) {
-    highlightWayId = wayId;
+function panToLocationId(latitude, longitude, locationId) {
+    highlightLocationId = locationId;
     map.panTo([latitude, longitude]);
 }
 
@@ -331,7 +331,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
+function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromLocationId) {
     const data = _wikidataSourceData[wikidataId];
     if (!data) return;
     const locLatLng = L.latLng(data.lat, data.lng);
@@ -347,13 +347,13 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromWayId) {
             if (places && places.length > 0) {
                 html += '<ul style="padding-left:1em; margin:.3em 0; list-style:none; overflow: auto; max-height: 300px; scrollbar-width: thin; scrollbar-gutter: stable; white-space: nowrap;">';
                 for (const row of places) {
-                    html += `<li style="overflow: hidden; text-overflow: ellipsis;"><span onclick="panToWayId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
+                    html += `<li style="overflow: hidden; text-overflow: ellipsis;"><span onclick="panToLocationId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
                 }
                 html += '</ul>';
             } else {
                 html += `<p>${mapTranslate('common.noPlacesFound')}</p>`;
             }
-            html += `<p><a href="#" onclick="panToWayId(${fromLat}, ${fromLng}, ${fromWayId}); return false;">← ${mapTranslate('common.back')}</a></p>`;
+            html += `<p><a href="#" onclick="panToLocationId(${fromLat}, ${fromLng}, ${fromLocationId}); return false;">← ${mapTranslate('common.back')}</a></p>`;
             popup.setContent(html);
         })
         .catch(() => {

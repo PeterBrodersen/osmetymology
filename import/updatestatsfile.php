@@ -171,6 +171,21 @@ function strtofloat($scalar)
 	return is_numeric($scalar) ? $scalar + 0 : $scalar;
 }
 
+function decodeWaysField($items)
+{
+	foreach ($items as &$item) {
+		if (!isset($item['ways']) || !is_string($item['ways'])) {
+			continue;
+		}
+		$decoded = json_decode($item['ways'], true);
+		if (json_last_error() === JSON_ERROR_NONE) {
+			$item['ways'] = $decoded;
+		}
+	}
+	unset($item);
+	return $items;
+}
+
 
 function getSingleAreaWayPersons($areacode)
 {
@@ -197,12 +212,12 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
+			SELECT DISTINCT l."name", l.id AS internal_location_id, unnest(wikidatas) AS wd
 			FROM locations_agg l
 			WHERE l.featuretype IN('way','square')
 			AND $expandedWhere
 		)
-		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, jsonb_agg(jsonb_build_object('name', expanded.name, 'internal_location_id', expanded.internal_location_id) ORDER BY expanded.name, expanded.internal_location_id) AS ways
 		FROM expanded
 		INNER JOIN wikidata w ON expanded.wd = w.itemid
 		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -212,7 +227,7 @@ function getSingleAreaWayPersons($areacode)
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute($params);
-	$result['items'] = $q->fetchAll();
+	$result['items'] = decodeWaysField($q->fetchAll());
 	return $result;
 }
 

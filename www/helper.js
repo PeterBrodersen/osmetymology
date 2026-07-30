@@ -177,10 +177,12 @@ $(function () {
   if (window.location.hash.length > 1) {
     // should be moved to map.js startup instead of starting a location that we immediately move away from
     let hash = decodeURIComponent(window.location.hash.substring(1));
-    const regex = /^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/;
-    const match = hash.match(regex);
-    if (match && map.setView) {
-      map.setView(L.latLng(match[2], match[3]), match[1]);
+    const locationMatch = hash.match(/^location=(\d+)$/);
+    const mapMatch = hash.match(/^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+    if (locationMatch) {
+      panToLocationHash(locationMatch[1]);
+    } else if (mapMatch && map.setView) {
+      map.setView(L.latLng(mapMatch[2], mapMatch[3]), mapMatch[1]);
     } else {
       doSearch(hash);
     }
@@ -217,6 +219,19 @@ function doSearch(searchword) {
   $("#namefind").val(searchword).trigger('keyup');
 }
 
+function panToLocationHash(locationId) {
+  $.getJSON("lookup.php", { locationid: locationId })
+    .fail((jqxhr, textStatus, error) => updateResultTableError(error))
+    .done((data) => {
+      updateResultTable(data);
+      if (!data || data.length === 0) {
+        return;
+      }
+      const row = data[0];
+      panToLocationId(row['centroid_onfeature_latitude'], row['centroid_onfeature_longitude'], row['id']);
+    });
+}
+
 /*
 addEventListener("hashchange", (event) => {
   var starttext = decodeURIComponent(window.location.hash.substring(1))
@@ -232,7 +247,7 @@ function updateResultTable(data) {
     let newtable = $("#tabletemplate").contents().clone();
     let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
     for (row of data) {
-      var mapTohtml = `<span onclick="panToWayId(${row['centroid_onfeature_latitude']}, ${row['centroid_onfeature_longitude']}, ${row['id']});">📍</span>`;
+      var mapTohtml = `<span onclick="panToLocationId(${row['centroid_onfeature_latitude']}, ${row['centroid_onfeature_longitude']}, ${row['id']});">📍</span>`;
       var streetname = row['streetname'] ?? '';
       var streetnamehtml = streetname;
       // if (row['sampleway_id']) {

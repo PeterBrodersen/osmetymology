@@ -141,7 +141,9 @@ function renderSingleAreaStats(data, scrollToTable = false) {
         if (item.is_human) {
             symbol += `<span title="${areasI18n.t('common.realPerson')}">🧑</span>`;
         }
-        let ways = item.ways.replaceAll(';', '<br>');
+        let ways = Array.isArray(item.ways)
+            ? item.ways.map((way) => way.internal_location_id ? `<a href="/#location=${encodeURIComponent(way.internal_location_id)}">${way.name}</a>` : way.name).join('<br>')
+            : item.ways.replaceAll(';', '<br>');
         html += `
         <tr>
         <td>${symbol} <a href="/#${item.wikidata_item}">${item.personname}</a><br><div class="persondetails">${item.description ?? ''}</div></td>

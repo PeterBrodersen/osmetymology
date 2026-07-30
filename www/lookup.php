@@ -7,6 +7,7 @@ $itemname = (string) ($_GET['itemname'] ?? '');
 $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
+$locationid = (string) ($_GET['locationid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
 $areacode = (int) ($_GET['areacode'] ?? 0);
 $hasAreacode = array_key_exists('areacode', $_GET);
@@ -36,6 +37,21 @@ function convertPGArraysToPHPArray($result)
 		$cleanresult[] = $row;
 	}
 	return $cleanresult;
+}
+
+function decodeWaysField($items)
+{
+	foreach ($items as &$item) {
+		if (!isset($item['ways']) || !is_string($item['ways'])) {
+			continue;
+		}
+		$decoded = json_decode($item['ways'], true);
+		if (json_last_error() === JSON_ERROR_NONE) {
+			$item['ways'] = $decoded;
+		}
+	}
+	unset($item);
+	return $items;
 }
 
 function getColumns($coordinates = FALSE, $useAreas = true)
@@ -84,6 +100,9 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
 		$where = 'WHERE wikidatas @> ARRAY[?]';
+	} elseif ($type == 'locationid') {
+		$where = 'WHERE l.id = ?';
+		$limit = 1;
 	} elseif ($type == 'nearest') {
 		$limit = 20;
 		$orderbylist = ['distance'];
@@ -205,6 +224,21 @@ function findStreetsFromItem($itemid)
 	return $result;
 }
 
+function findLocationById($locationid)
+{
+	global $dbh;
+	if (!preg_match('/^\d+$/', $locationid)) {
+		return false;
+	}
+	$querystring = getQuerystring('locationid');
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([(int) $locationid]);
+	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
+	return $result;
+}
+
 function findNearestPlacesFromLocation($coordinates)
 {
 	global $dbh;
@@ -267,12 +301,12 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
+			SELECT DISTINCT l."name", l.id AS internal_location_id, unnest(wikidatas) AS wd
 			FROM locations_agg l
 			WHERE l.featuretype = 'way'
 			AND $expandedWhere
 		)
-		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.description, jsonb_agg(jsonb_build_object('name', expanded.name, 'internal_location_id', expanded.internal_location_id) ORDER BY expanded.name, expanded.internal_location_id) AS ways
 		FROM expanded
 		INNER JOIN wikidata w ON expanded.wd = w.itemid
 		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -282,7 +316,7 @@ function getSingleAreaWayPersons($areacode)
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute($params);
-	$result['items'] = $q->fetchAll();
+	$result['items'] = decodeWaysField($q->fetchAll());
 	return $result;
 }
 
@@ -344,6 +378,8 @@ if ($searchname) {
 	$result = findWikidataLabel($searchitem);
 } elseif ($itemid) {
 	$result = findStreetsFromItem($itemid);
+} elseif ($locationid !== '') {
+	$result = findLocationById($locationid);
 } elseif ($coordinates) {
 	$result = findNearestPlacesFromLocation($coordinates);
 } elseif ($bbox) {
