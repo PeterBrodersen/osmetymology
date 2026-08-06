@@ -13,6 +13,14 @@ function mapTranslatePlural(key, count, params) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    if (mapI18n && typeof mapI18n.ensureTranslationsLoaded === 'function') {
+        try {
+            await mapI18n.ensureTranslationsLoaded();
+        } catch (error) {
+            console.warn('Could not load translations before map setup', error);
+        }
+    }
+
     const placeConfig = mapConfig.place || {};
     const startLat = Number.isFinite(Number(placeConfig.lat)) ? Number(placeConfig.lat) : 51.5;
     const startLng = Number.isFinite(Number(placeConfig.lng)) ? Number(placeConfig.lng) : 0;
@@ -46,19 +54,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     }
 
-    var geocoderOptions = {
-        geocoder: new L.Control.Geocoder.nominatim({
-            geocodingQueryParams: {
-                "countrycodes": geocodingCountryCode
-            }
-        }),
-        placeholder: mapTranslate('map.searchPlaceInCountry', { country: geocodingCountryName })
-    };
+    let layerControl = null;
+    let geocoderControl = null;
 
-    var layerControl = L.control.layers(getBaseMaps()).addTo(map);
+    function createGeocoderControl() {
+        return L.Control.geocoder({
+            geocoder: new L.Control.Geocoder.nominatim({
+                geocodingQueryParams: {
+                    "countrycodes": geocodingCountryCode
+                }
+            }),
+            placeholder: mapTranslate('map.searchPlaceInCountry', { country: geocodingCountryName })
+        });
+    }
+
+    function rebuildTopRightControls() {
+        if (layerControl) {
+            map.removeControl(layerControl);
+        }
+        if (geocoderControl) {
+            map.removeControl(geocoderControl);
+        }
+
+        // Keep a stable control order across startup and language changes.
+        layerControl = L.control.layers(getBaseMaps()).addTo(map);
+        geocoderControl = createGeocoderControl().addTo(map);
+    }
+
+    rebuildTopRightControls();
     L.control.scale().addTo(map);
-
-    L.Control.geocoder(geocoderOptions).addTo(map);
 
     function mapBoundingBox() {
         const bounds = map.getBounds();
@@ -307,12 +331,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.addEventListener('app:languagechange', () => {
-        layerControl.remove();
-        layerControl = L.control.layers(getBaseMaps()).addTo(map);
-        const geocoderInput = document.querySelector('.leaflet-control-geocoder-form input');
-        if (geocoderInput) {
-            geocoderInput.placeholder = mapTranslate('map.searchPlaceInCountry', { country: geocodingCountryName });
-        }
+        rebuildTopRightControls();
         map.closePopup();
     });
 });
