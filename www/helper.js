@@ -3,7 +3,6 @@ let lastinputname = '';
 let lastinputlabel = '';
 let currentCount = 0;
 let lastResultState = null;
-let lastStatsData = null;
 const helperConfig = window.appConfig || {};
 const i18n = window.appI18n;
 
@@ -187,33 +186,10 @@ $(function () {
       doSearch(hash);
     }
   }
-  getStats();
-
   document.addEventListener('app:languagechange', () => {
-    renderStats(lastStatsData);
     rerenderLastResultState();
   });
 });
-
-function getStats() {
-  $.getJSON('data/stats.json')
-    .done((data) => {
-      lastStatsData = data || null;
-      renderStats(lastStatsData);
-    }
-    );
-}
-
-function renderStats(data) {
-  if (!data) {
-    return;
-  }
-
-  $('.stats #totalroads').text(i18n.formatNumber(data.totalroads));
-  $('.stats #uniquenamedroads').text(i18n.formatNumber(data.uniquenamedroads));
-  $('.stats #uniqueetymologywikidata').text(i18n.formatNumber(data.uniqueetymologywikidata));
-  $('.stats #importfiletime').text(i18n.formatDate(new Date(data.importfiletime * 1000)));
-}
 
 function doSearch(searchword) {
   $("#namefind").val(searchword).trigger('keyup');

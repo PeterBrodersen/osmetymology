@@ -8,28 +8,87 @@ $areajsonfolder = '../www/data/areas/';
 
 print date("H:i:s") . ": Creating stats" . PHP_EOL;
 
-$totalroads = $dbh->query('SELECT COUNT(*) FROM locations_agg')->fetchColumn();
-$uniquenamedroads = $dbh->query('SELECT COUNT(DISTINCT name) FROM locations_agg')->fetchColumn();
-$uniqueetymologywikidata = $dbh->query('WITH wds AS (SELECT DISTINCT UNNEST(wikidatas) AS wikidata_item FROM locations_agg) SELECT COUNT(wikidata_item) FROM wds')->fetchColumn();
-$localwikidataitems = $dbh->query('SELECT COUNT(*) FROM wikidata')->fetchColumn(); // including extra content such as "instance of" data
-$importfiletime = NULL;
-$importfiletimedate = NULL;
-if (file_exists($statefile)) {
-	if (preg_match('/^timestamp=(.*)$/m', file_get_contents($statefile), $match)) {
-		$importfiletime = strtotime(stripslashes($match[1]));
-		$importfiletimedate = date('Y-m-d H:i:s', $importfiletime);
+function loadStatsFromJsonFile($path)
+{
+	if (!is_readable($path)) {
+		return null;
+	}
+
+	$decoded = json_decode(file_get_contents($path), true);
+	return is_array($decoded) ? $decoded : null;
+}
+
+function getImportFileMetadata($statefile)
+{
+	$importfiletime = null;
+	$importfiletimedate = null;
+	if (file_exists($statefile)) {
+		if (preg_match('/^timestamp=(.*)$/m', file_get_contents($statefile), $match)) {
+			$importfiletime = strtotime(stripslashes($match[1]));
+			$importfiletimedate = date('Y-m-d H:i:s', $importfiletime);
+		}
+	}
+
+	return [
+		'importfiletime' => $importfiletime,
+		'importfiletimedate' => $importfiletimedate,
+	];
+}
+
+function getImportJobStats($statefile)
+{
+	global $dbh;
+
+	$stats = [
+		'totalroads' => $dbh->query('SELECT COUNT(*) FROM locations_agg')->fetchColumn(),
+		'uniquenamedroads' => $dbh->query('SELECT COUNT(DISTINCT name) FROM locations_agg')->fetchColumn(),
+		'uniqueetymologywikidata' => $dbh->query('WITH wds AS (SELECT DISTINCT UNNEST(wikidatas) AS wikidata_item FROM locations_agg) SELECT COUNT(wikidata_item) FROM wds')->fetchColumn(),
+		'localwikidataitems' => $dbh->query('SELECT COUNT(*) FROM wikidata')->fetchColumn(), // including extra content such as "instance of" data
+	];
+
+	return array_merge($stats, getImportFileMetadata($statefile));
+}
+
+function writeJsonFile($path, $data)
+{
+	file_put_contents($path, json_encode($data));
+}
+
+function getDiffSuffix($key, $newStats, $oldStats)
+{
+	if (!is_array($oldStats) || !array_key_exists($key, $oldStats)) {
+		return '';
+	}
+
+	$newValue = $newStats[$key] ?? null;
+	$oldValue = $oldStats[$key];
+	if (!is_numeric($newValue) || !is_numeric($oldValue)) {
+		return '';
+	}
+
+	$diff = (int) $newValue - (int) $oldValue;
+	$sign = $diff > 0 ? '+' : '';
+	return ' (' . $sign . $diff . ')';
+}
+
+function printStatsSummary($newStats, $oldStats)
+{
+	$statsToPrint = [
+		'totalroads' => 'Total roads',
+		'uniquenamedroads' => 'Unique named roads',
+		'uniqueetymologywikidata' => 'Unique etymology wikidata',
+		'localwikidataitems' => 'Local wikidata items',
+	];
+
+	foreach ($statsToPrint as $key => $label) {
+		$value = $newStats[$key] ?? 0;
+		print $label . ': ' . $value . getDiffSuffix($key, $newStats, $oldStats) . PHP_EOL;
 	}
 }
 
-$stats = [
-	'totalroads' => $totalroads,
-	'uniquenamedroads' => $uniquenamedroads,
-	'uniqueetymologywikidata' => $uniqueetymologywikidata,
-	'localwikidataitems' => $localwikidataitems,
-	'importfiletime' => $importfiletime,
-	'importfiletimedate' => $importfiletimedate
-];
-file_put_contents($statsjsonfile, json_encode($stats));
+$oldstats = loadStatsFromJsonFile($statsjsonfile);
+$stats = getImportJobStats($statefile);
+writeJsonFile($statsjsonfile, $stats);
 
 function hasAreasTable()
 {
@@ -255,7 +314,4 @@ foreach ($areacodes as $areacode) {
 
 print PHP_EOL . date("H:i:s") . ": Stats done!" . PHP_EOL;
 
-print "Total roads: " . $totalroads . PHP_EOL;
-print "Unique named roads: " . $uniquenamedroads . PHP_EOL;
-print "Unique etymology wikidata: " . $uniqueetymologywikidata . PHP_EOL;
-print "Local wikidata items: " . $localwikidataitems . PHP_EOL;
+printStatsSummary($stats, $oldstats);

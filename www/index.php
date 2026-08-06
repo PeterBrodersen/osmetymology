@@ -40,6 +40,56 @@ $placeName = $translationParams['placeName'] ?? $placeName;
 $titleKey = $placeName ? 'home.titleWithPlace' : 'home.title';
 $title = translateCatalogue($translations, $locale, $titleKey, $translationParams);
 $appConfig['i18n'] = buildI18nConfig($translations, $locale, 'home', $translationParams, $localeParams, $translationOverrides);
+
+$stats = null;
+$statsPath = __DIR__ . '/data/stats.json';
+if (is_readable($statsPath)) {
+    $decodedStats = json_decode(file_get_contents($statsPath), true);
+    if (is_array($decodedStats)) {
+        $stats = $decodedStats;
+    }
+}
+
+$dateLocale = translateCatalogue($translations, $locale, 'common.dateLocale', $translationParams);
+if ($dateLocale === 'common.dateLocale') {
+    $dateLocale = $locale;
+}
+
+$formatNumber = static function ($value, string $localeCode): string {
+    $numericValue = is_numeric($value) ? (float) $value : 0.0;
+    if (class_exists('NumberFormatter')) {
+        $formatter = new NumberFormatter($localeCode, NumberFormatter::DECIMAL);
+        $formatted = $formatter->format($numericValue);
+        if (is_string($formatted)) {
+            return $formatted;
+        }
+    }
+
+    return number_format($numericValue, 0, '.', ',');
+};
+
+$formatDateFromUnix = static function ($value, string $localeCode): string {
+    if (!is_numeric($value)) {
+        return '';
+    }
+
+    $timestamp = (int) $value;
+    $date = (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+    if (class_exists('IntlDateFormatter')) {
+        $formatter = new IntlDateFormatter($localeCode, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
+        $formatted = $formatter->format($date);
+        if (is_string($formatted)) {
+            return $formatted;
+        }
+    }
+
+    return $date->format('Y-m-d');
+};
+
+$statsTotalRoads = $stats !== null ? $formatNumber($stats['totalroads'] ?? 0, $dateLocale) : '';
+$statsUniqueNamedRoads = $stats !== null ? $formatNumber($stats['uniquenamedroads'] ?? 0, $dateLocale) : '';
+$statsUniqueEtymologyWikidata = $stats !== null ? $formatNumber($stats['uniqueetymologywikidata'] ?? 0, $dateLocale) : '';
+$statsImportFileTime = $stats !== null ? $formatDateFromUnix($stats['importfiletime'] ?? null, $dateLocale) : '';
 ?>
 <!DOCTYPE html>
 <html lang="<?php print htmlspecialchars($locale); ?>">
@@ -138,13 +188,15 @@ $appConfig['i18n'] = buildI18nConfig($translations, $locale, 'home', $translatio
 
         <p class="copyright" data-i18n-html="home.copyrightHtml"><?php print translateCatalogue($translations, $locale, 'home.copyrightHtml', $translationParams); ?></p>
 
-        <p class="stats">
-            <span data-i18n="home.stats.content"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.content', $translationParams)); ?></span><br>
-            <span data-i18n="home.stats.places"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.places', $translationParams)); ?></span> <span id="totalroads"></span><br>
-            <span data-i18n="home.stats.uniquelyNamedPlaces"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniquelyNamedPlaces', $translationParams)); ?></span> <span id="uniquenamedroads"></span><br>
-            <span data-i18n="home.stats.uniqueTopics"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniqueTopics', $translationParams)); ?></span> <span id="uniqueetymologywikidata"></span><br>
-            <span data-i18n="home.stats.datasetDate"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.datasetDate', $translationParams)); ?></span> <span id="importfiletime"></span>
-        </p>
+        <?php if ($stats !== null): ?>
+            <p class="stats">
+                <span data-i18n="home.stats.content"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.content', $translationParams)); ?></span><br>
+                <span data-i18n="home.stats.places"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.places', $translationParams)); ?></span> <span id="totalroads"><?php print htmlspecialchars($statsTotalRoads); ?></span><br>
+                <span data-i18n="home.stats.uniquelyNamedPlaces"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniquelyNamedPlaces', $translationParams)); ?></span> <span id="uniquenamedroads"><?php print htmlspecialchars($statsUniqueNamedRoads); ?></span><br>
+                <span data-i18n="home.stats.uniqueTopics"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniqueTopics', $translationParams)); ?></span> <span id="uniqueetymologywikidata"><?php print htmlspecialchars($statsUniqueEtymologyWikidata); ?></span><br>
+                <span data-i18n="home.stats.datasetDate"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.datasetDate', $translationParams)); ?></span> <span id="importfiletime"><?php print htmlspecialchars($statsImportFileTime); ?></span>
+            </p>
+        <?php endif; ?>
     </div>
 </body>
 
