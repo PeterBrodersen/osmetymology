@@ -56,6 +56,11 @@
                 }
             },
             "bc": "BC",
+            "timePrecision": {
+                "millennium": "{{count}} millennium",
+                "century": "{{count}} century",
+                "decade": "{{startYear}}s"
+            },
             "women": "Women",
             "men": "Men",
             "allAreas": "All {{areaNamePlural}}"
@@ -218,6 +223,11 @@
                 }
             },
             "bc": "f.Kr.",
+            "timePrecision": {
+                "millennium": "{{count}}. årtusinde",
+                "century": "{{count}}. århundrede",
+                "decade": "{{startYear}}'erne"
+            },
             "women": "Kvinder",
             "men": "Mænd",
             "allAreas": "Alle {{areaNamePlural}}"

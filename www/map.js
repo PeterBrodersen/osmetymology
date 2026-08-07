@@ -116,8 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         let wikipediaenurlprefix = 'https://en.wikipedia.org/w/index.php?title=';
         if (wikidataset) {
             let sections = [];
-            const distanceAwayText = getWikidataDistanceAwayText(feature.properties["wikidata_location"], popupLatLng, unitSystem);
-            let distanceTextAdded = false;
             let dateoptions = {
                 // day: 'numeric',
                 // month: 'short',
@@ -139,29 +137,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 let wikidataId = item["itemid"];
                 let wikidatalabel = item["label"];
                 let wikibirth = item["dateofbirth"];
+                let wikibirthprecision = item["dateofbirth_precision"];
                 let wikideath = item["dateofdeath"];
+                let wikideathprecision = item["dateofdeath_precision"];
                 let wikipediatitleen = item["wikipediatitleen"];
                 let wikidatadescription = capitalizeFirstLetter(item["description"] ?? '');
                 sectiontext += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
                 if (wikibirth || wikideath) {
                     let birthdeathtext = '(';
                     if (wikibirth) {
-                        if (typeof wikibirth === 'string' && wikibirth.trim().endsWith('BC')) {
-                            // Handle BC date string, e.g. "0600-01-01 BC"
-                            let yearMatch = wikibirth.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikibirth) + ' ' + mapTranslate('common.bc');
-                        } else {
-                            birthdeathtext += mapI18n.formatDate(new Date(wikibirth), dateoptions);
-                        }
+                        birthdeathtext += formatWikidataDateByPrecision(wikibirth, wikibirthprecision, dateoptions);
                     }
                     birthdeathtext += ' - ';
                     if (wikideath) {
-                        if (typeof wikideath === 'string' && wikideath.trim().endsWith('BC')) {
-                            let yearMatch = wikideath.match(/^0*(\d{1,4})/); // Remove leading zeroes
-                            birthdeathtext += (yearMatch ? yearMatch[1] : wikideath) + ' ' + mapTranslate('common.bc');
-                        } else {
-                            birthdeathtext += mapI18n.formatDate(new Date(wikideath), dateoptions);
-                        }
+                        birthdeathtext += formatWikidataDateByPrecision(wikideath, wikideathprecision, dateoptions);
                     }
                     birthdeathtext += ')';
                     sectiontext += `<div class="popupbirthdeath">${birthdeathtext}</div>`;
@@ -170,18 +159,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (wikidatadescription) {
                     descriptionParagraphParts.push(wikidatadescription);
                 }
-                if (!distanceTextAdded && distanceAwayText) {
-                    const locationLatLng = parseWikidataLocationToLatLng(feature.properties["wikidata_location"]);
+                const itemDistanceAwayText = getWikidataDistanceAwayText(item["wikidata_location"], popupLatLng, unitSystem);
+                if (itemDistanceAwayText) {
+                    const locationLatLng = parseWikidataLocationToLatLng(item["wikidata_location"]);
                     if (locationLatLng && popupLatLng) {
                         _wikidataSourceData[wikidataId] = { label: wikidatalabel, lat: locationLatLng.lat, lng: locationLatLng.lng };
                         const fromLat = popupLatLng.lat;
                         const fromLng = popupLatLng.lng;
                         const fromWayId = feature.properties["id"];
-                        descriptionParagraphParts.push(`(<a href="#" onclick="openWikidataSourcePopup('${wikidataId}', ${fromLat}, ${fromLng}, ${fromWayId}); return false;">${distanceAwayText}</a>)`);
+                        descriptionParagraphParts.push(`(<a href="#" onclick="openWikidataSourcePopup('${wikidataId}', ${fromLat}, ${fromLng}, ${fromWayId}); return false;">${itemDistanceAwayText}</a>)`);
                     } else {
-                        descriptionParagraphParts.push(`(${distanceAwayText})`);
+                        descriptionParagraphParts.push(`(${itemDistanceAwayText})`);
                     }
-                    distanceTextAdded = true;
                 }
                 if (descriptionParagraphParts.length > 0) {
                     sectiontext += `<p>${descriptionParagraphParts.join('<br>')}</p>`;
@@ -197,9 +186,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 sections.push(sectiontext);
             }
             popupText += sections.map(section => `<div>${section}</div>`).join('\n');
-            if (!distanceTextAdded && distanceAwayText) {
-                popupText += `<p>(${distanceAwayText})</p>`;
-            }
         } else if (etymologyText) {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
@@ -215,6 +201,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             lineColor = '#2244ff99';
         } else if (feature.properties['gender'] == 'female') {
             lineColor = '#ff000099';
+        } else if (feature.properties['gender'] == 'mixed') {
+            lineColor = '#ff00ff99';
         }
         return lineColor;
     }
@@ -460,4 +448,127 @@ function formatDistanceAway(distanceInMeters, unitSystem = 'metric') {
 
     const roundedKilometers = Math.round(distanceInKilometers * 10) / 10;
     return mapTranslatePlural('common.distance.kilometer', roundedKilometers, { count: mapI18n.formatNumber(roundedKilometers, undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) });
+}
+
+function formatWikidataDateByPrecision(rawDate, precisionRaw, yearOnlyOptions = { year: 'numeric' }) {
+    if (!rawDate) {
+        return '';
+    }
+
+    const parsed = parseWikidataDateValue(rawDate);
+    const precision = Number.isFinite(Number(precisionRaw)) ? Number(precisionRaw) : 9;
+    const monthYearOptions = { year: 'numeric', month: 'short' };
+    const fullDateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+
+    if (precision >= 11) {
+        return formatWikidataDateWithEra(parsed, fullDateOptions);
+    }
+
+    if (precision === 10) {
+        return formatWikidataDateWithEra(parsed, monthYearOptions);
+    }
+
+    if (precision === 9) {
+        return formatWikidataDateWithEra(parsed, yearOnlyOptions);
+    }
+
+    const yearNumber = parsed.year;
+    if (!Number.isFinite(yearNumber)) {
+        return String(rawDate);
+    }
+
+    if (precision === 8) {
+        const decadeStart = Math.floor(yearNumber / 10) * 10;
+        const decadeLabel = mapTranslate('common.timePrecision.decade', {
+            startYear: mapI18n.formatNumber(decadeStart)
+        });
+        return parsed.isBC ? `${decadeLabel} ${mapTranslate('common.bc')}` : decadeLabel;
+    }
+
+    if (precision === 7) {
+        const centuryNumber = Math.ceil(yearNumber / 100);
+        const centuryLabel = mapTranslate('common.timePrecision.century', {
+            count: mapI18n.formatNumber(centuryNumber)
+        });
+        return parsed.isBC ? `${centuryLabel} ${mapTranslate('common.bc')}` : centuryLabel;
+    }
+
+    const millenniumNumber = Math.ceil(yearNumber / 1000);
+    const millenniumLabel = mapTranslate('common.timePrecision.millennium', {
+        count: mapI18n.formatNumber(millenniumNumber)
+    });
+    return parsed.isBC ? `${millenniumLabel} ${mapTranslate('common.bc')}` : millenniumLabel;
+}
+
+function formatWikidataDateWithEra(parsedDate, options) {
+    if (parsedDate.date && !parsedDate.isBC) {
+        return mapI18n.formatDate(parsedDate.date, options);
+    }
+
+    const year = Number.isFinite(parsedDate.year) ? mapI18n.formatNumber(parsedDate.year) : String(parsedDate.raw || '');
+    if (options && options.day && Number.isFinite(parsedDate.day) && Number.isFinite(parsedDate.month)) {
+        const fullDateText = `${parsedDate.day}-${parsedDate.month}-${year}`;
+        return parsedDate.isBC ? `${fullDateText} ${mapTranslate('common.bc')}` : fullDateText;
+    }
+
+    if (options && options.month && Number.isFinite(parsedDate.month)) {
+        const monthYearText = `${parsedDate.month}-${year}`;
+        return parsedDate.isBC ? `${monthYearText} ${mapTranslate('common.bc')}` : monthYearText;
+    }
+
+    return parsedDate.isBC ? `${year} ${mapTranslate('common.bc')}` : year;
+}
+
+function parseWikidataDateValue(rawDate) {
+    const parsed = {
+        raw: rawDate,
+        isBC: false,
+        year: NaN,
+        month: NaN,
+        day: NaN,
+        date: null,
+    };
+
+    if (rawDate instanceof Date && !Number.isNaN(rawDate.getTime())) {
+        parsed.year = rawDate.getUTCFullYear();
+        parsed.month = rawDate.getUTCMonth() + 1;
+        parsed.day = rawDate.getUTCDate();
+        parsed.date = rawDate;
+        return parsed;
+    }
+
+    if (typeof rawDate !== 'string') {
+        return parsed;
+    }
+
+    const trimmed = rawDate.trim();
+    const isBC = trimmed.toUpperCase().endsWith('BC');
+    parsed.isBC = isBC;
+    const cleaned = isBC ? trimmed.replace(/\s*BC\s*$/i, '') : trimmed;
+    const match = cleaned.match(/^[-+]?0*(\d{1,6})(?:-(\d{2})-(\d{2}))?$/);
+    if (match) {
+        parsed.year = Number(match[1]);
+        if (match[2]) {
+            parsed.month = Number(match[2]);
+        }
+        if (match[3]) {
+            parsed.day = Number(match[3]);
+        }
+        if (!isBC) {
+            const parsedDate = new Date(cleaned);
+            if (!Number.isNaN(parsedDate.getTime())) {
+                parsed.date = parsedDate;
+            }
+        }
+        return parsed;
+    }
+
+    const fallbackDate = new Date(trimmed);
+    if (!Number.isNaN(fallbackDate.getTime())) {
+        parsed.year = fallbackDate.getUTCFullYear();
+        parsed.month = fallbackDate.getUTCMonth() + 1;
+        parsed.day = fallbackDate.getUTCDate();
+        parsed.date = fallbackDate;
+    }
+    return parsed;
 }
