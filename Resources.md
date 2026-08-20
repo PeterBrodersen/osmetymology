@@ -107,6 +107,7 @@ Resources for getting information about the origin of Danish street names.
 | Sorø             | [Veje og gader i Sorø og omegn](https://www.soroehistorie.dk/arkiv/Veje_og_gader.html) | Online | Lokalhistorisk Arkiv for Sorø og Omegn |
 | Svendborg        | [Gader og veje](https://www.svendborghistorie.dk/historier/erhverv/130-gader-og-veje/gader-og-veje-sp-131/) | Online | Museum Sydfyn | |
 | Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
+| Svinninge        | [Weitemeyers Kilde 2015:1](https://svinningelokalhistorie.dk/2015-1/) | Online | Svinninge Lokalhistoriske Forening og Arkiv | |
 | Sæby, Frederikshavn | [Sæby vejnavne](https://sites.google.com/site/saebyleksikon/home/saeby-vejnavne) | Online | Thorkild Walsted, Ingrid Mørk |
 | Søllerød         | [Vejnavne i Søllerød Kommune](https://bibliotek.dk/work/work-of:870970-basis:40300872) | Book (1975) | Sofus Larsen, Gunnar Sandfeld | |
 | Søllerød         | [Vejnavne - fra Aggershvile Allé til Øverødvej](https://bibliotek.dk/materiale/vejnavne-fra-aggershvile-alle-til-oeveroedvej_caspar-christiansen/work-of%3A870970-basis%3A29172234?type=bog&tid=rfdzC17525191781721250935815) | Book (2011) | Caspar Christiansen, Martin Dahl | Very detailed |
