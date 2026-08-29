@@ -27,6 +27,7 @@ Resources for getting information about the origin of Danish street names.
 | Frederiksborg    | [Frederiksborg Amts Stednavne](https://slaegtsbibliotek.dk/921948.pdf) | Online Book (1929) | Stednavneudvalget |
 | Frederikshavn    | [Tilbageblik - før og nu : historier bag navnet i Frederikshavn](https://bibliotek.dk/materiale/tilbageblik-foer-og-nu_peter-bandholm/work-of%3A870970-basis%3A45209725?type=bog) | Book (2011) | Peter Bandholm, Erik S. Christensen | More stories and anecdotes than lists |
 | Gentofte         | [Veje i Gentofte](https://bibliotek.dk/materiale/veje-i-gentofte_l-gotfredsen-f-1894-/work-of:870970-basis:05266637) | Book | Lokalhistorisk Forening for Gentofte Kommune | Lists all roads |
+| Give             | [Hvad har Niels Kjeldsen, Midtbank, Elementfabrikken, Danpo og fotografi at gøre med Pigernes Kvarter?](https://www.voreslokalavis.dk/nyheder/hvad-har-niels-kjeldsen-midtbank-elementfabrikken-danpo-og-fotografi-at-goere-med-pigernes-kvarter) | Article (2023) | Jim Hoff, Vores Lokalavis | A couple of roads named after women |
 | Gladsaxe         | [Vejnavneregister](https://gladsaxe.dk/kommunen/gladsaxe-byarkiv/databaser/vejnavneregister) | Online | Gladsaxe Kommune |
 | Glostrup         | [Veje i Glostrup](https://byhistoriskhus.dk/veje) | Online | Byhistorisk Hus, Glostrup |
 | Greve            | [Et gammelt kort](https://slaegtsbibliotek.dk/934861.pdf) | Online, book (1995) | Greve Lokalhistoriske Forening |
