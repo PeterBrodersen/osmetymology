@@ -122,7 +122,7 @@ Resources for getting information about the origin of Danish street names.
 | Vanløse          | [Vanløsebasen](https://vanloese.dk/) | Online |
 | Vanløse          | [Vanløsehøj](https://www.vanloesehoejhaveby.dk/baggrundsinfo-1/) | Online |
 | Vejby-Tibirke    | [Vejby-Tibirke Årbog 1975-76](https://slaegtsbibliotek.dk/921993.pdf) | Online book (1975), PDF | Vejby-Tibirke Selskabet | Street names from page 53 |
-| Vejle            | [VejleWiki](http://vejlewiki.dk/) | Online, Wiki | Vejle Stadsarkiv |
+| Vejle            | [Oversigt over gader og veje - VejleWiki](https://www.vejlewiki.dk/index.php?title=Oversigt_over_gader_og_veje) | Online, Wiki | Vejle Stadsarkiv |
 | Vendsyssel       | [WikiVendsyssel](https://vendsysselwiki.dk/index.php?title=Forside) | Online, Wiki | User driven |
 | Vesthimmerland   | [Historier og steder](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder) | Online | Kulturarvstjenesten Vesthimmerland | Contains information for a few roads in [Aars](https://www.vesthimmerlandsmuseum.dk/Kulturarvstjenesten/Historier-og-steder/Gadeskilte/Gadeskilte-Aars), [Løgstør](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-loegstoer), [Farsø](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-farsoe), and [Aalestrup](https://www.vesthimmerlandsmuseum.dk/kulturarvstjenesten/historier-og-steder/gadeskilte/gadeskilte-aalestrup) |
 | Viborg           | [Leksikon over steder, begivenheder, personer og genstande i Viborg](https://viborgmuseum.dk/leksikon) | Website | Viborg Museum | |
