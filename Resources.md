@@ -5,6 +5,7 @@ Resources for getting information about the origin of Danish street names.
 | ---------------- | -------- | ---- | ----- | ---- |
 | Allerød          | [Veje i Allerød Kommune](https://www.lafak.dk/veje) | Online | Lokalhistorisk Arkiv & Forening i Allerød Kommune | Site mentions origin of streets and towns, and describes local people |
 | Als              | [Alsiske Stednavne](https://bibliotek.dk/materiale/alsiske-stednavne_johannes-diederichsen/work-of:870970-basis:20808128?type=bog) | Book (1994) | Johannes Diederichsen | Very thorough |
+| Auning           | [Byens huse](https://www.auningbymuseum.dk/byens-huse) | Online | Auning Bymuseum | |
 | Bjerringbro      | [Bjerringbro's gadenavne og deres ophav](https://bibliotek.dk/materiale/bjerringbro-s-gadenavne-og-deres-ophav_h-p-nielsen/work-of:870971-tsart:82560130?type=artikel) | Article (PDF) | H. P. Nielsen | |
 | Blokhus          | [Vejnavne i Blokhus](http://wikiblokhus.dk/index.php?title=Vejnavne_i_Blokhus)<br>[Kategori:Vejnavne](http://wikiblokhus.dk/index.php?title=Kategori:Vejnavne) | Online, Wiki | Wiki Blokhus | |
 | Bogø             | [Bogøs Historie, Adresser](https://sites.google.com/view/bogoehistorie/bog%C3%B8-bygger/adresser) | Online | Bogø Lokalhistoriske Forening |
