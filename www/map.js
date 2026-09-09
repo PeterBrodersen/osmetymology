@@ -304,6 +304,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     map.on('locationfound', (data) => {
         // $(".resulttable").fadeTo("slow", 0.5);
         $("#result").html(mapTranslate('common.loadingNearbyPlaces'));
+        const locationHash = `#map=${map.getZoom()}/${data.latlng.lat.toFixed(5)}/${data.latlng.lng.toFixed(5)}`;
+        if (window.location.hash !== locationHash) {
+            window.location.hash = locationHash;
+        }
         let coordinates = `${data.latlng.lat},${data.latlng.lng}`;
         map.panTo(data.latlng);
         const radius = data.accuracy / 2;

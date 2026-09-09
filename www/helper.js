@@ -149,7 +149,8 @@ $(function () {
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
-  $("#getposition").on("click", () => { // :TODO: Indicate a location search is going on
+  $("#getposition").on("click", (event) => { // :TODO: Indicate a location search is going on
+    event.preventDefault();
     $("#result").html(translate('common.acquiringPosition'));
     // map.locate({ enableHighAccuracy: true });
     map.locate();
@@ -163,21 +164,30 @@ $(function () {
     $("#copylinktomap").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
 
-  $("#showplacesinmapview").on("click", () => {
+  $("#showplacesinmapview").on("click", (event) => {
     const bounds = map.getBounds();
     let bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
-    $.getJSON("lookup.php", { bbox })
-      .fail((jqxhr, textStatus, error) => updateResultTableError(error))
-      .done((data) => updateResultTable(data));
+    const placesHash = `#places=${bbox}`;
+    $(event.currentTarget).attr('href', placesHash);
+    event.preventDefault();
+
+    if (window.location.hash === placesHash) {
+      loadPlacesInMapView(bbox);
+    } else {
+      window.location.hash = placesHash;
+    }
 
   });
 
-  // Start if hash fragment is present
-  if (window.location.hash.length > 1) {
-    // should be moved to map.js startup instead of starting a location that we immediately move away from
+  function handleHashChange() {
+    if (window.location.hash.length <= 1) {
+      return;
+    }
+
     let hash = decodeURIComponent(window.location.hash.substring(1));
     const locationMatch = hash.match(/^location=(\d+)$/);
     const mapMatch = hash.match(/^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+    const placesMatch = hash.match(/^places=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
     if (locationMatch) {
       panToLocationHash(locationMatch[1]);
     } else if (mapMatch) {
@@ -192,14 +202,26 @@ $(function () {
       if (!setMapViewFromHash()) {
         document.addEventListener('app:mapready', setMapViewFromHash, { once: true });
       }
+    } else if (placesMatch) {
+      loadPlacesInMapView(placesMatch.slice(1).join(','));
     } else {
       doSearch(hash);
     }
   }
+
+  window.addEventListener('hashchange', handleHashChange);
+  handleHashChange();
+
   document.addEventListener('app:languagechange', () => {
     rerenderLastResultState();
   });
 });
+
+function loadPlacesInMapView(bbox) {
+  $.getJSON("lookup.php", { bbox })
+    .fail((jqxhr, textStatus, error) => updateResultTableError(error))
+    .done((data) => updateResultTable(data));
+}
 
 function doSearch(searchword) {
   $("#namefind").val(searchword).trigger('keyup');
@@ -217,13 +239,6 @@ function panToLocationHash(locationId) {
       panToLocationId(row['centroid_onfeature_latitude'], row['centroid_onfeature_longitude'], row['id']);
     });
 }
-
-/*
-addEventListener("hashchange", (event) => {
-  var starttext = decodeURIComponent(window.location.hash.substring(1))
-  doSearch(starttext);
-});
-*/
 
 function updateResultTable(data) {
   lastResultState = { type: 'data', payload: data };
