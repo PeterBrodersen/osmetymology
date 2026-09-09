@@ -150,6 +150,7 @@ $(function () {
 
     let url = $("#copylink a").prop('href');
     navigator.clipboard.writeText(url);
+    window.location.hash = new URL(url, window.location.href).hash;
 
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
