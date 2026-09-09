@@ -6,6 +6,11 @@ let lastResultState = null;
 const helperConfig = window.appConfig || {};
 const i18n = window.appI18n;
 
+function createMapViewHash(hashName, mapInstance) {
+  const center = mapInstance.getCenter();
+  return `#${hashName}=${mapInstance.getZoom()}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`;
+}
+
 function translate(key, params) {
   return i18n.t(key, params);
 }
@@ -165,19 +170,41 @@ $(function () {
   });
 
   $("#showplacesinmapview").on("click", (event) => {
-    const bounds = map.getBounds();
-    let bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
-    const placesHash = `#places=${bbox}`;
+    const placesHash = createMapViewHash('places', map);
     $(event.currentTarget).attr('href', placesHash);
     event.preventDefault();
 
     if (window.location.hash === placesHash) {
-      loadPlacesInMapView(bbox);
+      handleHashChange();
     } else {
       window.location.hash = placesHash;
     }
 
   });
+
+  function navigateToMapHash(hashMatch, afterNavigation) {
+    const setMapViewFromHash = () => {
+      if (typeof map === 'undefined' || !map || typeof map.setView !== 'function') {
+        return false;
+      }
+
+      map.setView(
+        L.latLng(hashMatch[2], hashMatch[3]),
+        hashMatch[1],
+        { animate: false }
+      );
+
+      if (afterNavigation) {
+        afterNavigation();
+      }
+
+      return true;
+    };
+
+    if (!setMapViewFromHash()) {
+      document.addEventListener('app:mapready', setMapViewFromHash, { once: true });
+    }
+  }
 
   function handleHashChange() {
     if (window.location.hash.length <= 1) {
@@ -187,23 +214,17 @@ $(function () {
     let hash = decodeURIComponent(window.location.hash.substring(1));
     const locationMatch = hash.match(/^location=(\d+)$/);
     const mapMatch = hash.match(/^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
-    const placesMatch = hash.match(/^places=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
+    const placesMatch = hash.match(/^places=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
     if (locationMatch) {
       panToLocationHash(locationMatch[1]);
     } else if (mapMatch) {
-      const setMapViewFromHash = () => {
-        if (!map || typeof map.setView !== 'function') {
-          return false;
-        }
-        map.setView(L.latLng(mapMatch[2], mapMatch[3]), mapMatch[1]);
-        return true;
-      };
-
-      if (!setMapViewFromHash()) {
-        document.addEventListener('app:mapready', setMapViewFromHash, { once: true });
-      }
+      navigateToMapHash(mapMatch);
     } else if (placesMatch) {
-      loadPlacesInMapView(placesMatch.slice(1).join(','));
+      navigateToMapHash(placesMatch, () => {
+        const bounds = map.getBounds();
+        const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
+        loadPlacesInMapView(bbox);
+      });
     } else {
       doSearch(hash);
     }

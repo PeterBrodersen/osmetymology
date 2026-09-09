@@ -304,7 +304,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     map.on('locationfound', (data) => {
         // $(".resulttable").fadeTo("slow", 0.5);
         $("#result").html(mapTranslate('common.loadingNearbyPlaces'));
-        const locationHash = `#map=${map.getZoom()}/${data.latlng.lat.toFixed(5)}/${data.latlng.lng.toFixed(5)}`;
+        const locationMap = {
+            getCenter: () => data.latlng,
+            getZoom: () => map.getZoom()
+        };
+        const locationHash = createMapViewHash('map', locationMap);
         if (window.location.hash !== locationHash) {
             window.location.hash = locationHash;
         }
@@ -330,8 +334,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function updateMapLink() {
-    let coordLink = '' + map.getZoom() + '/' + parseFloat(map.getCenter().lat).toFixed(5) + '/' + parseFloat(map.getCenter().lng).toFixed(5);
-    $("#copylinktomap").attr('href', '#map=' + coordLink);
+    $("#copylinktomap").attr('href', createMapViewHash('map', map));
 }
 
 function panToLocationId(latitude, longitude, locationId) {
