@@ -9,7 +9,7 @@ SKIP_AGGREGATE=false
 SKIP_IMPORT_WIKIDATA=false
 SKIP_GENERATE_FILES=false
 SKIP_STATISTICS=false
-TIMING_ENABLED=false
+SKIP_TIMING=false
 
 TIMING_ENTRIES=""
 IMPORT_START_TIME=""
@@ -31,7 +31,7 @@ timing_record_section() {
     section_start="$2"
     section_state="$3"
 
-    if [ "$TIMING_ENABLED" != true ]; then
+    if [ "$SKIP_TIMING" = true ]; then
         return
     fi
 
@@ -42,7 +42,7 @@ timing_record_section() {
 }
 
 timing_print_summary() {
-    if [ "$TIMING_ENABLED" != true ] || [ -z "$IMPORT_START_TIME" ]; then
+    if [ "$SKIP_TIMING" = true ] || [ -z "$IMPORT_START_TIME" ]; then
         return
     fi
 
@@ -124,11 +124,11 @@ parse_args() {
             --skip-statistics)
                 SKIP_STATISTICS=true
                 ;;
-            --timing)
-                TIMING_ENABLED=true
+            --skip-timing)
+                SKIP_TIMING=true
                 ;;
             --help|-h)
-                echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics] [--timing]"
+                echo "Usage: $0 [--skip-download] [--skip-import-osm] [--skip-import-areas] [--skip-aggregate] [--skip-import-wikidata] [--skip-generate-files] [--skip-statistics] [--skip-timing]"
                 exit 0
                 ;;
             *)
@@ -140,7 +140,7 @@ parse_args() {
 }
 
 init_timing() {
-    if [ "$TIMING_ENABLED" = true ]; then
+    if [ "$SKIP_TIMING" != true ]; then
         IMPORT_START_TIME="$(timing_now)"
     fi
 }
