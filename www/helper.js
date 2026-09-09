@@ -180,8 +180,18 @@ $(function () {
     const mapMatch = hash.match(/^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
     if (locationMatch) {
       panToLocationHash(locationMatch[1]);
-    } else if (mapMatch && map.setView) {
-      map.setView(L.latLng(mapMatch[2], mapMatch[3]), mapMatch[1]);
+    } else if (mapMatch) {
+      const setMapViewFromHash = () => {
+        if (!map || typeof map.setView !== 'function') {
+          return false;
+        }
+        map.setView(L.latLng(mapMatch[2], mapMatch[3]), mapMatch[1]);
+        return true;
+      };
+
+      if (!setMapViewFromHash()) {
+        document.addEventListener('app:mapready', setMapViewFromHash, { once: true });
+      }
     } else {
       doSearch(hash);
     }

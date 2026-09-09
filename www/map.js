@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         maxZoom
     });
     map = L.map('map', { fullscreenControl: true, layers: [osmLayer] }).setView([startLat, startLng], startZoom);
+    document.dispatchEvent(new Event('app:mapready'));
 
     map.createPane('polygonsPane');
     map.getPane('polygonsPane').style.zIndex = 350;
