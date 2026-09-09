@@ -145,11 +145,11 @@ $(function () {
     }
 
   // copy function
-  $("#copylink a").on("click", () => {
+  $("#copylink a").on("click", (event) => {
+    event.preventDefault();
+
     let url = $("#copylink a").prop('href');
-    window.location.hash = url;
     navigator.clipboard.writeText(url);
-    $(this).css('background-color', 'yellow');
 
     $("#copylink a").animate({ backgroundColor: 'yellow' }, 300).animate({ backgroundColor: 'white' }, 300);
   });
