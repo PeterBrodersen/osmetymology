@@ -1,6 +1,7 @@
 <?php
 require("connect.inc.php");
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
 $search = (string) ($_GET['search'] ?? '');
 $streetname = (string) ($_GET['streetname'] ?? '');
 $itemname = (string) ($_GET['itemname'] ?? '');
