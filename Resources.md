@@ -138,3 +138,4 @@ Resources for getting information about the origin of Danish street names.
 |                  | [Alle de frække steder](https://bibliotek.dk/materiale/alle-de-fraekke-steder_claus-pettersson/work-of:870970-basis:28027397) | Book (2009) | Claus Pettersson, Jan Svarrer | Mostly just pictures of signs |
 |                  | [Dansk Gadenavneskik](https://slaegtsbibliotek.dk/2023/935413.pdf) | Online book (1970), PDF | Bent Jørgensen | All-round information about Danish street naming traditions |
 |                  | [Gade op og gade ned : mærkelige gadenavne i danske byer](https://bibliotek.dk/materiale/gade-op-og-gade-ned_joergen-hansen-f-1951-05-06-/work-of%3A870970-basis%3A134124245?type=bog) | Book (2022) | Jørgen Hansen | Locations all around Denmark |
+|                  | [Historisk Atlas](https://historiskatlas.dk/) | Online map | Foreningen HistoriskAtlas.dk | Check only "Infrastruktur" for themes to mainly see places |
