@@ -9,6 +9,7 @@ $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $locationid = (string) ($_GET['locationid'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
+$limit = (int) ($_GET['limit'] ?? 0);
 $areacode = (int) ($_GET['areacode'] ?? 0);
 $hasAreacode = array_key_exists('areacode', $_GET);
 $bbox = (string) ($_GET['bbox'] ?? '');
@@ -82,20 +83,21 @@ function getColumns($coordinates = FALSE, $useAreas = true)
 		'wikidatas.wikidataset',
 		'wikidatas.wikilabel'
 	];
-	if ($coordinates) {
-		$columns[] = "l.geom <-> 'SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geography AS distance";
+	if (is_array($coordinates)) {
+		$coordinateValues = (array) $coordinates;
+		$columns[] = "l.geom <-> 'SRID=4326;POINT(" . $coordinateValues['longitude'] . " " . $coordinateValues['latitude'] . ")'::geography AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
 }
 
-function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
+function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 {
 	$useAreas = hasAreasTable();
-	$columns = getColumns($coordinates, $useAreas);
 	$prefix = '';
 	$where = '';
 	$limit = 1000;
+	$distanceCoordinates = $coordinates;
 	$orderbylist = [$useAreas ? 'l.name, a.area_name NULLS LAST' : 'l.name'];
 	$areasJoin = $useAreas ? 'LEFT JOIN areas a on l.area_code = a.area_id' : '';
 	if ($type == 'searchnamelike') {
@@ -106,15 +108,20 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
 		$where = 'WHERE l.id = ?';
 		$limit = 1;
 	} elseif ($type == 'nearest') {
-		$limit = 20;
+		$limit = is_int($limit) && $limit >= 1 && $limit <= 100 ? $limit : 20;
 		$orderbylist = ['distance'];
 	} elseif ($type == 'bbox') {
 		[$latitudeA, $longitudeA, $latitudeB, $longitudeB] = $bbox;
+		$distanceCoordinates = [
+			'latitude' => ($latitudeA + $latitudeB) / 2,
+			'longitude' => ($longitudeA + $longitudeB) / 2
+		];
 		$prefix = "WITH bbox AS (SELECT ST_MakeEnvelope($longitudeA, $latitudeA, $longitudeB, $latitudeB, 4326)::geography AS bboxgeom)";
 		$where = "CROSS JOIN bbox WHERE geom && bbox.bboxgeom AND ST_Intersects(geom, bbox.bboxgeom)";
-		$limit = 100;
-		// :TODO: add order by distance from center of bbox
+		$limit = is_int($limit) && $limit >= 1 && $limit <= 100 ? $limit : 100;
+		$orderbylist = ['distance'];
 	}
+	$columns = getColumns($distanceCoordinates, $useAreas);
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
 		$prefix
@@ -243,12 +250,11 @@ function findLocationById($locationid)
 	return $result;
 }
 
-function findNearestPlacesFromLocation($coordinates)
+function findNearestPlacesFromLocation($latitude, $longitude, $limit = 20)
 {
 	global $dbh;
-	[$latitude, $longitude] = explode(",", $coordinates);
 	$latLng = ['latitude' => (float) $latitude, 'longitude' => (float) $longitude];
-	$querystring = getQuerystring('nearest', $latLng);
+	$querystring = getQuerystring('nearest', $latLng, FALSE, $limit);
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
@@ -257,11 +263,26 @@ function findNearestPlacesFromLocation($coordinates)
 	return $result;
 }
 
-function findNearestPlacesFromBBOX($bboxstring)
+function findAreaFromLocation($latitude, $longitude)
+{
+	global $dbh;
+	if (!hasAreasTable()) {
+		return [];
+	}
+	$point = 'ST_SetSRID(ST_Point(?, ?), 4326)';
+	$querystring = "SELECT area_id, area_name FROM areas WHERE ST_Intersects(wkb_geometry, $point) LIMIT 1";
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([(float) $longitude, (float) $latitude]);
+	$result = $q->fetch();
+	return $result ?: [];
+}
+
+function findNearestPlacesFromBBOX($bboxstring, $limit = 100)
 {
 	global $dbh;
 	$bbox = array_map('floatval', explode(",", $bboxstring));
-	$querystring = getQuerystring('bbox', FALSE, $bbox);
+	$querystring = getQuerystring('bbox', FALSE, $bbox, $limit);
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
@@ -384,10 +405,14 @@ if ($searchname) {
 	$result = findStreetsFromItem($itemid);
 } elseif ($locationid !== '') {
 	$result = findLocationById($locationid);
+} elseif ($request == 'area' && $coordinates) {
+	[$latitude, $longitude] = array_map('trim', explode(",", $coordinates));
+	$result = findAreaFromLocation($latitude, $longitude);
 } elseif ($coordinates) {
-	$result = findNearestPlacesFromLocation($coordinates);
+	[$latitude, $longitude] = array_map('trim', explode(",", $coordinates));
+	$result = findNearestPlacesFromLocation($latitude, $longitude, $limit);
 } elseif ($bbox) {
-	$result = findNearestPlacesFromBBOX($bbox);
+	$result = findNearestPlacesFromBBOX($bbox, $limit);
 } elseif ($request == 'stats') {
 	$result = getStats();
 } elseif ($hasAreacode) {
