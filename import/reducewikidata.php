@@ -19,6 +19,7 @@ $dryRun = in_array('--dry-run', $argv ?? [], true);
 
 $processed = 0;
 $changed = 0;
+$withoutConfiguredSitelinks = 0;
 try {
     if (!$dryRun) {
         $dbh->beginTransaction();
@@ -46,7 +47,7 @@ try {
         $reducedDescriptions = reduceWikidataLanguageMap($descriptions, $languages);
         $reducedSitelinks = reduceWikidataSitelinks($sitelinks, $languages);
         if (count($sitelinks) > 0 && count($reducedSitelinks) === 0) {
-            throw new RuntimeException('Sitelink reduction produced no values for Wikidata row ' . $row['id'] . '. No changes were committed.');
+            $withoutConfiguredSitelinks++;
         }
         $primaryLanguage = $languages[0];
         $reducedAliases = [];
@@ -85,6 +86,9 @@ try {
 
 $mode = $dryRun ? 'Dry run' : 'Reduced';
 print date('H:i:s') . ": $mode $processed Wikidata rows using languages: " . implode(', ', $languages) . PHP_EOL;
+if ($withoutConfiguredSitelinks > 0) {
+    print "Notice: $withoutConfiguredSitelinks rows had sitelinks, but none matched the configured languages." . PHP_EOL;
+}
 if ($dryRun) {
     print "No database changes were made." . PHP_EOL;
 }
