@@ -340,7 +340,7 @@ function updateResultTable(data) {
           const itemId = String(item.itemid ?? '');
           const escapedItemId = escapeHtml(itemId);
           const itemIdForJavascript = escapeHtml(JSON.stringify(itemId));
-          const wikipediaLabel = escapeHtml(translate('common.wikipediaArticle'));
+          const wikipediaLabel = escapeHtml(translate('common.wikipediaBadge'));
           const wikipediaUrl = escapeHtml(presentation.wikipediaUrl);
           const wikipediaLink = presentation.wikipediaUrl ? `<span class="topicwikipedia"><a href="${wikipediaUrl}" title="${wikipediaLabel}" aria-label="${wikipediaLabel}">${wikipediaLabel}</a></span>` : '';
           const wikidataBadge = escapeHtml(translate('common.wikidataBadge'));
