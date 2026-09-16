@@ -10,8 +10,6 @@ $i18nSetup = setupPageI18nContext($configPath, $translationPath, static function
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
         'geocodingCountryName' => $config['place']['geocoding_country_name'] ?? 'United Kingdom',
-        'areaName' => $config['language']['areaName'] ?? 'area',
-        'areaNamePlural' => $config['language']['areaNamePlural'] ?? 'areas',
     ];
 });
 
@@ -25,14 +23,13 @@ $translationParams = $i18nSetup['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
     'geocodingCountryName' => $decodedConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
-    'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
-    'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
 
 if (is_readable($configPath)) {
     $appConfig = [
         'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
         'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
+        'wikidataLanguages' => array_values(array_filter($decodedConfig['language']['wikidata'] ?? [], 'is_string')),
     ];
 }
 

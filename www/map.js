@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
         let wikidataset = feature.properties["wikidataset"];
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
-        let wikipediaenurlprefix = 'https://en.wikipedia.org/w/index.php?title=';
         if (wikidataset) {
             let sections = [];
             let dateoptions = {
@@ -136,13 +135,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             for (const item of wikidataset) {
                 var sectiontext = '';
                 let wikidataId = item["itemid"];
-                let wikidatalabel = item["label"];
+                const presentation = getWikidataPresentation(item);
+                let wikidatalabel = presentation.label;
                 let wikibirth = item["dateofbirth"];
                 let wikibirthprecision = item["dateofbirth_precision"];
                 let wikideath = item["dateofdeath"];
                 let wikideathprecision = item["dateofdeath_precision"];
-                let wikipediatitleen = item["wikipediatitleen"];
-                let wikidatadescription = capitalizeFirstLetter(item["description"] ?? '');
+                let wikidatadescription = capitalizeFirstLetter(presentation.description);
                 sectiontext += `<div class="popupitemname">${wikidatalabel || ''}</div>`;
                 if (wikibirth || wikideath) {
                     let birthdeathtext = '(';
@@ -178,8 +177,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 // Wikidata and Wikipedia links
                 sectiontext += `<p>`;
-                if (wikipediatitleen) {
-                    sectiontext += `<a href="${wikipediaenurlprefix}${encodeURI(wikipediatitleen)}">${mapTranslate('common.wikipediaArticle')}</a> - `;
+                if (presentation.wikipediaUrl) {
+                    sectiontext += `<a href="${presentation.wikipediaUrl}">${mapTranslate('common.wikipediaArticle')}</a> - `;
                 }
                 sectiontext += `<a href="${wikidataurlprefix}${wikidataId}" class="wikidataname" data-wikidata="${wikidataId}">${mapTranslate('common.wikidataItem')}</a>`;
                 sectiontext += `</p>`;
@@ -211,6 +210,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // track the previous results so we can remove them when adding new results
     // :TODO: Show spinner when loading
     let previousResults = L.layerGroup().addTo(map);
+    let activePopup = null;
+    let refreshingPopup = false;
     async function updateMapData() {
         // :TODO: Only remove old results when new are loaded. This might cause issues if more are loaded simultaneously
         // remove the old results
@@ -275,11 +276,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 'popupopen': function (e) {
                     highlightLocationId = feature.properties["id"];
                     const popupLatLng = e.popup && e.popup.getLatLng ? e.popup.getLatLng() : null;
+                    activePopup = { layer: e.target, feature, popupLatLng };
                     e.popup.setContent(getPopupText(feature, popupLatLng));
                     e.target.setStyle({ color: highlightColor });
                 },
                 'popupclose': function (e) {
                     highlightLocationId = false;
+                    if (!refreshingPopup) {
+                        activePopup = null;
+                    }
                     e.target.setStyle({ color: getLineColorFromGender(feature) });
                 }
             }).bindPopup(popupText, { autoPan: false, className: 'place-popup' })
@@ -329,7 +334,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.addEventListener('app:languagechange', () => {
         rebuildTopRightControls();
+        if (!activePopup || !map.hasLayer(activePopup.layer)) {
+            map.closePopup();
+            return;
+        }
+
+        const popupToRefresh = activePopup;
+        refreshingPopup = true;
         map.closePopup();
+        refreshingPopup = false;
+        popupToRefresh.layer.setPopupContent(getPopupText(popupToRefresh.feature, popupToRefresh.popupLatLng));
+        popupToRefresh.layer.openPopup(popupToRefresh.popupLatLng);
     });
 });
 

@@ -19,6 +19,50 @@ function translatePlural(key, count, params) {
   return i18n.tp(key, count, params);
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function getWikidataPresentation(item) {
+  const configuredLanguages = Array.isArray(helperConfig.wikidataLanguages) ? helperConfig.wikidataLanguages : [];
+  const currentLocale = i18n && typeof i18n.getLocale === 'function' ? i18n.getLocale() : '';
+  const languageCandidates = [...new Set([currentLocale, currentLocale.split('-')[0], ...configuredLanguages].filter(Boolean))];
+  let label = null;
+  let description = null;
+  let wikipediaUrl = null;
+
+  for (const language of languageCandidates) {
+    const labelValue = item.labels?.[language]?.value ?? item.labels?.[language];
+    const descriptionValue = item.descriptions?.[language]?.value ?? item.descriptions?.[language];
+    const sitelink = item.sitelinks?.[`${language}wiki`];
+    if (!label && labelValue) {
+      label = labelValue;
+    }
+    if (!description && descriptionValue) {
+      description = descriptionValue;
+    }
+    if (!wikipediaUrl && sitelink?.title) {
+      if (language !== 'mul') {
+        wikipediaUrl = `https://${language}.wikipedia.org/wiki/${encodeURIComponent(sitelink.title.replaceAll(' ', '_'))}`;
+      }
+    }
+    if (label && description && wikipediaUrl) {
+      break;
+    }
+  }
+
+  return {
+    label: label ?? item.label ?? '',
+    description: description ?? item.description ?? '',
+    wikipediaUrl: wikipediaUrl ?? item.wikipedia ?? null,
+  };
+}
+
 $(function () {
 
   const externalUrls = helperConfig.external_urls || {};
@@ -270,13 +314,16 @@ function updateResultTable(data) {
     let newtable = $("#tabletemplate").contents().clone();
     let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
     for (row of data) {
-      var mapTohtml = `<span onclick="panToLocationId(${row['centroid_onfeature_latitude']}, ${row['centroid_onfeature_longitude']}, ${row['id']});">📍</span>`;
+      const latitude = Number(row['centroid_onfeature_latitude']);
+      const longitude = Number(row['centroid_onfeature_longitude']);
+      const locationId = Number(row['id']);
+      var mapTohtml = `<span onclick="panToLocationId(${Number.isFinite(latitude) ? latitude : 0}, ${Number.isFinite(longitude) ? longitude : 0}, ${Number.isFinite(locationId) ? locationId : 0});">📍</span>`;
       var streetname = row['streetname'] ?? '';
-      var streetnamehtml = streetname;
+      var streetnamehtml = escapeHtml(streetname);
       // if (row['sampleway_id']) {
       //   streetnamehtml = `<a href="https://www.openstreetmap.org/way/${row['sampleway_id']}">${streetnamehtml}</a>`;
       // }
-      var areaname = row['areaname'] ? row['areaname'] : translate('common.noArea');
+      var areaname = escapeHtml(row['areaname'] ? row['areaname'] : translate('common.noArea'));
       var wikidatalinkhtml = '';
       var wikidataset = row['wikidataset'] ?? [];
       let nameEtymologyText = row['name:etymology'];
@@ -284,15 +331,25 @@ function updateResultTable(data) {
       if (featureTypeLabel === `featureTypes.${row['featuretype']}`) {
         featureTypeLabel = capitalizeFirstLetter(row['featuretype']);
       }
-      let featureType = `<span title="${featureTypeLabel}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
+      let featureType = `<span title="${escapeHtml(featureTypeLabel)}">${getFeatureTypeIcon(row['featuretype'])}</span>`;
       let topics = [];
       let descriptions = [];
       if (wikidataset.length > 0) {
         for (let item of wikidataset) {
-          var wikidatalinkhtml = `<a href="#${item.itemid}" onclick="doSearch('${item.itemid}'); return false;" title="${translate('common.findPlacesForTopicTitle')}">${item.label ?? translate('common.updating')}</a> ` +
-            `<span class="topicwikidata"><a href="${wikidataurlprefix}${item.itemid}" class="wikidataname" data-wikidata="${item.itemid}">${translate('common.wikidataBadge')}</a></span>`;
+          const presentation = getWikidataPresentation(item);
+          const itemId = String(item.itemid ?? '');
+          const escapedItemId = escapeHtml(itemId);
+          const itemIdForJavascript = escapeHtml(JSON.stringify(itemId));
+          const wikipediaLabel = escapeHtml(translate('common.wikipediaArticle'));
+          const wikipediaUrl = escapeHtml(presentation.wikipediaUrl);
+          const wikipediaLink = presentation.wikipediaUrl ? `<span class="topicwikipedia"><a href="${wikipediaUrl}" title="${wikipediaLabel}" aria-label="${wikipediaLabel}">${wikipediaLabel}</a></span>` : '';
+          const wikidataBadge = escapeHtml(translate('common.wikidataBadge'));
+          const wikidataLink = `<span class="topicwikidata"><a href="${wikidataurlprefix}${escapedItemId}" class="wikidataname" data-wikidata="${escapedItemId}">${wikidataBadge}</a></span>`;
+          const topicTitle = escapeHtml(translate('common.findPlacesForTopicTitle'));
+          const topicLabel = escapeHtml(presentation.label || translate('common.updating'));
+          var wikidatalinkhtml = `<span class="topicrow"><a href="#${escapedItemId}" onclick="doSearch(${itemIdForJavascript}); return false;" title="${topicTitle}">${topicLabel}</a><span class="topiclinks">${wikipediaLink}${wikidataLink}</span></span>`;
           topics.push(wikidatalinkhtml);
-          descriptions.push(item.description);
+          descriptions.push(escapeHtml(presentation.description));
         }
       }
       if (nameEtymologyText && nameEtymologyText != row['wikilabel']) {
@@ -300,13 +357,11 @@ function updateResultTable(data) {
         if (wikidataset.length > 0) {
           extraDescription += '<br>';
         }
-        extraDescription += `<em>${nameEtymologyText}</em>`;
+        extraDescription += `<em>${escapeHtml(nameEtymologyText)}</em>`;
         descriptions.push(extraDescription);
       }
 
-      // :TODO: Escape HTML; there ought not to be tags in the result, but better safe than sorry ...
-      //        E.g. create as jquery DOM and add text with .text()
-      let topichtml = topics.join('<br>')
+      let topichtml = topics.join('')
       let descriptionhtml = descriptions.join('<br>')
       newtable.append(`<tr valign="top"><td class="mapToLink">${mapTohtml}</td><td class="featuretype">${featureType}</td><td>${streetnamehtml}</td><td>${areaname}</td><td>${topichtml}</td><td>${descriptionhtml}</td></tr>`);
     }

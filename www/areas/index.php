@@ -8,8 +8,6 @@ $i18nSetup = setupPageI18nContext($configPath, $translationPath, static function
     return [
         'placeName' => $localizedPlaceName,
         'projectDisplayName' => $localizedPlaceName,
-        'areaName' => $config['language']['areaName'] ?? 'area',
-        'areaNamePlural' => $config['language']['areaNamePlural'] ?? 'areas',
     ];
 });
 
@@ -22,8 +20,6 @@ $localeParams = $i18nSetup['localeParams'];
 $translationParams = $i18nSetup['translationParams'] ?: [
     'placeName' => $placeName,
     'projectDisplayName' => $placeName,
-    'areaName' => $decodedConfig['language']['areaName'] ?? 'area',
-    'areaNamePlural' => $decodedConfig['language']['areaNamePlural'] ?? 'areas',
 ];
 
 $placeName = $translationParams['placeName'] ?? $placeName;

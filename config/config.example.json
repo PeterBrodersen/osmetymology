@@ -44,10 +44,14 @@
             "ar": "برلين",
             "la": "Berolinum"
         },
-        "areaName": "area",
-        "areaNamePlural": "areas",
         "translation_overrides": {
+            "en": {
+                "areaName": "area",
+                "areaNamePlural": "areas"
+            },
             "da": {
+                "areaName": "område",
+                "areaNamePlural": "områder",
                 "home": {
                     "alsoCheckOut": "Se også:"
                 }

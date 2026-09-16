@@ -160,9 +160,26 @@ function buildConfiguredI18nContext(array $catalogue, array $config, callable $p
     $fallbackLocale = normalizeLocale($configuredDefaultLocale, $translations);
     $localeParams = buildLocaleParamsMap(
         $translations,
-        static function (string $localeCode) use ($paramBuilder, $localizedProjectNames, $fallbackLocale, $placeName, $config): array {
+        static function (string $localeCode) use ($paramBuilder, $localizedProjectNames, $fallbackLocale, $placeName, $config, $translations): array {
             $localizedPlaceName = getLocalizedConfigText($localizedProjectNames, $localeCode, $fallbackLocale, $placeName);
-            return (array) $paramBuilder($localeCode, $localizedPlaceName, $config, $fallbackLocale, $placeName);
+            $params = (array) $paramBuilder($localeCode, $localizedPlaceName, $config, $fallbackLocale, $placeName);
+            $legacyAreaName = is_string($config['language']['areaName'] ?? null) ? $config['language']['areaName'] : 'area';
+            $legacyAreaNamePlural = is_string($config['language']['areaNamePlural'] ?? null) ? $config['language']['areaNamePlural'] : 'areas';
+            $localeMessages = is_array($translations[$localeCode] ?? null) ? $translations[$localeCode] : [];
+            $fallbackMessages = is_array($translations[$fallbackLocale] ?? null) ? $translations[$fallbackLocale] : [];
+            $params['areaName'] = getLocalizedConfigText(
+                [$localeCode => lookupTranslationValue($localeMessages, 'areaName'), $fallbackLocale => lookupTranslationValue($fallbackMessages, 'areaName')],
+                $localeCode,
+                $fallbackLocale,
+                $legacyAreaName
+            );
+            $params['areaNamePlural'] = getLocalizedConfigText(
+                [$localeCode => lookupTranslationValue($localeMessages, 'areaNamePlural'), $fallbackLocale => lookupTranslationValue($fallbackMessages, 'areaNamePlural')],
+                $localeCode,
+                $fallbackLocale,
+                $legacyAreaNamePlural
+            );
+            return $params;
         }
     );
 

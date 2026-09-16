@@ -7,6 +7,10 @@ LEFT JOIN LATERAL(
         'itemid', w.itemid,
         'label', w.name,
         'description', w.description,
+        'labels', w.labels,
+        'descriptions', w.descriptions,
+        'sitelinks', w.sitelinks,
+        'wikipedia', w.wikipedia,
         'gender', gendermap.gender,
         'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
         'dateofbirth_precision', (w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer,
@@ -20,8 +24,7 @@ LEFT JOIN LATERAL(
                 (w.claims->'P625'->0->'mainsnak'->'datavalue'->'value'->>'latitude')::double precision
             ), 4326))
             ELSE NULL
-        END,
-        'wikipediatitleen', w.sitelinks->'enwiki'->>'title'
+        END
     )) AS wikidataset,
     string_agg(w.name, '; ') AS wikilabel,
     CASE

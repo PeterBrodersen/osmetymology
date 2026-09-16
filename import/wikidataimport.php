@@ -1,33 +1,26 @@
 <?php
 // Import all existing Wikidata items to local table
 require("../www/connect.inc.php");
+require(__DIR__ . '/wikidata_language.php');
 
 $configPath = __DIR__ . '/../config/config.json';
 $configData = json_decode(file_get_contents($configPath), true);
 $languages = $configData['language']['wikidata'];
 $primaryLanguage = $languages[0];
 
+$wikidataTableExists = $dbh->query("SELECT to_regclass('wikidata') IS NOT NULL")->fetchColumn();
+if ($wikidataTableExists) {
+    $dbh->exec('ALTER TABLE wikidata ADD COLUMN IF NOT EXISTS wikipedia TEXT');
+}
+
 // Set User-Agent globally
 ini_set('user_agent', 'Findvej OSM Etymology (https://github.com/PeterBrodersen/osmetymology/)');
 
 // Prepare the insert statement for Wikidata items
 $insertdb = $dbh->prepare('
-    INSERT INTO wikidata (itemid, name, description, labels, descriptions, claims, sitelinks, aliases)
-    VALUES (?,?,?,?,?,?,?,?)
+    INSERT INTO wikidata (itemid, name, description, labels, descriptions, claims, sitelinks, aliases, wikipedia)
+    VALUES (?,?,?,?,?,?,?,?,?)
 ');
-
-function getBestLabel($labels)
-{ // Run through languages and search for existing value; pick first existing
-    global $languages;
-    $label = NULL;
-    foreach ($languages as $language) {
-        if (isset($labels->$language)) {
-            $label = $labels->$language->value;
-            break;
-        }
-    }
-    return $label;
-}
 
 function createTables()
 {
@@ -43,7 +36,8 @@ function createTables()
             descriptions JSONB,
             claims JSONB,
             sitelinks JSONB,
-            aliases JSONB
+            aliases JSONB,
+            wikipedia TEXT
         )
     ');
 
@@ -125,7 +119,7 @@ function getInstanceOfItems()
 
 function importItemIds($itemIds)
 {
-    global $insertdb, $dbh;
+    global $insertdb, $dbh, $languages;
     $itemsInserted = 0;
     $itemLimit = 50;
     $apiurlprefix = 'https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=';
@@ -179,14 +173,19 @@ function importItemIds($itemIds)
                 if (isset($entity->redirects->from)) {
                     $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
                 }
-                $name = getBestLabel($entity->labels);
-                $description = getBestLabel($entity->descriptions);
-                $labels = json_encode($entity->labels);
-                $descriptions = json_encode($entity->descriptions);
+                $localized = reduceWikidataEntityFields($entity, $languages);
                 $claims = json_encode($entity->claims);
-                $sitelinks = json_encode($entity->sitelinks);
-                $aliases = json_encode($entity->aliases);
-                $insertdb->execute([$pageid, $name, $description, $labels, $descriptions, $claims, $sitelinks, $aliases]);
+                $insertdb->execute([
+                    $pageid,
+                    $localized['name'],
+                    $localized['description'],
+                    json_encode($localized['labels'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    json_encode($localized['descriptions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    $claims,
+                    json_encode($localized['sitelinks'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    json_encode($localized['aliases'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    $localized['wikipedia'],
+                ]);
                 $itemsInserted++;
             }
         }

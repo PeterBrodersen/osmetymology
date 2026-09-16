@@ -76,7 +76,6 @@ function getColumns($coordinates = FALSE, $useAreas = true)
 		"(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer AS wikidateofbirthprecision",
 		"to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
 		"(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer AS wikidateofdeathprecision",
-		"w.sitelinks->'enwiki'->>'title' AS wikipediatitleen",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_latitude',
 		'wikidata_info.wikidataset',
@@ -135,12 +134,15 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 				'itemid', w.itemid,
 				'label', w.name,
 				'description', w.description,
+				'labels', w.labels,
+				'descriptions', w.descriptions,
+				'sitelinks', w.sitelinks,
+				'wikipedia', w.wikipedia,
 				'gender', gendermap.gender,
 				'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
 				'dateofbirth_precision', (w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer,
 				'dateofdeath', to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
-				'dateofdeath_precision', (w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer,
-				'wikipediatitleen', w.sitelinks->'enwiki'->>'title'
+				'dateofdeath_precision', (w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer
 			)) AS wikidataset,
 			string_agg(w.name, '; ') AS wikilabel
 			FROM wikidatamap map

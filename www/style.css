@@ -53,9 +53,24 @@ table.resulttable td {
     padding: 5px;
 }
 
-.topicwikidata a {
+.topicwikidata a,
+.topicwikipedia a {
     font-size: 0.8em;
     color: #666;
+}
+
+.topicrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+}
+
+.topiclinks {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.35em;
+    white-space: nowrap;
 }
 
 .numeric {
