@@ -96,6 +96,5 @@ CREATE TABLE locations_agg_next (
 	"name:etymology" TEXT,
 	"name:etymology:wikipedia" TEXT,
 	"name:etymology:wikidata" TEXT,
-	wikidatas TEXT[],
 	geom GEOGRAPHY(Geometry, 4326)
 );

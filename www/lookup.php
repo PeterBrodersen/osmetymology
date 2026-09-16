@@ -34,7 +34,6 @@ function convertPGArraysToPHPArray($result)
 	$cleanresult = [];
 	foreach ($result as $row) {
 		$row['object_ids'] = json_decode($row['object_ids']);
-		$row['wikidatas'] = json_decode($row['wikidatas']);
 		$row['wikidataset'] = json_decode($row['wikidataset']);
 		$cleanresult[] = $row;
 	}
@@ -80,9 +79,8 @@ function getColumns($coordinates = FALSE, $useAreas = true)
 		"w.sitelinks->'enwiki'->>'title' AS wikipediatitleen",
 		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_longitude',
 		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_latitude',
-		'array_to_json(l.wikidatas) AS wikidatas',
-		'wikidatas.wikidataset',
-		'wikidatas.wikilabel'
+		'wikidata_info.wikidataset',
+		'wikidata_info.wikilabel'
 	];
 	if (is_array($coordinates)) {
 		$coordinateValues = (array) $coordinates;
@@ -104,7 +102,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 	if ($type == 'searchnamelike') {
 		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
-		$where = 'WHERE wikidatas @> ARRAY[?]';
+		$where = 'WHERE EXISTS (SELECT 1 FROM wikidatamap map_filter WHERE map_filter.location_id = l.id AND map_filter.wikidata_id = ?)';
 	} elseif ($type == 'locationid') {
 		$where = 'WHERE l.id = ?';
 		$limit = 1;
@@ -150,7 +148,7 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 			LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
 			LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 			WHERE l.id = map.location_id
-		) AS wikidatas ON TRUE
+		) AS wikidata_info ON TRUE
 		$where
 		ORDER BY $orderby
 		LIMIT $limit
@@ -327,8 +325,9 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", l.id AS internal_location_id, unnest(wikidatas) AS wd
+			SELECT DISTINCT l."name", l.id AS internal_location_id, map.wikidata_id AS wd
 			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype = 'way'
 			AND $expandedWhere
 		)
@@ -355,8 +354,9 @@ function getAreaStats()
 	$areaNameExpr = $useAreas ? "COALESCE(a.area_name, 'No area')" : "'No area'";
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.area_code, l.name, map.wikidata_id
 			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype = 'way'
 		)
 		SELECT

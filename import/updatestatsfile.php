@@ -42,7 +42,7 @@ function getImportJobStats($statefile)
 	$stats = [
 		'totalroads' => $dbh->query('SELECT COUNT(*) FROM locations_agg')->fetchColumn(),
 		'uniquenamedroads' => $dbh->query('SELECT COUNT(DISTINCT name) FROM locations_agg')->fetchColumn(),
-		'uniqueetymologywikidata' => $dbh->query('WITH wds AS (SELECT DISTINCT UNNEST(wikidatas) AS wikidata_item FROM locations_agg) SELECT COUNT(wikidata_item) FROM wds')->fetchColumn(),
+		'uniqueetymologywikidata' => $dbh->query('SELECT COUNT(DISTINCT wikidata_id) FROM wikidatamap')->fetchColumn(),
 		'localwikidataitems' => $dbh->query('SELECT COUNT(*) FROM wikidata')->fetchColumn(), // including extra content such as "instance of" data
 	];
 
@@ -123,8 +123,9 @@ function getAreaStats()
 	$areaNameExpr = $useAreas ? "COALESCE(a.area_name, 'No area')" : "'No area'";
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.area_code, l.name, map.wikidata_id
 			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
@@ -183,8 +184,9 @@ function getAreaStats()
 	// total stats; need own query to remove duplicates
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.area_code, l.name, UNNEST(wikidatas) AS wikidata_id
+			SELECT l.area_code, l.name, map.wikidata_id
 			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype IN('way','square')
 		)
 		SELECT
@@ -271,8 +273,9 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", l.id AS internal_location_id, unnest(wikidatas) AS wd
+			SELECT DISTINCT l."name", l.id AS internal_location_id, map.wikidata_id AS wd
 			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype IN('way','square')
 			AND $expandedWhere
 		)

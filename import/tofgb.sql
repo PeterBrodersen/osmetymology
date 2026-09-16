@@ -1,5 +1,5 @@
 -- ogr2ogr convert from database to FlatGeobuf file
-SELECT l.id, l.name AS streetname, l."name:etymology", l."name:etymology:wikidata", l.area_code, a.area_name, wikidatas.gender, wikidatas.wikidata_location, l.geomtype, l.object_ids[1] AS sampleobject_id, wikidatas.wikidataset, wikidatas.wikilabel, l.geom
+SELECT l.id, l.name AS streetname, l."name:etymology", l."name:etymology:wikidata", l.area_code, a.area_name, wikidata_info.gender, wikidata_info.wikidata_location, l.geomtype, l.object_ids[1] AS sampleobject_id, wikidata_info.wikidataset, wikidata_info.wikilabel, l.geom
 FROM locations_agg l
 LEFT JOIN areas a on l.area_code = a.area_id
 LEFT JOIN LATERAL(
@@ -43,6 +43,6 @@ LEFT JOIN LATERAL(
     INNER JOIN wikidata w ON map.wikidata_id = w.itemid
     LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
     WHERE l.id = map.location_id
-) AS wikidatas ON TRUE
+) AS wikidata_info ON TRUE
 WHERE l.geom IS NOT NULL AND NOT ST_IsEmpty(l.geom::geometry)
 ORDER BY l.name, a.area_name NULLS LAST, a.area_id NULLS LAST
