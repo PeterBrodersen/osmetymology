@@ -147,8 +147,9 @@ function importItemIds($itemIds)
         do {
             $json = @file_get_contents($url);
             $httpCode = 200;
-            if (isset($http_response_header) && is_array($http_response_header)) {
-                foreach ($http_response_header as $header) {
+            $responseHeaders = http_get_last_response_headers();
+            if (is_array($responseHeaders)) {
+                foreach ($responseHeaders as $header) {
                     if (preg_match('#^HTTP/\d+\.\d+\s+(\d+)#', $header, $matches)) {
                         $httpCode = (int)$matches[1];
                         break;
