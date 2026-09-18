@@ -75,7 +75,7 @@
                 "map": "Map",
                 "type": "Type",
                 "name": "Name",
-                "area": "{{areaName}}",
+                "area": "{{areaNameLabel}}",
                 "topic": "Topic",
                 "description": "Description"
             },
@@ -105,7 +105,7 @@
             "introHtml": "Statistics from the <a href=\"../\">{{projectDisplayName}}</a> for gender distribution on streets in the {{areaNamePlural}}. Each person is counted only once within an {{areaName}}, even if multiple street names refer to the same person. Click on an {{areaName}} name to see the people in the {{areaName}} with streets associated.",
             "datasetDate": "Date for data set:",
             "table": {
-                "area": "{{areaName}}",
+                "area": "{{areaNameLabel}}",
                 "name": "Name",
                 "humansExisted": "Humans that have existed",
                 "allHumansIncludingFictional": "All humans, including fictional",
@@ -243,7 +243,7 @@
                 "map": "Kort",
                 "type": "Type",
                 "name": "Stednavn",
-                "area": "{{areaName}}",
+                "area": "{{areaNameLabel}}",
                 "topic": "Emne",
                 "description": "Beskrivelse"
             },
@@ -273,7 +273,7 @@
             "introHtml": "Statistik fra <a href=\"../\">{{projectDisplayName}}</a> for kønsfordeling på veje i {{areaNamePlural}}. Hver person tælles kun én gang inden for et {{areaName}}, selvom flere vejnavne refererer til den samme person. Klik på et {{areaName}}-navn for at se personerne i {{areaName}} med tilknyttede veje.",
             "datasetDate": "Dato for datasæt:",
             "table": {
-                "area": "{{areaName}}",
+                "area": "{{areaNameLabel}}",
                 "name": "Navn",
                 "humansExisted": "Mennesker, som har eksisteret",
                 "allHumansIncludingFictional": "Alle mennesker, også fiktive",

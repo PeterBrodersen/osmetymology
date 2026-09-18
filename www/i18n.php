@@ -179,6 +179,12 @@ function buildConfiguredI18nContext(array $catalogue, array $config, callable $p
                 $fallbackLocale,
                 $legacyAreaNamePlural
             );
+            $areaName = (string) $params['areaName'];
+            $params['areaNameLabel'] = $areaName === ''
+                ? ''
+                : (function_exists('mb_strtoupper') && function_exists('mb_substr')
+                    ? mb_strtoupper(mb_substr($areaName, 0, 1)) . mb_substr($areaName, 1)
+                    : ucfirst($areaName));
             return $params;
         }
     );
