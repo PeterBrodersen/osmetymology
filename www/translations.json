@@ -75,7 +75,7 @@
                 "map": "Map",
                 "type": "Type",
                 "name": "Name",
-                "area": "Area",
+                "area": "{{areaName}}",
                 "topic": "Topic",
                 "description": "Description"
             },
@@ -243,7 +243,7 @@
                 "map": "Kort",
                 "type": "Type",
                 "name": "Stednavn",
-                "area": "Område",
+                "area": "{{areaName}}",
                 "topic": "Emne",
                 "description": "Beskrivelse"
             },
