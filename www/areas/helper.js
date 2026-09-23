@@ -18,6 +18,10 @@ let lastAreaStatsData = null;
 let lastSingleAreaData = null;
 const areasI18n = window.appI18n;
 
+function getAreaName(area) {
+    return Number(area.area_code) === 0 ? areasI18n.t('common.otherArea') : area.area_name;
+}
+
 function getStats() {
     $.getJSON('/data/stats.json')
         .done((data) => {
@@ -52,10 +56,11 @@ function renderAreaStats(data) {
         let tbodyhtml = '';
 
         for (area of data.etymologystats.areas) {
+            const areaName = getAreaName(area);
             tbodyhtml += `
             <tr>
             <td class="numeric">${area.area_code}</td>
-            <td data-areacode="${area.area_code}"><a href="#${area.area_code}">${area.area_name}</a></td>
+            <td data-areacode="${area.area_code}"><a href="#${area.area_code}">${areaName}</a></td>
             <td class="numeric">${area.unique_human_female_topic}</td>
             <td class="numeric">${area.unique_human_male_topic}</td>
             <td class="percentage-cell" data-female-percentage="${area.human_female_percentage}" data-male-percentage="${area.human_male_percentage}" style="--female-percentage:${area.human_female_percentage}; --male-percentage:${area.human_male_percentage};">
@@ -121,7 +126,7 @@ function renderSingleAreaStats(data, scrollToTable = false) {
         return;
     }
 
-    let html = `<thead><tr><th colspan="2">${data.area_name}</th></tr></thead><tbody>`;
+    let html = `<thead><tr><th colspan="2">${getAreaName(data)}</th></tr></thead><tbody>`;
     let lastgender = '';
     for (item of data.items) {
         if (lastgender != item.gender) {
