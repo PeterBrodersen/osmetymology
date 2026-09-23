@@ -98,20 +98,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     function getPopupText(feature, popupLatLng = null, unitSystem = 'metric') {
         // :TODO: URLs probably don't support relations at the moment
         let osmURLs = {
-            point: 'https://www.openstreetmap.org/node/',
-            line: 'https://www.openstreetmap.org/way/',
-            polygon: 'https://www.openstreetmap.org/way/',
+            node: 'https://www.openstreetmap.org/node/',
+            way: 'https://www.openstreetmap.org/way/',
             relation: 'https://www.openstreetmap.org/relation/',
         }
         let mapCompleteEtymologyURLs = {
-            point: 'https://mapcomplete.org/etymology.html#node/',
-            line: 'https://mapcomplete.org/etymology.html#way/',
-            polygon: 'https://mapcomplete.org/etymology.html#way/',
+            node: 'https://mapcomplete.org/etymology.html#node/',
+            way: 'https://mapcomplete.org/etymology.html#way/',
             relation: 'https://mapcomplete.org/etymology.html#relation/'
         }
         let placename = feature.properties["streetname"] ?? mapTranslate('map.noName');
         let etymologyText = feature.properties["name:etymology"];
-        let popupText = `<h1 class="popupplacename" title="${placename}">${placename}</h1>`;
+        const element = feature.properties["element"];
+        const objectIdLowest = Number(feature.properties["object_id_lowest"]);
+        const hasObject = Number.isFinite(objectIdLowest) && objectIdLowest > 0 && osmURLs[element];
+        let permanentLink = '';
+        if (hasObject) {
+            const permanentUrl = new URL(window.location.href);
+            permanentUrl.hash = `${encodeURIComponent(element)}=${encodeURIComponent(objectIdLowest)}`;
+            const permanentLinkTitle = mapTranslate('common.permanentLinkTitle');
+            permanentLink = `<a class="popup-permalink" href="${permanentUrl.href}" title="${permanentLinkTitle}" aria-label="${permanentLinkTitle}"><span aria-hidden="true">🔗</span></a>`;
+        }
+        let popupText = `<h1 class="popupplacename" title="${placename}"><span class="popupplacename-text">${placename}</span>${permanentLink}</h1>`;
         let wikidataset = feature.properties["wikidataset"];
         let wikidataurlprefix = 'https://www.wikidata.org/wiki/';
         if (wikidataset) {
@@ -166,8 +174,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                         _wikidataSourceData[wikidataId] = { label: wikidatalabel, lat: locationLatLng.lat, lng: locationLatLng.lng };
                         const fromLat = popupLatLng.lat;
                         const fromLng = popupLatLng.lng;
-                        const fromWayId = feature.properties["id"];
-                        descriptionParagraphParts.push(`(<a href="#" onclick="openWikidataSourcePopup('${wikidataId}', ${fromLat}, ${fromLng}, ${fromWayId}); return false;">${itemDistanceAwayText}</a>)`);
+                        const fromLocationId = feature.properties["id"];
+                        const fromElement = feature.properties["element"];
+                        const fromObjectIdLowest = feature.properties["object_id_lowest"];
+                        descriptionParagraphParts.push(`(<a href="#" onclick="openWikidataSourcePopup('${wikidataId}', ${fromLat}, ${fromLng}, ${fromLocationId}, '${fromElement}', ${fromObjectIdLowest}); return false;">${itemDistanceAwayText}</a>)`);
                     } else {
                         descriptionParagraphParts.push(`(${itemDistanceAwayText})`);
                     }
@@ -189,8 +199,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (etymologyText) {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
-        let osmurl = (feature.properties["sampleobject_id"] > 0 ? osmURLs[feature.properties["geomtype"]] : osmURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
-        let mapcompleteurl = (feature.properties["sampleobject_id"] > 0 ? mapCompleteEtymologyURLs[feature.properties["geomtype"]] : mapCompleteEtymologyURLs.relation) + Math.abs(feature.properties["sampleobject_id"]);
+        let osmurl = (hasObject ? osmURLs[element] : osmURLs.relation) + Math.abs(objectIdLowest);
+        let mapcompleteurl = (hasObject ? mapCompleteEtymologyURLs[element] : mapCompleteEtymologyURLs.relation) + Math.abs(objectIdLowest);
         popupText += `<div><a href="${osmurl}" title="${mapTranslate('common.openStreetMapTitle')}"><img src="media/openstreetmap_30.png" width="30" height="30" alt="${mapTranslate('common.openStreetMapLogoAlt')}"></a> <a href="${mapcompleteurl}" title="${mapTranslate('common.mapCompleteTitle')}"><img src="media/mapcomplete.svg" width="30" height="30" alt="${mapTranslate('common.mapCompleteLogoAlt')}"></a></div>`;
         return popupText;
     }
@@ -352,16 +362,19 @@ function updateMapLink() {
     $("#copylinktomap").attr('href', createMapViewHash('map', map));
 }
 
-function panToLocationId(latitude, longitude, locationId) {
+function panToLocationId(latitude, longitude, locationId, element, objectIdLowest, updateUrl = true) {
     highlightLocationId = locationId;
     map.panTo([latitude, longitude]);
+    if (updateUrl && element && Number.isFinite(Number(objectIdLowest))) {
+        window.location.hash = `#${encodeURIComponent(element)}=${encodeURIComponent(objectIdLowest)}`;
+    }
 }
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromLocationId) {
+function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromLocationId, fromElement, fromObjectIdLowest) {
     const data = _wikidataSourceData[wikidataId];
     if (!data) return;
     const locLatLng = L.latLng(data.lat, data.lng);
@@ -377,13 +390,13 @@ function openWikidataSourcePopup(wikidataId, fromLat, fromLng, fromLocationId) {
             if (places && places.length > 0) {
                 html += '<ul style="padding-left:1em; margin:.3em 0; list-style:none; overflow: auto; max-height: 300px; scrollbar-width: thin; scrollbar-gutter: stable; white-space: nowrap;">';
                 for (const row of places) {
-                    html += `<li style="overflow: hidden; text-overflow: ellipsis;"><span onclick="panToLocationId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
+                    html += `<li style="overflow: hidden; text-overflow: ellipsis;"><span onclick="panToLocationId(${row.centroid_onfeature_latitude}, ${row.centroid_onfeature_longitude}, ${row.id}, '${row.element}', ${row.object_id_lowest});" style="cursor:pointer">📍</span> ${row.streetname ?? ''}${row.areaname ? ` (${row.areaname})` : ''}</li>`;
                 }
                 html += '</ul>';
             } else {
                 html += `<p>${mapTranslate('common.noPlacesFound')}</p>`;
             }
-            html += `<p><a href="#" onclick="panToLocationId(${fromLat}, ${fromLng}, ${fromLocationId}); return false;">← ${mapTranslate('common.back')}</a></p>`;
+            html += `<p><a href="#" onclick="panToLocationId(${fromLat}, ${fromLng}, ${fromLocationId}, '${fromElement}', ${fromObjectIdLowest}); return false;">← ${mapTranslate('common.back')}</a></p>`;
             popup.setContent(html);
         })
         .catch(() => {

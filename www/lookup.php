@@ -9,6 +9,8 @@ $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
 $locationid = (string) ($_GET['locationid'] ?? '');
+$element = (string) ($_GET['element'] ?? '');
+$objectIdLowest = (string) ($_GET['object_id_lowest'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
 $limit = (int) ($_GET['limit'] ?? 0);
 $areacode = (int) ($_GET['areacode'] ?? 0);
@@ -61,7 +63,8 @@ function getColumns($coordinates = FALSE, $useAreas = true)
 		'l.id',
 		'l.name AS streetname',
 		'array_to_json(l.object_ids) AS object_ids',
-		'l.object_ids[1] AS sampleobject_id',
+		'l.element',
+		'l.object_id_lowest',
 		'l.featuretype',
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
@@ -104,6 +107,9 @@ function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 		$where = 'WHERE EXISTS (SELECT 1 FROM wikidatamap map_filter WHERE map_filter.location_id = l.id AND map_filter.wikidata_id = ?)';
 	} elseif ($type == 'locationid') {
 		$where = 'WHERE l.id = ?';
+		$limit = 1;
+	} elseif ($type == 'object') {
+		$where = 'WHERE l.element = ? AND l.object_id_lowest = ?';
 		$limit = 1;
 	} elseif ($type == 'nearest') {
 		$limit = is_int($limit) && $limit >= 1 && $limit <= 100 ? $limit : 20;
@@ -251,6 +257,20 @@ function findLocationById($locationid)
 	return $result;
 }
 
+function findLocationByObject($element, $objectIdLowest)
+{
+	global $dbh;
+	if (!in_array($element, ['node', 'way', 'relation'], true) || !preg_match('/^\d+$/', $objectIdLowest)) {
+		return false;
+	}
+	$querystring = getQuerystring('object');
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$element, (int) $objectIdLowest]);
+	$result = $q->fetchAll();
+	return convertPGArraysToPHPArray($result);
+}
+
 function findNearestPlacesFromLocation($latitude, $longitude, $limit = 20)
 {
 	global $dbh;
@@ -327,13 +347,13 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", l.id AS internal_location_id, map.wikidata_id AS wd
+			SELECT DISTINCT l."name", l.element, l.object_id_lowest, map.wikidata_id AS wd
 			FROM locations_agg l
 			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype = 'way'
 			AND $expandedWhere
 		)
-		SELECT w.name AS personname, gendermap.gender, w.description, jsonb_agg(jsonb_build_object('name', expanded.name, 'internal_location_id', expanded.internal_location_id) ORDER BY expanded.name, expanded.internal_location_id) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.description, jsonb_agg(jsonb_build_object('name', expanded.name, 'element', expanded.element, 'object_id_lowest', expanded.object_id_lowest) ORDER BY expanded.name, expanded.object_id_lowest) AS ways
 		FROM expanded
 		INNER JOIN wikidata w ON expanded.wd = w.itemid
 		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
@@ -408,6 +428,8 @@ if ($searchname) {
 	$result = findStreetsFromItem($itemid);
 } elseif ($locationid !== '') {
 	$result = findLocationById($locationid);
+} elseif ($element !== '' && $objectIdLowest !== '') {
+	$result = findLocationByObject($element, $objectIdLowest);
 } elseif ($request == 'area' && $coordinates) {
 	[$latitude, $longitude] = array_map('trim', explode(",", $coordinates));
 	$result = findAreaFromLocation($latitude, $longitude);

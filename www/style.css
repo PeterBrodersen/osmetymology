@@ -146,10 +146,28 @@ sup a {
 
 h1.popupplacename {
     font-size: 1rem;
-    /* Restrict h1 to one line */
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+}
+
+.popupplacename-text {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.popup-permalink {
+    flex: 0 0 auto;
+    margin-left: 0.35em;
+    opacity: 0;
+    text-decoration: none;
+    transition: opacity 120ms ease-in-out;
+}
+
+.leaflet-popup-content:hover .popup-permalink,
+.popup-permalink:focus-visible {
+    opacity: 1;
 }
 
 .popupitemname {

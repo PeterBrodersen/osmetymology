@@ -273,13 +273,13 @@ function getSingleAreaWayPersons($areacode)
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", l.id AS internal_location_id, map.wikidata_id AS wd
+			SELECT DISTINCT l."name", l.element, l.object_id_lowest, map.wikidata_id AS wd
 			FROM locations_agg l
 			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype IN('way','square')
 			AND $expandedWhere
 		)
-		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, jsonb_agg(jsonb_build_object('name', expanded.name, 'internal_location_id', expanded.internal_location_id) ORDER BY expanded.name, expanded.internal_location_id) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.claims @@ '$.P31[*].mainsnak.datavalue.value.id == "Q5"' AS is_human, w.description, wd AS wikidata_item, jsonb_agg(jsonb_build_object('name', expanded.name, 'element', expanded.element, 'object_id_lowest', expanded.object_id_lowest) ORDER BY expanded.name, expanded.object_id_lowest) AS ways
 		FROM expanded
 		INNER JOIN wikidata w ON expanded.wd = w.itemid
 		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid

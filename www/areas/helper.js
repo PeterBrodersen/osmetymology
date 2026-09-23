@@ -142,7 +142,7 @@ function renderSingleAreaStats(data, scrollToTable = false) {
             symbol += `<span title="${areasI18n.t('common.realPerson')}">🧑</span>`;
         }
         let ways = Array.isArray(item.ways)
-            ? item.ways.map((way) => way.internal_location_id ? `<a href="/#location=${encodeURIComponent(way.internal_location_id)}">${way.name}</a>` : way.name).join('<br>')
+            ? item.ways.map((way) => way.element && way.object_id_lowest ? `<a href="/#${encodeURIComponent(way.element)}=${encodeURIComponent(way.object_id_lowest)}">${way.name}</a>` : way.name).join('<br>')
             : item.ways.replaceAll(';', '<br>');
         html += `
         <tr>

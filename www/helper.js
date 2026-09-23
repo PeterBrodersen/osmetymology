@@ -258,10 +258,13 @@ $(function () {
 
     let hash = decodeURIComponent(window.location.hash.substring(1));
     const locationMatch = hash.match(/^location=(\d+)$/);
+    const objectMatch = hash.match(/^(node|way|relation)=(\d+)$/);
     const mapMatch = hash.match(/^map=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
     const placesMatch = hash.match(/^places=(\d+)\/(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
     if (locationMatch) {
       panToLocationHash(locationMatch[1]);
+    } else if (objectMatch) {
+      panToObjectHash(objectMatch[1], objectMatch[2]);
     } else if (mapMatch) {
       navigateToMapHash(mapMatch);
     } else if (placesMatch) {
@@ -302,7 +305,20 @@ function panToLocationHash(locationId) {
         return;
       }
       const row = data[0];
-      panToLocationId(row['centroid_onfeature_latitude'], row['centroid_onfeature_longitude'], row['id']);
+      panToLocationId(row['centroid_onfeature_latitude'], row['centroid_onfeature_longitude'], row['id'], row['element'], row['object_id_lowest'], false);
+    });
+}
+
+function panToObjectHash(element, objectIdLowest) {
+  $.getJSON("lookup.php", { element, object_id_lowest: objectIdLowest })
+    .fail((jqxhr, textStatus, error) => updateResultTableError(error))
+    .done((data) => {
+      updateResultTable(data);
+      if (!data || data.length === 0) {
+        return;
+      }
+      const row = data[0];
+      panToLocationId(row['centroid_onfeature_latitude'], row['centroid_onfeature_longitude'], row['id'], row['element'], row['object_id_lowest'], false);
     });
 }
 
@@ -317,7 +333,7 @@ function updateResultTable(data) {
       const latitude = Number(row['centroid_onfeature_latitude']);
       const longitude = Number(row['centroid_onfeature_longitude']);
       const locationId = Number(row['id']);
-      var mapTohtml = `<span onclick="panToLocationId(${Number.isFinite(latitude) ? latitude : 0}, ${Number.isFinite(longitude) ? longitude : 0}, ${Number.isFinite(locationId) ? locationId : 0});">📍</span>`;
+      var mapTohtml = `<span onclick="panToLocationId(${Number.isFinite(latitude) ? latitude : 0}, ${Number.isFinite(longitude) ? longitude : 0}, ${Number.isFinite(locationId) ? locationId : 0}, '${escapeHtml(row['element'] ?? '')}', ${Number(row['object_id_lowest']) || 0});">📍</span>`;
       var streetname = row['streetname'] ?? '';
       var streetnamehtml = escapeHtml(streetname);
       // if (row['sampleway_id']) {
