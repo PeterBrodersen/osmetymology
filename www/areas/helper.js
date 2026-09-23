@@ -1,10 +1,16 @@
 $(function () {
     window.onhashchange = hashChanged;
-    getStats();
-    getAreaStats();
-    if (window.location.hash.length > 1) {
-        hashChanged();
-    }
+    areasI18n.ensureTranslationsLoaded()
+        .catch((error) => {
+            console.warn('Could not load translations before area rendering', error);
+        })
+        .finally(() => {
+            getStats();
+            getAreaStats();
+            if (window.location.hash.length > 1) {
+                hashChanged();
+            }
+        });
 
     document.addEventListener('app:languagechange', () => {
         renderStats(lastStatsData);
