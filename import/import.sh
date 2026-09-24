@@ -273,16 +273,7 @@ import_areas_section() {
 }
 
 aggregate_section() {
-    AGGREGATE_SQL="aggregate_no_areas.sql"
-    if [ "$SKIP_IMPORT_AREAS" = false ]; then
-        HAS_AREAS_TABLE="$(psql -qtAX -c "SELECT to_regclass('${SCHEMA:?}.areas') IS NOT NULL" | tr -d '\r[:space:]')"
-        if [ "$HAS_AREAS_TABLE" = "t" ]; then
-            AGGREGATE_SQL="aggregate.sql"
-        else
-            echo "Warning: areas table not found; running aggregation without areas"
-        fi
-    fi
-    psql -f "$AGGREGATE_SQL"
+    psql -v skip_import_areas="$SKIP_IMPORT_AREAS" -f aggregate.sql
 }
 
 import_wikidata_section() {
