@@ -175,7 +175,7 @@ function importItemIds($itemIds)
                     $pageid = $entity->redirects->from; // for the time, preserve redirects as their own topic to avoid duplicates
                 }
                 $localized = reduceWikidataEntityFields($entity, $languages);
-                $claims = json_encode($entity->claims);
+                $claims = json_encode($entity->claims ?? new stdClass());
                 $insertdb->execute([
                     $pageid,
                     $localized['name'],
