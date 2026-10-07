@@ -15,11 +15,11 @@ This is the generic template for country or city imports.
 
 ### Requirements
 * Postgres database
-* PHP installation
+* PHP installation with Postgres enabled
 * bash
 * [osm2pgsql](https://osm2pgsql.org/)
-* [ogr2ogr](https://gdal.org/en/stable/programs/ogr2ogr.html), typically found in `gdal-bin` package in Linux distributions
-* [osmium](https://osmcode.org/); only needed if extract is used
+* [ogr2ogr](https://gdal.org/en/stable/programs/ogr2ogr.html), usually found in `gdal-bin` package in Linux distributions
+* [osmium](https://osmcode.org/), usually found in `osmium-tool`; only needed if extract is used
 * [python3](https://www.python.org/) or [jq](https://jqlang.org/) for parsing JSON
 
 ### Setup
