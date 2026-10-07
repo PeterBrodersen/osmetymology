@@ -15,7 +15,7 @@ This is the generic template for country or city imports.
 
 ### Requirements
 * Postgres database
-* PHP installation with Postgres enabled
+* PHP CLI installation with `pgsql` and `mbstring` enabled
 * bash
 * [osm2pgsql](https://osm2pgsql.org/)
 * [ogr2ogr](https://gdal.org/en/stable/programs/ogr2ogr.html), usually found in `gdal-bin` package in Linux distributions
