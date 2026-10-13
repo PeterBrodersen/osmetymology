@@ -1,14 +1,20 @@
 <?php
 require("connect.inc.php");
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
 $search = (string) ($_GET['search'] ?? '');
 $streetname = (string) ($_GET['streetname'] ?? '');
 $itemname = (string) ($_GET['itemname'] ?? '');
 $term = (string) ($_GET['term'] ?? '');
 $request = (string) ($_GET['request'] ?? '');
 $itemid = (string) ($_GET['itemid'] ?? '');
+$locationid = (string) ($_GET['locationid'] ?? '');
+$element = (string) ($_GET['element'] ?? '');
+$objectIdLowest = (string) ($_GET['object_id_lowest'] ?? '');
 $coordinates = (string) ($_GET['coordinates'] ?? '');
-$municipalitycode = (int) ($_GET['municipalitycode'] ?? 0);
+$limit = (int) ($_GET['limit'] ?? 0);
+$areacode = (int) ($_GET['areacode'] ?? 0);
+$hasAreacode = array_key_exists('areacode', $_GET);
 $bbox = (string) ($_GET['bbox'] ?? '');
 if ($search) {
 	if (preg_match('_^Q\d+$_', $search)) {
@@ -30,95 +36,142 @@ function convertPGArraysToPHPArray($result)
 	$cleanresult = [];
 	foreach ($result as $row) {
 		$row['object_ids'] = json_decode($row['object_ids']);
-		$row['wikidatas'] = json_decode($row['wikidatas']);
 		$row['wikidataset'] = json_decode($row['wikidataset']);
 		$cleanresult[] = $row;
 	}
 	return $cleanresult;
 }
 
-function getColumns($coordinates = FALSE)
+function decodeWaysField($items)
+{
+	foreach ($items as &$item) {
+		if (!isset($item['ways']) || !is_string($item['ways'])) {
+			continue;
+		}
+		$decoded = json_decode($item['ways'], true);
+		if (json_last_error() === JSON_ERROR_NONE) {
+			$item['ways'] = $decoded;
+		}
+	}
+	unset($item);
+	return $items;
+}
+
+function getColumns($coordinates = FALSE, $useAreas = true)
 {
 	$columns = [
 		'l.id',
 		'l.name AS streetname',
 		'array_to_json(l.object_ids) AS object_ids',
-		'l.object_ids[1] AS sampleobject_id',
+		'l.element',
+		'l.object_id_lowest',
 		'l.featuretype',
 		'l."name:etymology"',
 		'l."name:etymology:wikidata"',
 		'l."name:etymology:wikipedia"',
-		'm.navn AS municipalityname',
+		$useAreas ? "COALESCE(a.area_name, '') AS areaname" : "'' AS areaname",
 		'w."name" AS wikilabel',
 		'w.description AS wikidescription',
 		'w2."name" AS wikiinstanceoflabel',
 		'w2.description AS wikiinstanceofdescription',
 		'gendermap.gender',
 		"to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofbirth",
+		"(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer AS wikidateofbirthprecision",
 		"to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date AS wikidateofdeath",
-		"w.sitelinks->'dawiki'->>'title' AS wikipediatitleda",
-		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_longitude',
-		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))) AS centroid_onfeature_latitude',
-		'array_to_json(l.wikidatas) AS wikidatas',
-		'wikidatas.wikidataset',
-		'wikidatas.wikilabel'
+		"(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer AS wikidateofdeathprecision",
+		'ST_X(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_longitude',
+		'ST_Y(ST_ClosestPoint(geom, ST_Centroid(geom))::geometry) AS centroid_onfeature_latitude',
+		'wikidata_info.wikidataset',
+		'wikidata_info.wikilabel'
 	];
-	if ($coordinates) {
-		$columns[] = "l.geom_dk <-> ST_Transform('SRID=4326;POINT(" . $coordinates['longitude'] . " " . $coordinates['latitude'] . ")'::geometry, 25832) AS distance";
+	if (is_array($coordinates)) {
+		$coordinateValues = (array) $coordinates;
+		$columns[] = "l.geom <-> 'SRID=4326;POINT(" . $coordinateValues['longitude'] . " " . $coordinateValues['latitude'] . ")'::geography AS distance";
 	}
 	$columnList = implode(', ', $columns);
 	return $columnList;
 }
 
-function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE)
+function getQuerystring($type, $coordinates = FALSE, $bbox = FALSE, $limit = 0)
 {
-	$columns = getColumns($coordinates);
+	$useAreas = hasAreasTable();
+	$prefix = '';
 	$where = '';
 	$limit = 1000;
-	$orderbylist = ['l.name, m.navn'];
+	$distanceCoordinates = $coordinates;
+	$orderbylist = [$useAreas ? 'l.name, a.area_name NULLS LAST' : 'l.name'];
+	$areasJoin = $useAreas ? 'LEFT JOIN areas a on l.area_code = a.area_id' : '';
 	if ($type == 'searchnamelike') {
-		$where = "WHERE searchname LIKE osmetymology.toSearchString(?) || '%'";
+		$where = "WHERE searchname LIKE toSearchString(?) || '%'";
 	} elseif ($type == 'itemid') {
-		$where = 'WHERE wikidatas @> ARRAY[?]';
+		$where = 'WHERE EXISTS (SELECT 1 FROM wikidatamap map_filter WHERE map_filter.location_id = l.id AND map_filter.wikidata_id = ?)';
+	} elseif ($type == 'locationid') {
+		$where = 'WHERE l.id = ?';
+		$limit = 1;
+	} elseif ($type == 'object') {
+		$where = 'WHERE l.element = ? AND l.object_id_lowest = ?';
+		$limit = 1;
 	} elseif ($type == 'nearest') {
-		$limit = 20;
+		$limit = is_int($limit) && $limit >= 1 && $limit <= 100 ? $limit : 20;
 		$orderbylist = ['distance'];
 	} elseif ($type == 'bbox') {
 		[$latitudeA, $longitudeA, $latitudeB, $longitudeB] = $bbox;
-		$where = "WHERE ST_Intersects(geom, ST_Envelope('SRID=4326;LINESTRING($longitudeA $latitudeA, $longitudeB $latitudeB)'::geometry))";
-		$limit = 100;
-		// :TODO: add order by distance from center of bbox
+		$distanceCoordinates = [
+			'latitude' => ($latitudeA + $latitudeB) / 2,
+			'longitude' => ($longitudeA + $longitudeB) / 2
+		];
+		$prefix = "WITH bbox AS (SELECT ST_MakeEnvelope($longitudeA, $latitudeA, $longitudeB, $latitudeB, 4326)::geography AS bboxgeom)";
+		$where = "CROSS JOIN bbox WHERE geom && bbox.bboxgeom AND ST_Intersects(geom, bbox.bboxgeom)";
+		$limit = is_int($limit) && $limit >= 1 && $limit <= 100 ? $limit : 100;
+		$orderbylist = ['distance'];
 	}
+	$columns = getColumns($distanceCoordinates, $useAreas);
 	$orderby = implode(', ', $orderbylist);
 	$querystring = <<<EOD
+		$prefix
 		SELECT $columns
-		FROM osmetymology.locations_agg l
-		INNER JOIN osmetymology.municipalities m on l.municipality_code = m.kode
-		LEFT JOIN osmetymology.wikidata w ON l."name:etymology:wikidata" = w.itemid
-		LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		FROM locations_agg l
+		$areasJoin
+		LEFT JOIN wikidata w ON l."name:etymology:wikidata" = w.itemid
+		LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		LEFT JOIN LATERAL(
 			SELECT jsonb_agg(jsonb_build_object(
 				'itemid', w.itemid,
 				'label', w.name,
 				'description', w.description,
+				'labels', w.labels,
+				'descriptions', w.descriptions,
+				'sitelinks', w.sitelinks,
+				'wikipedia', w.wikipedia,
 				'gender', gendermap.gender,
 				'dateofbirth', to_date(w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
+				'dateofbirth_precision', (w.claims->'P569'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer,
 				'dateofdeath', to_date(w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'time', 'YYYY-MM-DD')::date,
-				'wikipediatitleda', w.sitelinks->'dawiki'->>'title'
+				'dateofdeath_precision', (w.claims->'P570'->0->'mainsnak'->'datavalue'->'value'->>'precision')::integer
 			)) AS wikidataset,
 			string_agg(w.name, '; ') AS wikilabel
-			FROM osmetymology.wikidatamap map
-			INNER JOIN osmetymology.wikidata w ON map.wikidata_id = w.itemid
-			LEFT JOIN osmetymology.wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
-			LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+			FROM wikidatamap map
+			INNER JOIN wikidata w ON map.wikidata_id = w.itemid
+			LEFT JOIN wikidata w2 ON w.claims->'P31'->0->'mainsnak'->'datavalue'->'value'->>'id' = w2.itemid
+			LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 			WHERE l.id = map.location_id
-		) AS wikidatas ON TRUE
+		) AS wikidata_info ON TRUE
 		$where
 		ORDER BY $orderby
 		LIMIT $limit
 	EOD;
 	return $querystring;
+}
+
+function hasAreasTable()
+{
+	global $dbh;
+	static $hasAreas = null;
+	if ($hasAreas === null) {
+		$hasAreas = (bool) $dbh->query("SELECT to_regclass('areas') IS NOT NULL")->fetchColumn();
+	}
+	return $hasAreas;
 }
 
 function findPlaceName($searchname)
@@ -146,9 +199,9 @@ function findWikidataLabel($searchitem)
 		$searchitem = strtoupper($searchitem);
 		$querystring = <<<EOD
 			SELECT COUNT(l.id) AS placecount, w.name AS label, w.name AS alias, w.description, w.itemid
-			FROM osmetymology.wikidata w
-			INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
-			INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
+			FROM wikidata w
+			INNER JOIN wikidatamap map ON w.itemid = map.wikidata_id
+			INNER JOIN locations_agg l ON map.location_id = l.id
 			WHERE w.itemid = ?
 			GROUP BY w.itemid, w.description, w.name
 		EOD;
@@ -156,11 +209,11 @@ function findWikidataLabel($searchitem)
 		$querystring = <<<EOD
 			SELECT * FROM (
 				SELECT DISTINCT ON (w.itemid) COUNT(l.id) AS placecount, w.name AS label, wl.label AS alias , w.description, w.itemid
-				FROM osmetymology.wikilabels wl
-				INNER JOIN osmetymology.wikidata w ON wl.itemid = w.itemid
-				INNER JOIN osmetymology.wikidatamap map ON w.itemid = map.wikidata_id
-				INNER JOIN osmetymology.locations_agg l ON map.location_id = l.id
-				WHERE wl.searchlabel LIKE osmetymology.toSearchString(?) || '%'
+				FROM wikilabels wl
+				INNER JOIN wikidata w ON wl.itemid = w.itemid
+				INNER JOIN wikidatamap map ON w.itemid = map.wikidata_id
+				INNER JOIN locations_agg l ON map.location_id = l.id
+				WHERE wl.searchlabel LIKE toSearchString(?) || '%'
 				GROUP BY wl.label, w.itemid, w.description, w.name
 			) t
 			ORDER BY placecount DESC, label, itemid
@@ -189,12 +242,40 @@ function findStreetsFromItem($itemid)
 	return $result;
 }
 
-function findNearestPlacesFromLocation($coordinates)
+function findLocationById($locationid)
 {
 	global $dbh;
-	[$latitude, $longitude] = explode(",", $coordinates);
+	if (!preg_match('/^\d+$/', $locationid)) {
+		return false;
+	}
+	$querystring = getQuerystring('locationid');
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([(int) $locationid]);
+	$result = $q->fetchAll();
+	$result = convertPGArraysToPHPArray($result);
+	return $result;
+}
+
+function findLocationByObject($element, $objectIdLowest)
+{
+	global $dbh;
+	if (!in_array($element, ['node', 'way', 'relation'], true) || !preg_match('/^\d+$/', $objectIdLowest)) {
+		return false;
+	}
+	$querystring = getQuerystring('object');
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([$element, (int) $objectIdLowest]);
+	$result = $q->fetchAll();
+	return convertPGArraysToPHPArray($result);
+}
+
+function findNearestPlacesFromLocation($latitude, $longitude, $limit = 20)
+{
+	global $dbh;
 	$latLng = ['latitude' => (float) $latitude, 'longitude' => (float) $longitude];
-	$querystring = getQuerystring('nearest', $latLng);
+	$querystring = getQuerystring('nearest', $latLng, FALSE, $limit);
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
@@ -203,11 +284,26 @@ function findNearestPlacesFromLocation($coordinates)
 	return $result;
 }
 
-function findNearestPlacesFromBBOX($bboxstring)
+function findAreaFromLocation($latitude, $longitude)
+{
+	global $dbh;
+	if (!hasAreasTable()) {
+		return [];
+	}
+	$point = 'ST_SetSRID(ST_Point(?, ?), 4326)';
+	$querystring = "SELECT area_id, area_name FROM areas WHERE ST_Intersects(wkb_geometry, $point) LIMIT 1";
+	$q = $dbh->prepare($querystring);
+	$q->setFetchMode(PDO::FETCH_ASSOC);
+	$q->execute([(float) $longitude, (float) $latitude]);
+	$result = $q->fetch();
+	return $result ?: [];
+}
+
+function findNearestPlacesFromBBOX($bboxstring, $limit = 100)
 {
 	global $dbh;
 	$bbox = array_map('floatval', explode(",", $bboxstring));
-	$querystring = getQuerystring('bbox', FALSE, $bbox);
+	$querystring = getQuerystring('bbox', FALSE, $bbox, $limit);
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
 	$q->execute();
@@ -219,58 +315,75 @@ function findNearestPlacesFromBBOX($bboxstring)
 function getStats()
 {
 	global $dbh;
-	$querystring = "SELECT label, value FROM osmetymology.stats";
+	$querystring = "SELECT label, value FROM stats";
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_KEY_PAIR);
 	$result = $q->fetchAll();
 	return $result;
 }
 
-function getSingleMunicipalityWayPersons($municipalitycode)
+function getSingleAreaWayPersons($areacode)
 {
 	global $dbh;
-	$municipalitycode = '0' . $municipalitycode;
-	$q = $dbh->prepare("SELECT kode AS municipality_code, navn AS municipality_name, regionsnavn AS region_name FROM osmetymology.municipalities WHERE kode = ?");
-	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$municipalitycode]);
-	$result = $q->fetch();
-	if (!$result) {
-		return [];
+	$areacode = (int) $areacode;
+	if ($areacode === 0) {
+		$result = ['area_code' => 0, 'area_name' => 'No area'];
+		$expandedWhere = 'l.area_code IS NULL';
+		$params = [];
+	} else {
+		if (!hasAreasTable()) {
+			return [];
+		}
+		$q = $dbh->prepare("SELECT area_id AS area_code, area_name FROM areas WHERE area_id = ?");
+		$q->setFetchMode(PDO::FETCH_ASSOC);
+		$q->execute([$areacode]);
+		$result = $q->fetch();
+		if (!$result) {
+			return [];
+		}
+		$expandedWhere = 'l.area_code = ?';
+		$params = [$areacode];
 	}
 
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT DISTINCT l."name", unnest(wikidatas) AS wd
-			FROM osmetymology.locations_agg l
+			SELECT DISTINCT l."name", l.element, l.object_id_lowest, map.wikidata_id AS wd
+			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype = 'way'
-			AND l.municipality_code = ?
+			AND $expandedWhere
 		)
-		SELECT w.name AS personname, gendermap.gender, w.description, STRING_AGG(expanded.name, ';' ORDER BY expanded.name) AS ways
+		SELECT w.name AS personname, gendermap.gender, w.description, jsonb_agg(jsonb_build_object('name', expanded.name, 'element', expanded.element, 'object_id_lowest', expanded.object_id_lowest) ORDER BY expanded.name, expanded.object_id_lowest) AS ways
 		FROM expanded
-		INNER JOIN osmetymology.wikidata w ON expanded.wd = w.itemid
-		INNER JOIN osmetymology.gendermap ON w.claims->'P21->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		INNER JOIN wikidata w ON expanded.wd = w.itemid
+		INNER JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
 		GROUP BY personname, gender, description
 		ORDER BY gender, personname
 	EOD;
 	$q = $dbh->prepare($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
-	$q->execute([$municipalitycode]);
-	$result['items'] = $q->fetchAll();
+	$q->execute($params);
+	$result['items'] = decodeWaysField($q->fetchAll());
 	return $result;
 }
 
-function getMunicipalityStats()
+function getAreaStats()
 {
 	global $dbh;
+	$useAreas = hasAreasTable();
+	$areasJoin = $useAreas ? 'LEFT JOIN areas a on expanded.area_code = a.area_id' : '';
+	$areaCodeExpr = 'COALESCE(expanded.area_code, 0)';
+	$areaNameExpr = $useAreas ? "COALESCE(a.area_name, 'No area')" : "'No area'";
 	$querystring = <<<EOD
 		WITH expanded AS (
-			SELECT l.municipality_code, l.name, UNNEST(wikidatas) AS wikidata_id
-			FROM osmetymology.locations_agg l
+			SELECT l.area_code, l.name, map.wikidata_id
+			FROM locations_agg l
+			INNER JOIN wikidatamap map ON map.location_id = l.id
 			WHERE l.featuretype = 'way'
 		)
 		SELECT
-			expanded.municipality_code,
-			m.navn AS municipality_name,
+			$areaCodeExpr AS area_code,
+			$areaNameExpr AS area_name,
 			COUNT(DISTINCT CASE WHEN gender = 'female' THEN w.itemid END) AS unique_female_topic,
 			COUNT(DISTINCT CASE WHEN gender = 'male' THEN w.itemid END) AS unique_male_topic,
 			COUNT(DISTINCT CASE WHEN gender IS NULL THEN w.itemid END) AS unique_nogender_topic,
@@ -286,11 +399,11 @@ function getMunicipalityStats()
 				GREATEST(COUNT(DISTINCT CASE WHEN gender IN ('male', 'female') THEN w.itemid END), 1), 2
 			) AS male_percentage
 		FROM expanded
-		INNER JOIN osmetymology.municipalities m on expanded.municipality_code = m.kode
-		INNER JOIN osmetymology.wikidata w ON expanded.wikidata_id = w.itemid
-		LEFT JOIN osmetymology.gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
-		GROUP BY expanded.municipality_code, m.navn
-		ORDER BY expanded.municipality_code
+		$areasJoin
+		INNER JOIN wikidata w ON expanded.wikidata_id = w.itemid
+		LEFT JOIN gendermap ON w.claims->'P21'->0->'mainsnak'->'datavalue'->'value'->>'id' = gendermap.itemid
+		GROUP BY $areaCodeExpr, $areaNameExpr
+		ORDER BY area_code
 	EOD;
 	$q = $dbh->query($querystring);
 	$q->setFetchMode(PDO::FETCH_ASSOC);
@@ -313,16 +426,24 @@ if ($searchname) {
 	$result = findWikidataLabel($searchitem);
 } elseif ($itemid) {
 	$result = findStreetsFromItem($itemid);
+} elseif ($locationid !== '') {
+	$result = findLocationById($locationid);
+} elseif ($element !== '' && $objectIdLowest !== '') {
+	$result = findLocationByObject($element, $objectIdLowest);
+} elseif ($request == 'area' && $coordinates) {
+	[$latitude, $longitude] = array_map('trim', explode(",", $coordinates));
+	$result = findAreaFromLocation($latitude, $longitude);
 } elseif ($coordinates) {
-	$result = findNearestPlacesFromLocation($coordinates);
+	[$latitude, $longitude] = array_map('trim', explode(",", $coordinates));
+	$result = findNearestPlacesFromLocation($latitude, $longitude, $limit);
 } elseif ($bbox) {
-	$result = findNearestPlacesFromBBOX($bbox);
+	$result = findNearestPlacesFromBBOX($bbox, $limit);
 } elseif ($request == 'stats') {
 	$result = getStats();
-} elseif ($municipalitycode) {
-	$result = getSingleMunicipalityWayPersons($municipalitycode);
-} elseif ($request == 'municipalitystats') {
-	$result = getMunicipalityStats();
+} elseif ($hasAreacode) {
+	$result = getSingleAreaWayPersons($areacode);
+} elseif ($request == 'areastats') {
+	$result = getAreaStats();
 }
 
 print json_encode($result);

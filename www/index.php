@@ -1,14 +1,102 @@
+<?php
+require __DIR__ . '/i18n.php';
+
+$appConfig = [];
+$configPath = __DIR__ . '/../config/config.json';
+$translationPath = __DIR__ . '/translations.json';
+
+$i18nSetup = setupPageI18nContext($configPath, $translationPath, static function (string $localeCode, string $localizedPlaceName, array $config): array {
+    return [
+        'placeName' => $localizedPlaceName,
+        'projectDisplayName' => $localizedPlaceName,
+        'geocodingCountryName' => $config['place']['geocoding_country_name'] ?? 'United Kingdom',
+    ];
+});
+
+$decodedConfig = $i18nSetup['decodedConfig'];
+$placeName = $i18nSetup['placeName'];
+$translations = $i18nSetup['translations'];
+$locale = $i18nSetup['locale'];
+$translationOverrides = $i18nSetup['translationOverrides'];
+$localeParams = $i18nSetup['localeParams'];
+$translationParams = $i18nSetup['translationParams'] ?: [
+    'placeName' => $placeName,
+    'projectDisplayName' => $placeName,
+    'geocodingCountryName' => $decodedConfig['place']['geocoding_country_name'] ?? 'United Kingdom',
+];
+
+if (is_readable($configPath)) {
+    $appConfig = [
+        'place' => is_array($decodedConfig['place'] ?? null) ? $decodedConfig['place'] : [],
+        'external_urls' => is_array($decodedConfig['external_urls'] ?? null) ? $decodedConfig['external_urls'] : [],
+        'wikidataLanguages' => array_values(array_filter($decodedConfig['language']['wikidata'] ?? [], 'is_string')),
+    ];
+}
+
+$placeName = $translationParams['placeName'] ?? $placeName;
+$titleKey = $placeName ? 'home.titleWithPlace' : 'home.title';
+$title = translateCatalogue($translations, $locale, $titleKey, $translationParams);
+$appConfig['i18n'] = buildI18nConfig($translations, $locale, 'home', $translationParams, $localeParams, $translationOverrides);
+
+$stats = null;
+$statsPath = __DIR__ . '/data/stats.json';
+if (is_readable($statsPath)) {
+    $decodedStats = json_decode(file_get_contents($statsPath), true);
+    if (is_array($decodedStats)) {
+        $stats = $decodedStats;
+    }
+}
+
+$dateLocale = translateCatalogue($translations, $locale, 'common.dateLocale', $translationParams);
+if ($dateLocale === 'common.dateLocale') {
+    $dateLocale = $locale;
+}
+
+$formatNumber = static function ($value, string $localeCode): string {
+    $numericValue = is_numeric($value) ? (float) $value : 0.0;
+    if (class_exists('NumberFormatter')) {
+        $formatter = new NumberFormatter($localeCode, NumberFormatter::DECIMAL);
+        $formatted = $formatter->format($numericValue);
+        if (is_string($formatted)) {
+            return $formatted;
+        }
+    }
+
+    return number_format($numericValue, 0, '.', ',');
+};
+
+$formatDateFromUnix = static function ($value, string $localeCode): string {
+    if (!is_numeric($value)) {
+        return '';
+    }
+
+    $timestamp = (int) $value;
+    $date = (new DateTimeImmutable('@' . $timestamp))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+    if (class_exists('IntlDateFormatter')) {
+        $formatter = new IntlDateFormatter($localeCode, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
+        $formatted = $formatter->format($date);
+        if (is_string($formatted)) {
+            return $formatted;
+        }
+    }
+
+    return $date->format('Y-m-d');
+};
+
+$statsTotalRoads = $stats !== null ? $formatNumber($stats['totalroads'] ?? 0, $dateLocale) : '';
+$statsUniqueNamedRoads = $stats !== null ? $formatNumber($stats['uniquenamedroads'] ?? 0, $dateLocale) : '';
+$statsUniqueEtymologyWikidata = $stats !== null ? $formatNumber($stats['uniqueetymologywikidata'] ?? 0, $dateLocale) : '';
+$statsImportFileTime = $stats !== null ? $formatDateFromUnix($stats['importfiletime'] ?? null, $dateLocale) : '';
+?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php print htmlspecialchars($locale); ?>">
 
 <head>
-    <title>
-        Hvad er danske vejnavne og steder opkaldt efter?
-    </title>
+    <title data-i18n="<?php print htmlspecialchars($titleKey); ?>"><?php print htmlspecialchars($title); ?></title>
     <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatgeobuf/dist/flatgeobuf-geojson.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatgeobuf@4.5.0/dist/flatgeobuf-geojson.min.js"></script>
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -17,8 +105,12 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        window.appConfig = <?php echo json_encode($appConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
+    </script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script> -->
+    <script src="/i18n.js"></script>
     <script src="/map.js"></script>
     <script src="/helper.js"></script>
     <link href='/style.css' rel='stylesheet' />
@@ -28,14 +120,21 @@
 </head>
 
 <body>
-    <h1>Hvad er danske vejnavne og steder opkaldt efter?</h1>
+    <div class="page-header">
+        <h1 data-i18n="<?php print htmlspecialchars($titleKey); ?>"><?php print htmlspecialchars($title); ?></h1>
 
-<div style="clear: both;">
-</div>
+        <div class="language-switcher">
+            <label for="language-select" data-i18n="common.languageLabel"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.languageLabel', $translationParams)); ?></label>
+            <select id="language-select"></select>
+        </div>
+    </div>
+
+    <div style="clear: both;">
+    </div>
 
     <div id="userinput">
-        <div id="placename"><input required autofocus id="namefind" placeholder="Slå vejnavn op" accesskey="f"> <span id="copylink"><a href="#">[kopiér link 🔗]</a></span></div>
-        <div id="itemname"><input required autofocus id="itemfind" placeholder="Slå emne op" accesskey="t"></div>
+        <div id="placename"><input required autofocus id="namefind" data-i18n-placeholder="home.searchPlaceholder" placeholder="<?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.searchPlaceholder', $translationParams)); ?>" accesskey="f" size="35"> <span id="copylink"><a href="#" data-i18n="common.copyLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.copyLink', $translationParams)); ?></a></span></div>
+        <div id="itemname"><input required autofocus id="itemfind" data-i18n-placeholder="home.topicPlaceholder" placeholder="<?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.topicPlaceholder', $translationParams)); ?>" accesskey="t"></div>
     </div>
 
     <div id="result">
@@ -45,12 +144,12 @@
         <table class="resulttable">
             <thead>
                 <tr class="tableheader">
-                    <th>Kort</th>
-                    <th>Type</th>
-                    <th>Stednavn</th>
-                    <th>Kommune</th>
-                    <th>Emne</th>
-                    <th>Beskrivelse</th>
+                    <th data-i18n="home.table.map"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.map', $translationParams)); ?></th>
+                    <th data-i18n="home.table.type"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.type', $translationParams)); ?></th>
+                    <th data-i18n="home.table.name"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.name', $translationParams)); ?></th>
+                    <th data-i18n="home.table.area"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.area', $translationParams)); ?></th>
+                    <th data-i18n="home.table.topic"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.topic', $translationParams)); ?></th>
+                    <th data-i18n="home.table.description"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.table.description', $translationParams)); ?></th>
                 </tr>
             </thead>
         </table>
@@ -58,66 +157,43 @@
 
     <div id="maplinks">
         <div>
-            <a href="#" id="getposition">[➹ find nærmeste steder nær dig]</a> <span class="location-loader" style="display:none;"></span>
+            <a href="#" id="getposition" data-i18n="home.findPlacesNearYou"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.findPlacesNearYou', $translationParams)); ?></a> <span class="location-loader" style="display:none;"></span>
         </div>
         <div>
-            <a href="#" id="showplacesinmapview">[list alle steder i kortudsnit]</a><br>
+            <a href="#" id="showplacesinmapview" data-i18n="home.listPlacesInMapView"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.listPlacesInMapView', $translationParams)); ?></a><br>
         </div>
         <div>
-            <a href="#" id="copylinktomap">[kopiér link til kortudsnit 🔗]</a><br>
+            <a href="#" id="copylinktomap" data-i18n="common.copyLinkToMap"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'common.copyLinkToMap', $translationParams)); ?></a><br>
         </div>
 
     </div>
-<div class="drlink">
-	<p>
-	Velkommen til! Tjek også <a href="kommuner/">kønsfordeling på kommuneniveau</a> samt <a href="https://osrm.findvej.dk/nomales/?profile=0"><strong>ruteplanen, der nægter at køre på veje opkaldt efter mænd</strong></a>.
-	</p>
-	<p>
-		Eksempler:
-	</p>
-	<ul>
-		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.403470%2C10.385185&loc=55.401682%2C10.391736&loc=55.404484%2C10.394011&hl=da&alt=0&profile=0">Odense</a></li>
-		<li><a href="https://osrm.findvej.dk/nomales/?z=16&center=55.667353%2C12.533405&loc=55.665580%2C12.529242&loc=55.665435%2C12.530379&hl=da&alt=0&profile=0">Carlsberg Byen</a></li>
-        <li><a href="https://osrm.findvej.dk/nomales/?z=16&center=56.030328%2C12.600653&loc=56.030370%2C12.604601&loc=56.031740%2C12.605647&hl=da&alt=0&profile=0">Helsingør</a></li>
-	</ul>
-</div>
+    <div class="drlink">
+        <p>
+            <span data-i18n="home.alsoCheckOut"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.alsoCheckOut', $translationParams)); ?></span>
+        </p>
+        <ul>
+            <li><a href="areas/" data-i18n="home.genderDistributionLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.genderDistributionLink', $translationParams)); ?></a></li>
+            <li id="osrm_gender"><a href="#" id="avoid_gender" data-i18n="home.avoidGenderLink"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.avoidGenderLink', $translationParams)); ?></a> (<a href="#" id="avoid_gender_example" data-i18n="home.example"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.example', $translationParams)); ?></a>)</li>
+        </ul>
+    </div>
 
     <div id="map" style="height: 700px; width: 100%; border: 1px solid black; z-index: 90; margin-top: 10px;"></div>
 
     <div id="betaboilerplate">
-        <p>
-            Vejnavne-projektet bliver løbende opdateret. Se også undersiden for <a href="kommuner/">kønsfordeling på kommuneniveau</a>.
-        </p>
-        <p>
-            Datagrundlaget er veje i det frivillige kort-projekt <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Her har frivillige
-            bladret <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Resources.md">bøger og websites</a> igennem for oplysninger om,
-            hvad danske vejnavne er opkaldt efter. Der findes ingen centrale kilder i øvrigt om, hvad danske vejnavne er opkaldt efter, og der
-            er en række <a href="https://github.com/PeterBrodersen/osmetymology/blob/main/Editing.md?tab=readme-ov-file#caveats">fælder</a> at være på
-            udkig efter.
-        </p>
-        <p>
-            Ikke alle steder er registreret endnu. Pt. er der oplysninger om over 40.000 danske veje (ca. en tredjedel af alle veje i Danmark), som er
-            opkaldt efter over 15.000 forskellige emner.
-        </p>
-        <p>
-            Projektet er udviklet af <a href="https://www.openstreetmap.org/user/Peter%20Brodersen">Peter Brodersen</a>. Du kan hente alle danske
-            veje med oplysninger i en <a href="/data/navne.csv">kommasepareret fil</a> og i <a href="/data/navne.fgb">FlatGeobuf-format (for GIS-brugere)</a>
-            (og link gerne tilbage til denne side, hvis du gør brug af data). Koden bag projektet er
-            <a href="https://github.com/PeterBrodersen/osmetymology">tilgængeligt på GitHub</a>. Har du spørgsmålet til projektet, er du
-            mere end velkommen til at <a href="mailto:peter@ter.dk">sende en mail</a>.
-        </p>
+        <p data-i18n-html="home.downloadsHtml"><?php print translateCatalogue($translations, $locale, 'home.downloadsHtml', $translationParams); ?></p>
+        <p data-i18n-html="home.projectHtml"><?php print translateCatalogue($translations, $locale, 'home.projectHtml', $translationParams); ?></p>
 
-        <p class="copyright">
-            Kortdata er hentet fra <a href="https://www.openstreetmap.org/">OpenStreetMap</a> og er frigivet under <a href="https://www.openstreetmap.org/copyright">Open Data Commons Open Database License (ODbL)</a>. Metadata er hentet fra <a href="https://www.wikidata.org/">Wikidata</a> og er frigivet under <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.da">Creative Commons CC0 licens</a>.
-        </p>
+        <p class="copyright" data-i18n-html="home.copyrightHtml"><?php print translateCatalogue($translations, $locale, 'home.copyrightHtml', $translationParams); ?></p>
 
-        <p class="stats">
-            Indhold i databasen:<br>
-            Antal steder: <span id="totalroads"></span><br>
-            Antal unikt navngivne steder: <span id="uniquenamedroads"></span><br>
-            Antal unikke emner, steder er opkaldt efter: <span id="uniqueetymologywikidata"></span><br>
-            Dato for datasæt: <span id="importfiletime"></span>
-        </p>
+        <?php if ($stats !== null): ?>
+            <p class="stats">
+                <span data-i18n="home.stats.content"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.content', $translationParams)); ?></span><br>
+                <span data-i18n="home.stats.places"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.places', $translationParams)); ?></span> <span id="totalroads"><?php print htmlspecialchars($statsTotalRoads); ?></span><br>
+                <span data-i18n="home.stats.uniquelyNamedPlaces"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniquelyNamedPlaces', $translationParams)); ?></span> <span id="uniquenamedroads"><?php print htmlspecialchars($statsUniqueNamedRoads); ?></span><br>
+                <span data-i18n="home.stats.uniqueTopics"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.uniqueTopics', $translationParams)); ?></span> <span id="uniqueetymologywikidata"><?php print htmlspecialchars($statsUniqueEtymologyWikidata); ?></span><br>
+                <span data-i18n="home.stats.datasetDate"><?php print htmlspecialchars(translateCatalogue($translations, $locale, 'home.stats.datasetDate', $translationParams)); ?></span> <span id="importfiletime"><?php print htmlspecialchars($statsImportFileTime); ?></span>
+            </p>
+        <?php endif; ?>
     </div>
 </body>
 

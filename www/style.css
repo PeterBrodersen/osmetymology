@@ -10,6 +10,41 @@ div {
     font-family: sans-serif;
 }
 
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.8em;
+}
+
+.page-header h1 {
+    margin: 0;
+}
+
+.language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.language-switcher select {
+    font-size: 1rem;
+}
+
+@media (max-width: 700px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .language-switcher {
+        justify-content: flex-start;
+    }
+}
+
 table.resulttable,
 table.resulttable tr,
 table.resulttable th,
@@ -18,9 +53,24 @@ table.resulttable td {
     padding: 5px;
 }
 
-.topicwikidata a {
+.topicwikidata a,
+.topicwikipedia a {
     font-size: 0.8em;
     color: #666;
+}
+
+.topicrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+}
+
+.topiclinks {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.35em;
+    white-space: nowrap;
 }
 
 .numeric {
@@ -96,10 +146,28 @@ sup a {
 
 h1.popupplacename {
     font-size: 1rem;
-    /* Restrict h1 to one line */
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+}
+
+.popupplacename-text {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.popup-permalink {
+    flex: 0 0 auto;
+    margin-left: 0.35em;
+    opacity: 0;
+    text-decoration: none;
+    transition: opacity 120ms ease-in-out;
+}
+
+.leaflet-popup-content:hover .popup-permalink,
+.popup-permalink:focus-visible {
+    opacity: 1;
 }
 
 .popupitemname {
@@ -117,11 +185,15 @@ h1.popupplacename {
 div#maplinks {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 div#userinput {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .location-loader {
@@ -208,30 +280,30 @@ div#userinput {
     font-size: 0.9rem;
 }
 
-#municipalitystats {
+#areas {
     float: left;
     margin-right: 3em;
 }
 
-#municipalitystats thead tr {
+#areastats thead tr {
     cursor: pointer;
 }
 
-#singlemunicipality {
+#singlearea {
     float: left;
 }
 
-#municipalitystats tfoot tr {
+#areastats tfoot tr {
     border-top: solid 2px black;
     border-bottom: solid 2px black;
     text-align: left;
 }
 
-#municipalitystats tbody tr:hover {
+#areastats tbody tr:hover {
     background-color: #f0f0f0;
 }
 
-#municipalitystats tbody tr.active {
+#areastats tbody tr.active {
     background-color: #d0e0f0;
 }
 
@@ -271,4 +343,8 @@ div.clear {
 
 .male-color {
     background-color: var(--male-color);
+}
+
+li#osrm_gender {
+    display: none;
 }
