@@ -96,7 +96,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function getPopupText(feature, popupLatLng = null, unitSystem = 'metric') {
-        // :TODO: URLs probably don't support relations at the moment
         let osmURLs = {
             node: 'https://www.openstreetmap.org/node/',
             way: 'https://www.openstreetmap.org/way/',
@@ -199,9 +198,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (etymologyText) {
             popupText += `<div class="popupitemname">${etymologyText}</div>`;
         }
-        let osmurl = (hasObject ? osmURLs[element] : osmURLs.relation) + Math.abs(objectIdLowest);
-        let mapcompleteurl = (hasObject ? mapCompleteEtymologyURLs[element] : mapCompleteEtymologyURLs.relation) + Math.abs(objectIdLowest);
-        popupText += `<div><a href="${osmurl}" title="${mapTranslate('common.openStreetMapTitle')}"><img src="media/openstreetmap_30.png" width="30" height="30" alt="${mapTranslate('common.openStreetMapLogoAlt')}"></a> <a href="${mapcompleteurl}" title="${mapTranslate('common.mapCompleteTitle')}"><img src="media/mapcomplete.svg" width="30" height="30" alt="${mapTranslate('common.mapCompleteLogoAlt')}"></a></div>`;
+        if (hasObject) {
+            let osmurl = osmURLs[element] + objectIdLowest;
+            let mapcompleteurl = mapCompleteEtymologyURLs[element] + objectIdLowest;
+            popupText += `<div><a href="${osmurl}" title="${mapTranslate('common.openStreetMapTitle')}"><img src="media/openstreetmap_30.png" width="30" height="30" alt="${mapTranslate('common.openStreetMapLogoAlt')}"></a> <a href="${mapcompleteurl}" title="${mapTranslate('common.mapCompleteTitle')}"><img src="media/mapcomplete.svg" width="30" height="30" alt="${mapTranslate('common.mapCompleteLogoAlt')}"></a></div>`;
+        }
         return popupText;
     }
 
