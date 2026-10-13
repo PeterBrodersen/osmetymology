@@ -128,7 +128,7 @@ UNION
 	GROUP by ow.name, a.area_name, a.area_id, "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", a.wkb_geometry
 )
 UNION (
-	SELECT op.name, toSearchString(op.name), CASE WHEN min(op.area_id) < 0 THEN 'way' ELSE 'relation' END, featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(abs(op.area_id)), min(abs(op.area_id)), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", CASE WHEN a.area_id IS NULL THEN ST_Union(geom) ELSE ST_Intersection(ST_Union(geom), a.wkb_geometry) END
+	SELECT op.name, toSearchString(op.name), CASE WHEN (array_agg(op.area_id ORDER BY abs(op.area_id), op.area_id))[1] < 0 THEN 'relation' ELSE 'way' END, featureType(jsonb_merge_agg(tags)), a.area_id, array_agg(abs(op.area_id)), min(abs(op.area_id)), "name:etymology", "name:etymology:wikipedia","name:etymology:wikidata", CASE WHEN a.area_id IS NULL THEN ST_Union(geom) ELSE ST_Intersection(ST_Union(geom), a.wkb_geometry) END
 	FROM osm_polygons op
 	LEFT JOIN areas a ON op.geom && a.wkb_geometry AND ST_Intersects(op.geom, a.wkb_geometry)
 	WHERE op.geom IS NOT NULL AND op.name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
@@ -154,7 +154,7 @@ UNION
 	GROUP by ow.name, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata"
 )
 UNION (
-	SELECT op.name, toSearchString(op.name), CASE WHEN min(op.area_id) < 0 THEN 'way' ELSE 'relation' END, featureType(jsonb_merge_agg(tags)), NULL::bigint, array_agg(abs(op.area_id)), min(abs(op.area_id)), "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", ST_Union(geom)
+	SELECT op.name, toSearchString(op.name), CASE WHEN (array_agg(op.area_id ORDER BY abs(op.area_id), op.area_id))[1] < 0 THEN 'relation' ELSE 'way' END, featureType(jsonb_merge_agg(tags)), NULL::bigint, array_agg(abs(op.area_id)), min(abs(op.area_id)), "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata", ST_Union(geom)
 	FROM osm_polygons op
 	WHERE op.geom IS NOT NULL AND op.name IS NOT NULL AND ("name:etymology" IS NOT NULL OR "name:etymology:wikipedia" IS NOT NULL OR "name:etymology:wikidata" is not NULL)
 	GROUP by op.name, "name:etymology", "name:etymology:wikipedia", "name:etymology:wikidata"
