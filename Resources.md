@@ -109,6 +109,7 @@ Resources for getting information about the origin of Danish street names.
 | Skagen           | [Skagens Vejnavne](http://www.skagenlokal.dk/skagens_vejnavne.html) ([alternative view](http://www.skagenlokal.dk/Sider/Vej.html)) | Online | Hans Nielsen og Skagen Lokalhistoriske Forening | Many roads |
 | Skanderborg      | [Skanderborg Leksikon, Kategori: Gader & veje](http://www.skanderborgleksikon.dk/index.php/Kategori:Gader_%26_veje) | Online, Wiki | Skanderborg Historiske Arkiv | |
 | Sorø             | [Veje og gader i Sorø og omegn](https://www.soroehistorie.dk/arkiv/Veje_og_gader.html) | Online | Lokalhistorisk Arkiv for Sorø og Omegn |
+| Stubbekøbing     | [Gader, veje og stræder i Stubbekøbing](https://bibliotek.dk/materiale/gader-veje-og-straeder-i-stubbekoebing_karin-suhr-rasmussen/work-of%3A159010-lokalbibl%3A35434321?tid=Kx0kP1792675945555593646) | Article | Karin Suhr Rasmussen | About 30 roads |
 | Svendborg        | [Gader og veje](https://www.svendborghistorie.dk/historier/erhverv/130-gader-og-veje/gader-og-veje-sp-131/) | Online | Museum Sydfyn | |
 | Svendborg        | [Gader i Svendborg](http://svendborg.sights.dk/dansk/svendborg-gader-2.asp) | Online | Den Lille Svendborgguide | |
 | Svinninge        | [Weitemeyers Kilde 2015:1](https://svinningelokalhistorie.dk/2015-1/) | Online | Svinninge Lokalhistoriske Forening og Arkiv | |
