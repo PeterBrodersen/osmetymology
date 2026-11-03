@@ -131,6 +131,7 @@ Resources for getting information about the origin of Danish street names.
 | Viborg           | [Leksikon over steder, begivenheder, personer og genstande i Viborg](https://viborgmuseum.dk/leksikon) | Website | Viborg Museum | |
 | Viborg           | [Viborg bys gadenavne](https://bibliotek.dk/materiale/viborg-bys-gadenavne_otto-von-spreckelsen/work-of%3A870970-basis%3A08559104?type=bog) | Book (1962) | Otto von Spreckelsen | Small overview in the beginning |
 | Viborg           | [Viborgegnens stednavne](https://bibliotek.dk/work/pid/870970-basis:06494447?scrollToEdition=true) | Book (1986) | Bent Jørgensen | No street names, only area names |
+| Visby            | [Stednavne i Visby](https://visbynet.dk/stednavne-i-visby/) | Website | Visbynet | |
 | Vordingborg      | [Hvorfor hedder det mon sådan? Gadenavne i Vordingborg](https://bibliotek.dk/work/pid/870970-basis:27516858?scrollToEdition=true) | Booklet (2008) | Vordingborg Lokalhistoriske Arkiv | About 30 streets |
 | Ærø              | [Gader og veje på Ærø](https://bibliotek.dk/materiale/gader-og-veje-paa-aeroe_torun-gjelstrup/work-of%3A800010-katalog%3A99122927608305763?type=bog) | Book (2013) | Torun Gjelstrup | More all-round stories |
 | Aalborg          | [Historien bag de gamle gader i Aalborg anno 1949](https://bibliotek.dk/materiale/historien-bag-de-gamle-gader-i-aalborg-anno-1949_kr-vaernfelt/work-of:870970-basis:41212497?workId=work-of%3A870970-basis%3A41212497&type=bog) | Book (1949?) | Kr. Værnfelt |
